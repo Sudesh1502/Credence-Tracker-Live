@@ -9,7 +9,7 @@ import animalSvg from '../../resources/images/icon/animal.svg';
 import bicycleSvg from '../../resources/images/icon/bicycle.svg';
 import boatSvg from '../../resources/images/icon/boat.svg';
 import busSvg from '../../resources/images/icon/bus.svg';
-import carSvg from '../../resources/images/icon/car.svg';
+import carSvg from '../../resources/images/icon/car.png';
 import camperSvg from '../../resources/images/icon/camper.svg';
 import craneSvg from '../../resources/images/icon/crane.svg';
 import defaultSvg from '../../resources/images/icon/default.svg';
@@ -63,7 +63,7 @@ const mapPalette = createPalette({
 
 export default async () => {
   const background = await loadImage(backgroundSvg);
-  mapImages.background = await prepareIcon(background);
+  // mapImages.background = await prepareIcon(background);
   mapImages.direction = await prepareIcon(await loadImage(directionSvg));
   mapImages.arrow = await prepareIcon(await loadImage(arrowSvg));
   await Promise.all(Object.keys(mapIcons).map(async (category) => {

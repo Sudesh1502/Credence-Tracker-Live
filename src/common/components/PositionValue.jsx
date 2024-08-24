@@ -4,7 +4,6 @@ import { Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   formatAlarm,
-  formatAltitude,
   formatBoolean,
   formatCoordinate,
   formatCourse,
@@ -29,22 +28,22 @@ import DriverValue from './DriverValue';
 
 const PositionValue = ({ position, property, attribute }) => {
   const t = useTranslation();
-
   const admin = useAdministrator();
-
   const device = useSelector((state) => state.devices.items[position.deviceId]);
 
   const key = property || attribute;
   const value = property ? position[property] : position.attributes[attribute];
 
   const distanceUnit = useAttributePreference('distanceUnit');
-  const altitudeUnit = useAttributePreference('altitudeUnit');
   const speedUnit = useAttributePreference('speedUnit');
   const volumeUnit = useAttributePreference('volumeUnit');
   const coordinateFormat = usePreference('coordinateFormat');
   const hours12 = usePreference('twelveHourFormat');
 
   const formatValue = () => {
+    if (key === 'altitude' && value === 0) {
+      return null; // Skip rendering zero altitude
+    }
     switch (key) {
       case 'fixTime':
       case 'deviceTime':
@@ -58,10 +57,6 @@ const PositionValue = ({ position, property, attribute }) => {
         return value != null ? formatSpeed(value, speedUnit, t) : '';
       case 'obdSpeed':
         return value != null ? formatSpeed(speedToKnots(value, 'kmh'), speedUnit, t) : '';
-      case 'course':
-        return formatCourse(value);
-      case 'altitude':
-        return formatAltitude(value, altitudeUnit, t);
       case 'power':
       case 'battery':
         return formatVoltage(value, t);

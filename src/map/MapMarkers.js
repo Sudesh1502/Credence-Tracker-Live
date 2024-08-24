@@ -29,7 +29,7 @@ const MapMarkers = ({ markers, showTitles }) => {
         filter: ['!has', 'point_count'],
         layout: {
           'icon-image': '{image}',
-          'icon-size': iconScale,
+          // 'icon-size': iconScale,
           'icon-allow-overlap': true,
           'text-field': '{title}',
           'text-allow-overlap': true,

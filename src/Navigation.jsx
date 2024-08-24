@@ -8,6 +8,7 @@ import MainPage from './main/MainPage';
 import CombinedReportPage from './reports/CombinedReportPage';
 import RouteReportPage from './reports/RouteReportPage';
 import ServerPage from './settings/ServerPage';
+import Event from './reports/Event';
 import UsersPage from './settings/UsersPage';
 import DevicePage from './settings/DevicePage';
 import UserPage from './settings/UserPage';
@@ -108,7 +109,9 @@ const Navigation = () => {
         <Route path="network/:positionId" element={<NetworkPage />} />
         <Route path="event/:id" element={<EventPage />} />
         <Route path="replay" element={<ReplayPage />} />
+        <Route path="replay/:id" element={<ReplayPage />} />
         <Route path="geofences" element={<GeofencesPage />} />
+        <Route path="event" element={<Event />} />
 
         <Route path="settings">
           <Route path="accumulators/:deviceId" element={<AccumulatorsPage />} />
@@ -154,8 +157,10 @@ const Navigation = () => {
 
         <Route path="reports">
           <Route path="combined" element={<CombinedReportPage />} />
+          <Route path="combined/:id" element={<CombinedReportPage />} />
           <Route path="chart" element={<ChartReportPage />} />
           <Route path="event" element={<EventReportPage />} />
+          <Route path="event/:id" element={<EventReportPage />} />
           <Route path="route" element={<RouteReportPage />} />
           <Route path="stop" element={<StopReportPage />} />
           <Route path="summary" element={<SummaryReportPage />} />

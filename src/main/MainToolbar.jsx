@@ -1,31 +1,67 @@
-import React, { useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import SearchIcon from "@mui/icons-material/Search";
+import MapIcon from "@mui/icons-material/Map";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import TuneIcon from "@mui/icons-material/Tune";
+import PersonIcon from "@mui/icons-material/Person";
+
 import {
-  Toolbar, IconButton, OutlinedInput, InputAdornment, Popover, FormControl, InputLabel, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, Badge, ListItemButton, ListItemText, Tooltip,
-} from '@mui/material';
-import { makeStyles, useTheme } from '@mui/styles';
-import MapIcon from '@mui/icons-material/Map';
-import ViewListIcon from '@mui/icons-material/ViewList';
-import AddIcon from '@mui/icons-material/Add';
-import TuneIcon from '@mui/icons-material/Tune';
-import { useTranslation } from '../common/components/LocalizationProvider';
-import { useDeviceReadonly } from '../common/util/permissions';
-import DeviceRow from './DeviceRow';
+  Toolbar,
+  IconButton,
+  OutlinedInput,
+  InputAdornment,
+  Popover,
+  ListItemButton,
+  ListItemText,
+  BottomNavigation,
+  BottomNavigationAction,
+  Typography,
+  Menu,
+  MenuItem,
+  Grid,
+  useMediaQuery,
+} from "@mui/material";
+
+import { makeStyles, useTheme } from "@mui/styles";
+import { useRestriction } from "../common/util/permissions";
+import { useDispatch, useSelector } from "react-redux";
+import { nativePostMessage } from "../common/components/NativeInterface";
+import { sessionActions } from "../store";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
-    display: 'flex',
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: theme.palette.background.default,
+    justifyContent: "space-between",
     gap: theme.spacing(1),
+    padding: theme.spacing(0, 1),
   },
-  filterPanel: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: theme.spacing(2),
-    gap: theme.spacing(2),
-    width: theme.dimensions.drawerWidthTablet,
+  searchText: {
+    color: "white",
+    fontSize: "1.25rem",
+    fontWeight: "bold",
+    textAlign: "center",
+    width: "100%", // Takes up the full width of its grid item
+  },
+  searchBar: {
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius,
+    color: theme.palette.text.primary,
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    [theme.breakpoints.down("sm")]: {
+      marginRight: 0,
+    },
   },
 }));
+
+const currentSelection = () => {
+  if (location.pathname === `/settings/user/${user.id}`) {
+    return "account";
+  }
+};
 
 const MainToolbar = ({
   filteredDevices,
@@ -43,134 +79,158 @@ const MainToolbar = ({
   const classes = useStyles();
   const theme = useTheme();
   const navigate = useNavigate();
-  const t = useTranslation();
-
-  const deviceReadonly = useDeviceReadonly();
-
-  const groups = useSelector((state) => state.groups.items);
-  const devices = useSelector((state) => state.devices.items);
 
   const toolbarRef = useRef();
   const inputRef = useRef();
   const [filterAnchorEl, setFilterAnchorEl] = useState(null);
   const [devicesAnchorEl, setDevicesAnchorEl] = useState(null);
+  const [accountAnchorEl, setAccountAnchorEl] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
 
-  const deviceStatusCount = (status) => Object.values(devices).filter((d) => d.status === status).length;
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const handleSearchIconClick = () => {
+    setIsSearching((prev) => !prev);
+  };
+
+  const handleAccountClick = (event) => {
+    setAccountAnchorEl(event.currentTarget);
+  };
+
+  const handleAccountClose = () => {
+    setAccountAnchorEl(null);
+  };
+  const readonly = useRestriction("readonly");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const user = useSelector((state) => state.session.user);
+  const dispatch = useDispatch();
+
+  // const handleAccount = () => {
+  //   setAnchorEl(null);
+  //   navigate(`/settings/user/${user.id}`);
+  // };
+
+  const handleLogout = async () => {
+    setAnchorEl(null);
+
+    // const notificationToken = window.localStorage.getItem("notificationToken");
+    // if (notificationToken && !user.readonly) {
+    //   window.localStorage.removeItem("notificationToken");
+    //   const tokens = user.attributes.notificationTokens?.split(",") || [];
+    //   if (tokens.includes(notificationToken)) {
+    //     const updatedUser = {
+    //       ...user,
+    //       attributes: {
+    //         ...user.attributes,
+    //         notificationTokens:
+    //           tokens.length > 1
+    //             ? tokens.filter((it) => it !== notificationToken).join(",")
+    //             : undefined,
+    //       },
+    //     };
+    //     await fetch(`/api/users/${user.id}`, {
+    //       method: "PUT",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify(updatedUser),
+    //     });
+    //   }
+    // }
+
+    await fetch("/api/session", { method: "DELETE" });
+    nativePostMessage("logout");
+    navigate("/login");
+    dispatch(sessionActions.updateUser(null));
+  };
+
+  const currentSelection = () => {
+    if (location.pathname === `/settings/user/${user.id}`) {
+      return "account";
+    }
+
+    return null;
+  };
 
   return (
-    <Toolbar ref={toolbarRef} className={classes.toolbar}>
-      <IconButton edge="start" onClick={() => setDevicesOpen(!devicesOpen)}>
-        {devicesOpen ? <MapIcon /> : <ViewListIcon />}
-      </IconButton>
-      <OutlinedInput
-        ref={inputRef}
-        placeholder={t('sharedSearchDevices')}
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        onFocus={() => setDevicesAnchorEl(toolbarRef.current)}
-        onBlur={() => setDevicesAnchorEl(null)}
-        endAdornment={(
-          <InputAdornment position="end">
-            <IconButton size="small" edge="end" onClick={() => setFilterAnchorEl(inputRef.current)}>
-              <Badge color="info" variant="dot" invisible={!filter.statuses.length && !filter.groups.length}>
-                <TuneIcon fontSize="small" />
-              </Badge>
-            </IconButton>
-          </InputAdornment>
-        )}
-        size="small"
-        fullWidth
-      />
-      <Popover
-        open={!!devicesAnchorEl && !devicesOpen}
-        anchorEl={devicesAnchorEl}
-        onClose={() => setDevicesAnchorEl(null)}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: Number(theme.spacing(2).slice(0, -2)),
-        }}
-        marginThreshold={0}
-        PaperProps={{
-          style: { width: `calc(${toolbarRef.current?.clientWidth}px - ${theme.spacing(4)})` },
-        }}
-        elevation={1}
-        disableAutoFocus
-        disableEnforceFocus
-      >
-        {filteredDevices.slice(0, 3).map((_, index) => (
-          <DeviceRow key={filteredDevices[index].id} data={filteredDevices} index={index} />
-        ))}
-        {filteredDevices.length > 3 && (
-          <ListItemButton alignItems="center" onClick={() => setDevicesOpen(true)}>
-            <ListItemText
-              primary={t('notificationAlways')}
-              style={{ textAlign: 'center' }}
+    <Toolbar
+      ref={toolbarRef}
+      className={classes.toolbar}
+      value={currentSelection()}
+    >
+      <Grid container alignItems="center" justifyContent="space-between">
+        <Grid item>
+          <IconButton edge="start" onClick={() => setDevicesOpen(!devicesOpen)}>
+            {devicesOpen ? <MapIcon /> : <ViewListIcon />}
+          </IconButton>
+        </Grid>
+
+        <Grid item xs>
+          {isSearching ? (
+            <OutlinedInput
+              ref={inputRef}
+              placeholder="Search devices"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onBlur={() => setDevicesAnchorEl(null)}
+              className={classes.searchBar}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    edge="end"
+                    onClick={() => setFilterAnchorEl(inputRef.current)}
+                  >
+                    <TuneIcon fontSize="small" />
+                  </IconButton>
+                </InputAdornment>
+              }
+              size="small"
+              fullWidth
             />
-          </ListItemButton>
-        )}
-      </Popover>
+          ) : (
+            <Grid container justifyContent="center">
+              <span className={classes.searchText}>DASHBOARD</span>
+            </Grid>
+          )}
+        </Grid>
+
+        <Grid item>
+          <IconButton edge="end" onClick={handleSearchIconClick}>
+            <SearchIcon style={{ color: "white" }} />
+          </IconButton>
+        </Grid>
+
+        {/* Account icon  */}
+        <Grid item>
+          <IconButton edge="end" onClick={handleAccountClick}>
+            <PersonIcon style={{ color: "white" }} />
+          </IconButton>
+        </Grid>
+      </Grid>
+
+      {/* Account Popover */}
       <Popover
-        open={!!filterAnchorEl}
-        anchorEl={filterAnchorEl}
-        onClose={() => setFilterAnchorEl(null)}
+        open={Boolean(accountAnchorEl)}
+        anchorEl={accountAnchorEl}
+        onClose={handleAccountClose}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
         }}
       >
-        <div className={classes.filterPanel}>
-          <FormControl>
-            <InputLabel>{t('deviceStatus')}</InputLabel>
-            <Select
-              label={t('deviceStatus')}
-              value={filter.statuses}
-              onChange={(e) => setFilter({ ...filter, statuses: e.target.value })}
-              multiple
-            >
-              <MenuItem value="online">{`${t('deviceStatusOnline')} (${deviceStatusCount('online')})`}</MenuItem>
-              <MenuItem value="offline">{`${t('deviceStatusOffline')} (${deviceStatusCount('offline')})`}</MenuItem>
-              <MenuItem value="unknown">{`${t('deviceStatusUnknown')} (${deviceStatusCount('unknown')})`}</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel>{t('settingsGroups')}</InputLabel>
-            <Select
-              label={t('settingsGroups')}
-              value={filter.groups}
-              onChange={(e) => setFilter({ ...filter, groups: e.target.value })}
-              multiple
-            >
-              {Object.values(groups).sort((a, b) => a.name.localeCompare(b.name)).map((group) => (
-                <MenuItem key={group.id} value={group.id}>{group.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel>{t('sharedSortBy')}</InputLabel>
-            <Select
-              label={t('sharedSortBy')}
-              value={filterSort}
-              onChange={(e) => setFilterSort(e.target.value)}
-              displayEmpty
-            >
-              <MenuItem value="">{'\u00a0'}</MenuItem>
-              <MenuItem value="name">{t('sharedName')}</MenuItem>
-              <MenuItem value="lastUpdate">{t('deviceLastUpdate')}</MenuItem>
-            </Select>
-          </FormControl>
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox checked={filterMap} onChange={(e) => setFilterMap(e.target.checked)} />}
-              label={t('sharedFilterMap')}
-            />
-          </FormGroup>
-        </div>
+        {/* Person Icon -> Account  */}
+        {/* <ListItemButton
+          onClick={() => {
+            navigate(`/settings/user/${user.id}`);
+          }}
+        ></ListItemButton> */}
+        <ListItemButton onClick={() => handleLogout()}>
+          <ListItemText primary="Logout" style={{ color: "red" }} />
+        </ListItemButton>
       </Popover>
-      <IconButton edge="end" onClick={() => navigate('/settings/device')} disabled={deviceReadonly}>
-        <Tooltip open={!deviceReadonly && Object.keys(devices).length === 0} title={t('deviceRegisterFirst')} arrow>
-          <AddIcon />
-        </Tooltip>
-      </IconButton>
     </Toolbar>
   );
 };

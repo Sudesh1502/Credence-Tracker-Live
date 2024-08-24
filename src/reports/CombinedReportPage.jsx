@@ -18,6 +18,7 @@ import { formatTime } from '../common/util/formatter';
 import { usePreference } from '../common/util/preferences';
 import { prefixString } from '../common/util/stringUtils';
 import MapMarkers from '../map/MapMarkers';
+import { useParams } from 'react-router-dom';
 
 const CombinedReportPage = () => {
   const classes = useReportStyles();
@@ -55,6 +56,8 @@ const CombinedReportPage = () => {
     }
   });
 
+  const { vehicleId } = useParams();
+
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportCombined']}>
       <div className={classes.container}>
@@ -76,24 +79,77 @@ const CombinedReportPage = () => {
         )}
         <div className={classes.containerMain}>
           <div className={classes.header}>
-            <ReportFilter handleSubmit={handleSubmit} showOnly multiDevice includeGroups />
+            <ReportFilter handleSubmit={handleSubmit} vehicleId={vehicleId} showOnly multiDevice includeGroups />
           </div>
-          <Table>
+          <Table
+            sx={{
+              borderCollapse: "collapse",
+              border: "2px solid gray",
+            }}
+          >
             <TableHead>
               <TableRow>
-                <TableCell>{t('sharedDevice')}</TableCell>
-                <TableCell>{t('positionFixTime')}</TableCell>
-                <TableCell>{t('sharedType')}</TableCell>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    background: "#d3d3d3",
+                    color: "black",
+                  }}
+                >
+                  {t("sharedDevice")}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    background: "#d3d3d3",
+                    color: "black",
+                  }}
+                >
+                  {t("positionFixTime")}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    background: "#d3d3d3",
+                    color: "black",
+                  }}
+                >
+                  {t("sharedType")}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {!loading ? items.flatMap((item) => item.events.map((event, index) => (
-                <TableRow key={event.id}>
-                  <TableCell>{index ? '' : devices[item.deviceId].name}</TableCell>
-                  <TableCell>{formatTime(event.eventTime, 'seconds', hours12)}</TableCell>
-                  <TableCell>{t(prefixString('event', event.type))}</TableCell>
-                </TableRow>
-              ))) : (<TableShimmer columns={3} />)}
+              {!loading ? (
+                items.flatMap((item) =>
+                  item.events.map((event, index) => (
+                    <TableRow key={event.id}>
+                      <TableCell
+                        sx={{
+                          border: "2px solid gray",
+                        }}
+                      >
+                        {index ? "" : devices[item.deviceId].name}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          border: "2px solid gray",
+                        }}
+                      >
+                        {formatTime(event.eventTime, "seconds", hours12)}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          border: "2px solid gray",
+                        }}
+                      >
+                        {t(prefixString("event", event.type))}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )
+              ) : (
+                <TableShimmer columns={3} />
+              )}
             </TableBody>
           </Table>
         </div>

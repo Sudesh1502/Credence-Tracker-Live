@@ -1,0 +1,90 @@
+.rotation-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+.center-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.rotating-images {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  animation: rotateanime 10s linear infinite;
+}
+
+.rotate-item {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  top: 42%;
+  left: 43%;
+  transform-origin: -150px -150px; /* Center of the rotation */
+}
+
+/* Counter-rotate each item to keep them stable */
+.item1 {
+  transform: rotate(0deg) translate(180px) rotate(0deg);
+}
+
+.item2 {
+  transform: rotate(60deg) translate(180px) rotate(-60deg);
+}
+
+.item3 {
+  transform: rotate(120deg) translate(180px) rotate(-120deg);
+}
+
+.item4 {
+  transform: rotate(180deg) translate(180px) rotate(-180deg);
+}
+
+.item5 {
+  transform: rotate(240deg) translate(180px) rotate(-240deg);
+}
+
+.item6 {
+  transform: rotate(300deg) translate(180px) rotate(-300deg);
+
+}
+
+@keyframes rotateanime {
+  0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+
+
+  .man{
+    top: 50%;
+  }
+  .cycle{
+    top: 29%;
+  }
+  .dog{
+    left: 53%;
+  }
+  .truck{
+    top: 30%;
+  }
+  .phone{
+    left: 50%;
+    top: 49%;
+  }
+  .bus{
+    left: 33%;
+  }

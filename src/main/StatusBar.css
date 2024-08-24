@@ -1,0 +1,53 @@
+.status-bar {
+  display: flex;
+  gap: 8px;
+  position:relative;
+  padding-right: 30px;
+  padding-left: 20px;
+  justify-content: space-between;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  padding: 3px 8px;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.status-item .count {
+  margin-right: 5px;
+}
+
+.status-item.all {
+  background-color: #5ea9dd;
+  color: white;
+}
+
+.status-item.running {
+  background-color: #89d08b;
+  color: black;
+}
+
+.status-item.stopped {
+  background-color: #e86f66;
+  color: black;
+}
+
+.status-item.overspeed {
+  background-color: #f5a26f;
+  color: black;
+}
+
+.status-item.idle {
+  background-color: #f6c66b;
+  color: black;
+}
+
+.status-item.inactive {
+  background-color: #000000;
+  color: white;
+}
