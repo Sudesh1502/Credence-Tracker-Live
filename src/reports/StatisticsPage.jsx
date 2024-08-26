@@ -67,6 +67,7 @@ const StatisticsPage = () => {
       menu={<ReportsMenu />}
       breadcrumbs={["reportTitle", "statisticsTitle"]}
     >
+      <h2 style={{ paddingLeft: '20px' }}>Statistics</h2>
       <div className={classes.header}>
         <ReportFilter handleSubmit={handleSubmit} showOnly ignoreDevice>
           <ColumnSelect

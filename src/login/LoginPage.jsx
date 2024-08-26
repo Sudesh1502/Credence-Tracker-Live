@@ -24,9 +24,11 @@ const useStyles = makeStyles((theme) => ({
     top: theme.spacing(1),
     right: theme.spacing(1),
   },
-  container: {
+  Contain: {
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     gap: '2rem',
     // marginTop: '6rem',
   },
@@ -154,9 +156,21 @@ const LoginPage = () => {
           </Tooltip>
         )}
       </div>
-      <div className={classes.container}>
+      <div className={classes.Contain}>
         {useMediaQuery(theme.breakpoints.down('lg')) && <LogoImage color={theme.palette.primary.main} />}
         <TextField
+        sx={{
+          width: '70%',
+          '& .MuiInputLabel-root': {
+            color: '#fff',
+            fontWeight: '600',
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: 'orange',
+             
+          },
+          width: '70%',
+        }}
           required
           error={failed}
           label={t('userEmail')}
@@ -168,6 +182,18 @@ const LoginPage = () => {
           helperText={failed && 'Invalid username or password'}
         />
         <TextField
+        sx={{
+          width: '70%',
+          '& .MuiInputBase-root': {
+            backgroundColor: '#212121', // Keeps background transparent
+          },
+          '&:hover .MuiInputBase-root': {
+            backgroundColor: '#212121', // Keeps background transparent on hover
+          },
+          '& .Mui-focused .MuiInputBase-root': {
+            backgroundColor: '#212121', // Keeps background transparent when focused
+          },
+        }}
           required
           error={failed}
           label={t('userPassword')}
@@ -187,17 +213,7 @@ const LoginPage = () => {
             value={code}
             type="number"
             onChange={(e) => setCode(e.target.value)}
-            sx={{
-              '& .MuiInputBase-root': {
-                backgroundColor: 'transparent', // Keeps background transparent
-              },
-              '&:hover .MuiInputBase-root': {
-                backgroundColor: 'transparent', // Keeps background transparent on hover
-              },
-              '& .Mui-focused .MuiInputBase-root': {
-                backgroundColor: '#212121', // Keeps background transparent when focused
-              },
-            }}
+            
           />
         )}
         <Button
@@ -205,10 +221,11 @@ const LoginPage = () => {
           sx={{
             backgroundColor: 'orange',
             color: '#000',
+            width: '70%',
           }}
           type="submit"
           variant="contained"
-          disabled={!email || (codeEnabled && !code)}
+          // disabled={!email || (codeEnabled && !code)}
         >
           {t('loginLogin')}
         </Button>

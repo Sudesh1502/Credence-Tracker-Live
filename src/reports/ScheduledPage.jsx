@@ -71,6 +71,7 @@ const ScheduledPage = () => {
       menu={<ReportsMenu />}
       breadcrumbs={["settingsTitle", "reportScheduled"]}
     >
+      <h2 style={{ paddingLeft: '20px' }}>Scheduled Reports</h2>
       <Table
         sx={{
           borderCollapse: "collapse",

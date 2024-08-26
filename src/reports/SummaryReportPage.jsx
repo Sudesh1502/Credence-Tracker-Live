@@ -11,7 +11,16 @@ import {
   TableRow,
   TableBody,
   TableCell,
+  TextField,
+  InputAdornment,
+  Box,
+  Fab,
+  Menu,
+  MenuItem as MuiMenuItem,
 } from "@mui/material";
+import Search from "@mui/icons-material/Search";
+import Settings from "@mui/icons-material/Settings";
+import GetApp from "@mui/icons-material/GetApp";
 import {
   formatDistance,
   formatSpeed,
@@ -66,6 +75,21 @@ const SummaryReportPage = () => {
   const [daily, setDaily] = useState(false);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleSettingsClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDownload = () => {
+    handleSubmit({ deviceIds: [], groupIds: [], from: "", to: "", type: "export" });
+    handleClose();
+  };
 
   const handleSubmit = useCatch(
     async ({ deviceIds, groupIds, from, to, type }) => {
@@ -141,6 +165,34 @@ const SummaryReportPage = () => {
       breadcrumbs={["reportTitle", "reportSummary"]}
     >
       <div className={classes.header}>
+        {/* Heading and Search Bar aligned in one line */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 30px",
+          }}
+        >
+          <h2>Summary</h2>
+
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ minWidth: "300px" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+
         <ReportFilter
           handleSubmit={handleSubmit}
           handleSchedule={handleSchedule}
@@ -226,6 +278,28 @@ const SummaryReportPage = () => {
           )}
         </TableBody>
       </Table>
+
+      {/* Settings Button */}
+      <Fab
+        color="primary"
+        aria-label="settings"
+        sx={{ position: "fixed", bottom: 16, right: 16 }}
+        onClick={handleSettingsClick}
+      >
+        <Settings />
+      </Fab>
+
+      {/* Settings Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MuiMenuItem onClick={handleDownload}>
+          <GetApp sx={{ marginRight: 1 }} />
+          Download
+        </MuiMenuItem>
+      </Menu>
     </PageLayout>
   );
 };

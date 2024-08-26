@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  Table, TableRow, TableCell, TableHead, TableBody,
-} from '@mui/material';
-import { useEffectAsync } from '../reactHelper';
-import { useTranslation } from '../common/components/LocalizationProvider';
-import { useAdministrator } from '../common/util/permissions';
-import PageLayout from '../common/components/PageLayout';
-import SettingsMenu from './components/SettingsMenu';
-import CollectionFab from './components/CollectionFab';
-import CollectionActions from './components/CollectionActions';
-import TableShimmer from '../common/components/TableShimmer';
-import SearchHeader, { filterByKeyword } from './components/SearchHeader';
-import useSettingsStyles from './common/useSettingsStyles';
+  Table,
+  TableRow,
+  TableCell,
+  TableHead,
+  TableBody,
+  IconButton,
+  TextField,
+  InputAdornment,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { useEffectAsync } from "../reactHelper";
+import { useTranslation } from "../common/components/LocalizationProvider";
+import { useAdministrator } from "../common/util/permissions";
+import PageLayout from "../common/components/PageLayout";
+import SettingsMenu from "./components/SettingsMenu";
+import CollectionFab from "./components/CollectionFab";
+import CollectionActions from "./components/CollectionActions";
+import TableShimmer from "../common/components/TableShimmer";
+import SearchHeader, { filterByKeyword } from "./components/SearchHeader";
+import useSettingsStyles from "./common/useSettingsStyles";
 
 const ComputedAttributesPage = () => {
   const classes = useSettingsStyles();
@@ -19,14 +27,15 @@ const ComputedAttributesPage = () => {
 
   const [timestamp, setTimestamp] = useState(Date.now());
   const [items, setItems] = useState([]);
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showSearch, setShowSearch] = useState(false); // State to control search bar visibility
   const administrator = useAdministrator();
 
   useEffectAsync(async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/attributes/computed');
+      const response = await fetch("/api/attributes/computed");
       if (response.ok) {
         setItems(await response.json());
       } else {
@@ -37,33 +46,177 @@ const ComputedAttributesPage = () => {
     }
   }, [timestamp]);
 
+  const handleSearchChange = (event) => {
+    setSearchKeyword(event.target.value);
+  };
+
+  const toggleSearch = () => {
+    setShowSearch((prev) => !prev);
+    if (showSearch) {
+      setSearchKeyword(""); // Clear search when hiding the bar
+    }
+  };
+
   return (
-    <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedComputedAttributes']}>
-      <SearchHeader keyword={searchKeyword} setKeyword={setSearchKeyword} />
-      <Table className={classes.table}>
+    <PageLayout
+      menu={<SettingsMenu />}
+      breadcrumbs={["settingsTitle", "sharedComputedAttributes"]}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h1
+          style={{
+            justifyContent: "center",
+            textAlign: "center",
+            marginLeft: "20px",
+          }}
+        >
+          Computed Attributes
+        </h1>
+        {showSearch && (
+          <TextField
+            variant="outlined"
+            placeholder="Search..."
+            value={searchKeyword}
+            onChange={handleSearchChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={toggleSearch}>
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{ marginLeft: "auto" }}
+          />
+        )}
+        {!showSearch && (
+          <IconButton onClick={toggleSearch} sx={{ marginLeft: "auto" }}>
+            <SearchIcon />
+          </IconButton>
+        )}
+      </div>
+      <Table
+        sx={{
+          borderCollapse: "collapse",
+          border: "2px solid gray",
+        }}
+        className={classes.table}
+      >
         <TableHead>
           <TableRow>
-            <TableCell>{t('sharedDescription')}</TableCell>
-            <TableCell>{t('sharedAttribute')}</TableCell>
-            <TableCell>{t('sharedExpression')}</TableCell>
-            <TableCell>{t('sharedType')}</TableCell>
-            {administrator && <TableCell className={classes.columnAction} />}
+            <TableCell
+              sx={{
+                border: "2px solid gray",
+                background: "#d3d3d3",
+                color: "black",
+              }}
+            >
+              {t("sharedDescription")}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: "2px solid gray",
+                background: "#d3d3d3",
+                color: "black",
+              }}
+            >
+              {t("sharedAttribute")}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: "2px solid gray",
+                background: "#d3d3d3",
+                color: "black",
+              }}
+            >
+              {t("sharedExpression")}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: "2px solid gray",
+                background: "#d3d3d3",
+                color: "black",
+              }}
+            >
+              {t("sharedType")}
+            </TableCell>
+            {administrator && (
+              <TableCell
+                sx={{
+                  border: "2px solid gray",
+                  background: "#d3d3d3",
+                  color: "black",
+                }}
+                className={classes.columnAction}
+              >
+                Action
+              </TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
-          {!loading ? items.filter(filterByKeyword(searchKeyword)).map((item) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.description}</TableCell>
-              <TableCell>{item.attribute}</TableCell>
-              <TableCell>{item.expression}</TableCell>
-              <TableCell>{item.type}</TableCell>
-              {administrator && (
-                <TableCell className={classes.columnAction} padding="none">
-                  <CollectionActions itemId={item.id} editPath="/settings/attribute" endpoint="attributes/computed" setTimestamp={setTimestamp} />
+          {!loading ? (
+            items.filter(filterByKeyword(searchKeyword)).map((item) => (
+              <TableRow key={item.id}>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                  }}
+                >
+                  {item.description}
                 </TableCell>
-              )}
-            </TableRow>
-          )) : (<TableShimmer columns={administrator ? 5 : 4} endAction={administrator} />)}
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                  }}
+                >
+                  {item.attribute}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                  }}
+                >
+                  {item.expression}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                  }}
+                >
+                  {item.type}
+                </TableCell>
+                {administrator && (
+                  <TableCell
+                    sx={{
+                      border: "2px solid gray",
+                    }}
+                    className={classes.columnAction}
+                    padding="none"
+                  >
+                    <CollectionActions
+                      itemId={item.id}
+                      editPath="/settings/attribute"
+                      endpoint="attributes/computed"
+                      setTimestamp={setTimestamp}
+                    />
+                  </TableCell>
+                )}
+              </TableRow>
+            ))
+          ) : (
+            <TableShimmer
+              columns={administrator ? 5 : 4}
+              endAction={administrator}
+            />
+          )}
         </TableBody>
       </Table>
       <CollectionFab editPath="/settings/attribute" disabled={!administrator} />

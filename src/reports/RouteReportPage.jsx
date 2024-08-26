@@ -8,9 +8,18 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Box,
+  TextField,
+  InputAdornment,
+  Fab,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import GpsFixedIcon from "@mui/icons-material/GpsFixed";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
+import Search from "@mui/icons-material/Search";
+import Settings from "@mui/icons-material/Settings";
+import GetApp from "@mui/icons-material/GetApp";
 import ReportFilter from "./components/ReportFilter";
 import { useTranslation } from "../common/components/LocalizationProvider";
 import PageLayout from "../common/components/PageLayout";
@@ -49,6 +58,8 @@ const RouteReportPage = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const onMapPointClick = useCallback(
     (positionId) => {
@@ -119,6 +130,19 @@ const RouteReportPage = () => {
     }
   });
 
+  const handleSettingsClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDownload = () => {
+    // Implement your download logic here
+    handleClose();
+  };
+
   return (
     <PageLayout
       menu={<ReportsMenu />}
@@ -150,6 +174,33 @@ const RouteReportPage = () => {
         )}
         <div className={classes.containerMain}>
           <div className={classes.header}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <h2 style={{ paddingLeft: "30px", margin: 10 }}>Custom Report</h2>
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  paddingTop: "30px",
+                  marginLeft: "600px",
+                }}
+              >
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  sx={{ minWidth: "300px" }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+            </div>
             <ReportFilter
               handleSubmit={handleSubmit}
               handleSchedule={handleSchedule}
@@ -253,6 +304,27 @@ const RouteReportPage = () => {
             </TableBody>
           </Table>
         </div>
+        {/* Settings Button */}
+        <Fab
+          color="primary"
+          aria-label="settings"
+          sx={{ position: "fixed", bottom: 16, right: 16 }}
+          onClick={handleSettingsClick}
+        >
+          <Settings />
+        </Fab>
+
+        {/* Settings Menu */}
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleDownload}>
+            <GetApp sx={{ marginRight: 1 }} />
+            Download
+          </MenuItem>
+        </Menu>
       </div>
     </PageLayout>
   );

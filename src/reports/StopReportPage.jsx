@@ -7,9 +7,18 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
+  InputAdornment,
+  Box,
+  Fab,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import GpsFixedIcon from "@mui/icons-material/GpsFixed";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
+import Search from "@mui/icons-material/Search";
+import Settings from "@mui/icons-material/Settings";
+import GetApp from "@mui/icons-material/GetApp";
 import {
   formatDistance,
   formatVolume,
@@ -65,6 +74,8 @@ const StopReportPage = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleSubmit = useCatch(async ({ deviceId, from, to, type }) => {
     const query = new URLSearchParams({ deviceId, from, to });
@@ -130,12 +141,57 @@ const StopReportPage = () => {
     }
   };
 
+  const handleSettingsClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDownload = () => {
+    // Implement your download logic here
+    handleClose();
+  };
+
   return (
     <PageLayout
       menu={<ReportsMenu />}
       breadcrumbs={["reportTitle", "reportStops"]}
     >
       <div className={classes.container}>
+        {/* Heading and Search Bar in one line */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingLeft: "30px",
+            paddingRight: "30px",
+            paddingTop: "30px",
+          }}
+        >
+          {/* Add Heading Here */}
+          <h2 style={{ margin: 0 }}>Stop</h2>
+
+          {/* Search Bar */}
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ minWidth: "300px" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+
         {selectedItem && (
           <div className={classes.containerMap}>
             <MapView>
@@ -247,6 +303,28 @@ const StopReportPage = () => {
           </Table>
         </div>
       </div>
+
+      {/* Settings Button */}
+      <Fab
+        color="primary"
+        aria-label="settings"
+        sx={{ position: "fixed", bottom: 16, right: 16 }}
+        onClick={handleSettingsClick}
+      >
+        <Settings />
+      </Fab>
+
+      {/* Settings Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleDownload}>
+          <GetApp sx={{ marginRight: 1 }} />
+          Download
+        </MenuItem>
+      </Menu>
     </PageLayout>
   );
 };

@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  Table, TableRow, TableCell, TableHead, TableBody,
-} from '@mui/material';
-import { useEffectAsync } from '../reactHelper';
-import { useTranslation } from '../common/components/LocalizationProvider';
-import { formatBoolean } from '../common/util/formatter';
-import { prefixString } from '../common/util/stringUtils';
-import PageLayout from '../common/components/PageLayout';
-import SettingsMenu from './components/SettingsMenu';
-import CollectionFab from './components/CollectionFab';
-import CollectionActions from './components/CollectionActions';
-import TableShimmer from '../common/components/TableShimmer';
-import SearchHeader, { filterByKeyword } from './components/SearchHeader';
-import { useRestriction } from '../common/util/permissions';
-import useSettingsStyles from './common/useSettingsStyles';
+  Table,
+  TableRow,
+  TableCell,
+  TableHead,
+  TableBody,
+  IconButton,
+  TextField,
+  InputAdornment,
+} from "@mui/material";
+import { useEffectAsync } from "../reactHelper";
+import { useTranslation } from "../common/components/LocalizationProvider";
+import { formatBoolean } from "../common/util/formatter";
+import { prefixString } from "../common/util/stringUtils";
+import PageLayout from "../common/components/PageLayout";
+import SettingsMenu from "./components/SettingsMenu";
+import CollectionFab from "./components/CollectionFab";
+import CollectionActions from "./components/CollectionActions";
+import TableShimmer from "../common/components/TableShimmer";
+import SearchHeader, { filterByKeyword } from "./components/SearchHeader";
+import { useRestriction } from "../common/util/permissions";
+import useSettingsStyles from "./common/useSettingsStyles";
+import SearchIcon from "@mui/icons-material/Search";
 
 const CommandsPage = () => {
   const classes = useSettingsStyles();
@@ -21,14 +29,16 @@ const CommandsPage = () => {
 
   const [timestamp, setTimestamp] = useState(Date.now());
   const [items, setItems] = useState([]);
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [loading, setLoading] = useState(false);
-  const limitCommands = useRestriction('limitCommands');
+  const [showSearch, setShowSearch] = useState(false); // State to control search bar visibility
+
+  const limitCommands = useRestriction("limitCommands");
 
   useEffectAsync(async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/commands');
+      const response = await fetch("/api/commands");
       if (response.ok) {
         setItems(await response.json());
       } else {
@@ -39,31 +49,159 @@ const CommandsPage = () => {
     }
   }, [timestamp]);
 
+  const handleSearchChange = (event) => {
+    setSearchKeyword(event.target.value);
+  };
+
+  const toggleSearch = () => {
+    setShowSearch((prev) => !prev);
+    if (showSearch) {
+      setSearchKeyword(""); // Clear search when hiding the bar
+    }
+  };
+
   return (
-    <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedSavedCommands']}>
+    <PageLayout
+      menu={<SettingsMenu />}
+      breadcrumbs={["settingsTitle", "sharedSavedCommands"]}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h1
+          style={{
+            justifyContent: "center",
+            textAlign: "center",
+            marginLeft: "20px",
+          }}
+        >
+          Saved Commands
+        </h1>
+        {showSearch && (
+          <TextField
+            variant="outlined"
+            placeholder="Search..."
+            value={searchKeyword}
+            onChange={handleSearchChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={toggleSearch}>
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{ marginLeft: "auto" }}
+          />
+        )}
+        {!showSearch && (
+          <IconButton onClick={toggleSearch} sx={{ marginLeft: "auto" }}>
+            <SearchIcon />
+          </IconButton>
+        )}
+      </div>
       <SearchHeader keyword={searchKeyword} setKeyword={setSearchKeyword} />
-      <Table className={classes.table}>
+      <Table
+        sx={{
+          borderCollapse: "collapse",
+          border: "2px solid gray",
+        }}
+        className={classes.table}
+      >
         <TableHead>
           <TableRow>
-            <TableCell>{t('sharedDescription')}</TableCell>
-            <TableCell>{t('sharedType')}</TableCell>
-            <TableCell>{t('commandSendSms')}</TableCell>
-            {!limitCommands && <TableCell className={classes.columnAction} />}
+            <TableCell
+              sx={{
+                border: "2px solid gray",
+                background: "#d3d3d3",
+                color: "black",
+              }}
+            >
+              {t("sharedDescription")}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: "2px solid gray",
+                background: "#d3d3d3",
+                color: "black",
+              }}
+            >
+              {t("sharedType")}
+            </TableCell>
+            <TableCell
+              sx={{
+                border: "2px solid gray",
+                background: "#d3d3d3",
+                color: "black",
+              }}
+            >
+              {t("commandSendSms")}
+            </TableCell>
+            {!limitCommands && (
+              <TableCell
+                sx={{
+                  border: "2px solid gray",
+                  background: "#d3d3d3",
+                  color: "black",
+                }}
+                className={classes.columnAction}
+              >
+                Action
+              </TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
-          {!loading ? items.filter(filterByKeyword(searchKeyword)).map((item) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.description}</TableCell>
-              <TableCell>{t(prefixString('command', item.type))}</TableCell>
-              <TableCell>{formatBoolean(item.textChannel, t)}</TableCell>
-              {!limitCommands && (
-                <TableCell className={classes.columnAction} padding="none">
-                  <CollectionActions itemId={item.id} editPath="/settings/command" endpoint="commands" setTimestamp={setTimestamp} />
+          {!loading ? (
+            items.filter(filterByKeyword(searchKeyword)).map((item) => (
+              <TableRow key={item.id}>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                  }}
+                >
+                  {item.description}
                 </TableCell>
-              )}
-            </TableRow>
-          )) : (<TableShimmer columns={limitCommands ? 3 : 4} endAction />)}
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                  }}
+                >
+                  {t(prefixString("command", item.type))}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                  }}
+                >
+                  {formatBoolean(item.textChannel, t)}
+                </TableCell>
+                {!limitCommands && (
+                  <TableCell
+                    sx={{
+                      border: "2px solid gray",
+                    }}
+                    className={classes.columnAction}
+                    padding="none"
+                  >
+                    <CollectionActions
+                      itemId={item.id}
+                      editPath="/settings/command"
+                      endpoint="commands"
+                      setTimestamp={setTimestamp}
+                    />
+                  </TableCell>
+                )}
+              </TableRow>
+            ))
+          ) : (
+            <TableShimmer columns={limitCommands ? 3 : 4} endAction />
+          )}
         </TableBody>
       </Table>
       <CollectionFab editPath="/settings/command" disabled={limitCommands} />

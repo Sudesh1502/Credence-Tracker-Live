@@ -7,7 +7,11 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
+  Typography,
+  InputAdornment,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import GpsFixedIcon from "@mui/icons-material/GpsFixed";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import {
@@ -74,6 +78,7 @@ const TripReportPage = () => {
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [route, setRoute] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const createMarkers = () => [
     {
@@ -205,7 +210,36 @@ const TripReportPage = () => {
             </MapView>
           </div>
         )}
-        <div className={classes.containerMain}>
+        <div className={classes.containerMain} style={{ paddingTop: "20px" }}>
+          {/* Heading and Search Bar */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: "20px",
+            }}
+          >
+            <Typography variant="h5" gutterBottom>
+              Trip Report
+            </Typography>
+            <TextField
+              variant="outlined"
+              size="small"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              sx={{ marginBottom: 2, marginRight: "20px", width: "300px" }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
+
           <div className={classes.header}>
             <ReportFilter
               handleSubmit={handleSubmit}
@@ -250,45 +284,62 @@ const TripReportPage = () => {
             </TableHead>
             <TableBody>
               {!loading ? (
-                items.map((item) => (
-                  <TableRow key={item.startPositionId}>
-                    <TableCell
+                items
+                  .filter((item) =>
+                    columns.some((column) =>
+                      formatValue(item, column)
+                        ?.toString()
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase())
+                    )
+                  )
+                  .map((item) => (
+                    <TableRow
+                      key={item.startPositionId}
+                      onClick={() => setSelectedItem(item)}
+                      hover
+                      selected={selectedItem === item}
                       sx={{
-                        border: "2px solid gray",
+                        "&:hover": {
+                          backgroundColor: "rgba(200, 200, 200, 0.3)",
+                          cursor: "pointer",
+                        },
+                        "&.Mui-selected": {
+                          backgroundColor: "rgba(200, 200, 200, 0.5)",
+                        },
+                        "&.Mui-selected:hover": {
+                          backgroundColor: "rgba(200, 200, 200, 0.7)",
+                        },
                       }}
-                      className={classes.columnAction}
-                      padding="none"
                     >
-                      {selectedItem === item ? (
-                        <IconButton
-                          size="small"
-                          onClick={() => setSelectedItem(null)}
-                        >
-                          <GpsFixedIcon fontSize="small" />
-                        </IconButton>
-                      ) : (
-                        <IconButton
-                          size="small"
-                          onClick={() => setSelectedItem(item)}
-                        >
-                          <LocationSearchingIcon fontSize="small" />
-                        </IconButton>
-                      )}
-                    </TableCell>
-                    {columns.map((key) => (
                       <TableCell
                         sx={{
                           border: "2px solid gray",
+                          color: "black",
                         }}
-                        key={key}
+                        className={classes.columnAction}
                       >
-                        {formatValue(item, key)}
+                        {item.startTime && (
+                          <IconButton>
+                            <GpsFixedIcon fontSize="small" />
+                          </IconButton>
+                        )}
                       </TableCell>
-                    ))}
-                  </TableRow>
-                ))
+                      {columns.map((key) => (
+                        <TableCell
+                          sx={{
+                            border: "2px solid gray",
+                            color: "black",
+                          }}
+                          key={key}
+                        >
+                          {formatValue(item, key)}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
               ) : (
-                <TableShimmer columns={columns.length + 1} startAction />
+                <TableShimmer columns={columns.length + 1} />
               )}
             </TableBody>
           </Table>

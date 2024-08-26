@@ -54,6 +54,8 @@ const LogsPage = () => {
       menu={<ReportsMenu />}
       breadcrumbs={["reportTitle", "statisticsTitle"]}
     >
+       <h2 style={{ paddingLeft: '20px' }}>Logs</h2>
+
       <Table
         sx={{
           borderCollapse: "collapse",
