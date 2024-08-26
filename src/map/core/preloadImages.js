@@ -8,10 +8,10 @@ import backgroundSvg from '../../resources/images/background.svg';
 import animalSvg from '../../resources/images/icon/animal.svg';
 import bicycleSvg from '../../resources/images/icon/bicycle.svg';
 import boatSvg from '../../resources/images/icon/boat.svg';
-import busSvg from '../../resources/images/icon/bus.svg';
-import carSvg from '../../resources/images/icon/car.png';
+import busSvg from '../../resources/images/icon/Top G.svg';
+import carSvg from '../../resources/images/icon/Car-G.svg';
 import camperSvg from '../../resources/images/icon/camper.svg';
-import craneSvg from '../../resources/images/icon/crane.svg';
+import craneSvg from '../../resources/images/icon/JCB-G.svg';
 import defaultSvg from '../../resources/images/icon/default.svg';
 import helicopterSvg from '../../resources/images/icon/helicopter.svg';
 import motorcycleSvg from '../../resources/images/icon/motorcycle.svg';
@@ -21,12 +21,14 @@ import pickupSvg from '../../resources/images/icon/pickup.svg';
 import planeSvg from '../../resources/images/icon/plane.svg';
 import scooterSvg from '../../resources/images/icon/scooter.svg';
 import shipSvg from '../../resources/images/icon/ship.svg';
-import tractorSvg from '../../resources/images/icon/tractor.svg';
+import tractorSvg from '../../resources/images/icon/Tractor-G.svg';
 import trainSvg from '../../resources/images/icon/train.svg';
 import tramSvg from '../../resources/images/icon/tram.svg';
 import trolleybusSvg from '../../resources/images/icon/trolleybus.svg';
-import truckSvg from '../../resources/images/icon/truck.svg';
+import truckSvg from '../../resources/images/icon/Truck-G.svg';
 import vanSvg from '../../resources/images/icon/van.svg';
+import autoSvg from '../../resources/images/icon/Auto-G.svg';
+
 
 export const mapIcons = {
   animal: animalSvg,
@@ -51,6 +53,7 @@ export const mapIcons = {
   trolleybus: trolleybusSvg,
   truck: truckSvg,
   van: vanSvg,
+  auto: autoSvg,
 };
 
 export const mapIconKey = (category) => (mapIcons.hasOwnProperty(category) ? category : 'default');

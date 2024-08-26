@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import dayjs from 'dayjs';
 import {
   useMediaQuery, InputLabel, Select, MenuItem, FormControl, Button, TextField, Link, Snackbar, IconButton, Tooltip, LinearProgress, Box,
@@ -27,7 +27,8 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(2),
+    gap: '2rem',
+    // marginTop: '6rem',
   },
   extraContainer: {
     display: 'flex',
@@ -186,14 +187,28 @@ const LoginPage = () => {
             value={code}
             type="number"
             onChange={(e) => setCode(e.target.value)}
+            sx={{
+              '& .MuiInputBase-root': {
+                backgroundColor: 'transparent', // Keeps background transparent
+              },
+              '&:hover .MuiInputBase-root': {
+                backgroundColor: 'transparent', // Keeps background transparent on hover
+              },
+              '& .Mui-focused .MuiInputBase-root': {
+                backgroundColor: '#212121', // Keeps background transparent when focused
+              },
+            }}
           />
         )}
         <Button
           onClick={handlePasswordLogin}
+          sx={{
+            backgroundColor: 'orange',
+            color: '#000',
+          }}
           type="submit"
           variant="contained"
-          color="secondary"
-          disabled={!email || !password || (codeEnabled && !code)}
+          disabled={!email || (codeEnabled && !code)}
         >
           {t('loginLogin')}
         </Button>
@@ -206,7 +221,7 @@ const LoginPage = () => {
             {t('loginOpenId')}
           </Button>
         )}
-        <div className={classes.extraContainer}>
+        {/* <div className={classes.extraContainer}>
           <Button
             className={classes.registerButton}
             onClick={() => navigate('/register')}
@@ -230,7 +245,7 @@ const LoginPage = () => {
               </Select>
             </FormControl>
           )}
-        </div>
+        </div> */}
         {emailEnabled && (
           <Link
             onClick={() => navigate('/reset-password')}
