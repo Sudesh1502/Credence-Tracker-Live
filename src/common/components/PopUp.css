@@ -1,0 +1,20 @@
+
+
+/* General styles for status text */
+.status-text {
+    font-size: 1rem;
+    color: #000;
+    text-align: center;
+    margin: 10px 0;
+  }
+  
+  /* Media query for tablets (768px and up) */
+  @media (max-width: 1280px) {
+    .responsive-card {
+      width: 59% !important;
+    }
+    .responsive-header {
+      margin-left: 200px !important ;
+    }
+  }
+  

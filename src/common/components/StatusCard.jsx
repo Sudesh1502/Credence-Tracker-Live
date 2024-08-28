@@ -46,6 +46,7 @@ import AvTimerIcon from "@mui/icons-material/AvTimer"; // Odometer
 import MapIcon from "@mui/icons-material/Map"; // Geofences
 import PowerIcon from "@mui/icons-material/Power"; // Ignition
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar"; // Distance
+import "./PopUp.css";
 
 import clsx from 'clsx';
 
@@ -56,6 +57,13 @@ const useStyles = makeStyles((theme) => ({
     height: 250,
     borderRadius: 20,
     float: "right",
+    overflowY: 'scroll',
+    '&::-webkit-scrollbar': {
+      display: 'none', /* Chrome, Safari, and Opera */
+    },
+    /* For other browsers */
+    scrollbarWidth: 'none', /* Firefox */
+    msOverflowStyle: 'none', /* Internet Explorer 10+ */
   },
   media: {
     height: theme.dimensions.popupImageHeight,
@@ -337,7 +345,7 @@ const StatusCard = ({
           <div className={classes.root}>
             {device && (
               <Draggable handle={`.${classes.media}, .${classes.header}`}>
-                <Card elevation={3} className={classes.card}>
+                  <Card elevation={3} className={`${classes.card} responsive-card`}>
                   {deviceImage ? (
                     <CardMedia
                       className={classes.media}
@@ -363,6 +371,7 @@ const StatusCard = ({
                         {device.name}
                       </Typography>
                       <div
+                      className="responsive-header"
                         style={{
                           display: "flex",
                           gap: "10px",
