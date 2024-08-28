@@ -107,6 +107,7 @@ const MainPage = () => {
   const [eventsOpen, setEventsOpen] = useState(false);
 
   const onEventsClick = useCallback(() => setEventsOpen(true), [setEventsOpen]);
+  console.log("=================================positions ",positions);
 
   useEffect(() => {
     if (!desktop && mapOnSelect && selectedDeviceId) {
@@ -141,7 +142,7 @@ const MainPage = () => {
             filterMap={filterMap}
             setFilterMap={setFilterMap}
           />
-          <StatusBar /> 
+          <StatusBar positions={positions} /> 
           
         </Paper>
         <div className={classes.middle}>

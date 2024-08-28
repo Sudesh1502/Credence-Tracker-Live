@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./StatusBar.css";
 
-const StatusBar = ({ data }) => {
+const StatusBar = ({ positions = {} }) => {  // Defaulting to an empty object
   const [stop, setStop] = useState(0);
   const [running, setRunning] = useState(0);
   const [overspeed, setOverspeed] = useState(0);
@@ -9,43 +9,40 @@ const StatusBar = ({ data }) => {
   const [inactive, setInactive] = useState(0);
   const [all, setAll] = useState(0);
 
-  function calulateStatus() {
-    let stop = 0;
-    let idle = 0;
-    let running = 0;
-    let overspeed = 0;
-    let inactive = 0;
-    let all = 0;
+  const calculateStatus = () => {
+    const positionArray = Object.values(positions); // Convert positions object to an array of values
 
-    data.forEach((element) => {
-      if (!element.ignition && element.speed < 1) {
-        stop++;
-      } else if (element.ignition && element.speed < 2) {
-        idle++;
-      } else if (element.ignition && element.speed > 2 && element.speed < 60) {
-        running++;
-      } else if (element.ignition && element.overspeed > 50) {
-        overspeed++;
+    let stopCount = 0;
+    let idleCount = 0;
+    let runningCount = 0;
+    let overspeedCount = 0;
+    let inactiveCount = 0;
+
+    positionArray.forEach((position) => {
+      if (!position.attributes.ignition && position.speed < 1) {
+        stopCount++;
+      } else if (position.attributes.ignition && position.speed < 2) {
+        idleCount++;
+      } else if (position.attributes.ignition && position.speed >= 2 && position.speed <= 60) {
+        runningCount++;
+      } else if (position.attributes.ignition && position.speed > 60) {
+        overspeedCount++;
       } else {
-        inactive++;
+        inactiveCount++;
       }
-      all++;
     });
 
-    setStop(stop);
-    setIdle(idle);
-    setRunning(running);
-    setOverspeed(overspeed);
-    setInactive(inactive);
-    setAll(all);
-  }
+    setStop(stopCount);
+    setIdle(idleCount);
+    setRunning(runningCount);
+    setOverspeed(overspeedCount);
+    setInactive(inactiveCount);
+    setAll(positionArray.length);
+  };
 
-  const [count, setcount] = useState(0);
   useEffect(() => {
-    setInterval(() => {
-      calulateStatus();
-    }, 1000);
-  }, []);
+    calculateStatus();
+  }, [positions]);
 
   const statuses = [
     { count: all, label: "ALL", colorClass: "all" },
@@ -53,7 +50,6 @@ const StatusBar = ({ data }) => {
     { count: stop, label: "STOPPED", colorClass: "stopped" },
     { count: overspeed, label: "OVERSPEED", colorClass: "overspeed" },
     { count: idle, label: "IDLE", colorClass: "idle" },
-
     { count: inactive, label: "INACTIVE", colorClass: "inactive" },
   ];
 
