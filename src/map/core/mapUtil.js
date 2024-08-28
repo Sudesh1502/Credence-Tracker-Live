@@ -28,25 +28,30 @@ const canvasTintImage = (image, color) => {
   return image;
 };
 
-export const prepareIcon = (background, icon, color) => {
+export const prepareIcon = (background, icon, color, rotation = 0) => {
   const canvas = document.createElement('canvas');
   canvas.width = background.width * devicePixelRatio;
   canvas.height = background.height * devicePixelRatio;
-  canvas.style.width = `${background.width}px`;
-  canvas.style.height = `${background.height}px`;
+  // canvas.style.width = `${background.width}px`;
+  // canvas.style.height = `${background.height}px`;
 
   const context = canvas.getContext('2d');
-  // context.drawImage(background, 0, 0, canvas.width, canvas.height);
+  context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
   if (icon) {
     const iconRatio = 1.0;
     const imageWidth = canvas.width * iconRatio;
     const imageHeight = canvas.height * iconRatio;
-    context.drawImage(canvasTintImage(icon, color), (canvas.width - imageWidth) / 2, (canvas.height - imageHeight) / 2, imageWidth, imageHeight);
+    context.save();
+    context.translate(canvas.width / 2, canvas.height / 2); // Move to center
+    context.rotate((rotation * Math.PI) / 180); // Rotate
+    context.drawImage(icon, -imageWidth / 2, -imageHeight / 2, imageWidth, imageHeight);
+    context.restore();
   }
 
   return context.getImageData(0, 0, canvas.width, canvas.height);
 };
+
 
 export const reverseCoordinates = (it) => {
   if (!it) {

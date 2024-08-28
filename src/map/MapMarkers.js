@@ -10,7 +10,7 @@ const MapMarkers = ({ markers, showTitles }) => {
 
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
-  const iconScale = useAttributePreference('iconScale', desktop ? 0.75 : 1);
+  const iconScale = useAttributePreference('iconScale', desktop ? 0.7 : 1);
 
   useEffect(() => {
     map.addSource(id, {
@@ -26,13 +26,18 @@ const MapMarkers = ({ markers, showTitles }) => {
         id,
         type: 'symbol',
         source: id,
-        filter: ['!has', 'point_count'],
+        filter: [
+          'all',
+          ['!has', 'point_count'],
+          ['==', 'direction', true],
+        ],
         layout: {
           'icon-image': '{image}',
-          // 'icon-size': iconScale,
+          'icon-size': iconScale,
           'icon-allow-overlap': true,
           'text-field': '{title}',
           'text-allow-overlap': true,
+          'icon-rotate': ['get', 'course'],
           'text-anchor': 'bottom',
           'text-offset': [0, -2 * iconScale],
           'text-font': findFonts(map),
@@ -52,6 +57,7 @@ const MapMarkers = ({ markers, showTitles }) => {
           'icon-image': '{image}',
           'icon-size': iconScale,
           'icon-allow-overlap': true,
+          'icon-rotate': ['get', 'course'],
         },
       });
     }

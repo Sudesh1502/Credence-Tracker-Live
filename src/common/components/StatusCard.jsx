@@ -47,6 +47,8 @@ import MapIcon from "@mui/icons-material/Map"; // Geofences
 import PowerIcon from "@mui/icons-material/Power"; // Ignition
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar"; // Distance
 
+import clsx from 'clsx';
+
 const useStyles = makeStyles((theme) => ({
   card: {
     pointerEvents: "auto",
@@ -102,6 +104,26 @@ const useStyles = makeStyles((theme) => ({
   actions: {
     justifyContent: "space-between",
   },
+  historyStatusCard: {
+    display: 'flex',
+    gap: "2.5rem",
+    marginRight: "4rem",
+  },
+  histortyActive: {
+    display: 'flex',
+    alignItems: "center",
+  },
+  contentData: {
+    paddingLeft: "28px",
+  },
+  historyContent: {
+    padding: "6px 10px",
+    marginLeft: "10px",
+    backgroundColor: "#ece7e7",
+    color: "#000",
+    fontSize: "0.77rem",
+    borderRadius: "16px",
+  },
   root: ({ desktopPadding }) => ({
     pointerEvents: "none",
     position: "fixed",
@@ -122,11 +144,39 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const StatusRow = ({ name, content }) => {
+const StatusRow = ({ name, content, history, t }) => {
   const classes = useStyles();
 
-
   // Map the name to an icon component
+
+  if(history){
+    
+    const skipNames = new Set([
+      'altitude',
+      'course',
+      'accuracy',
+      'valid',
+      'identifier',
+      'longitude',
+      'latitude',
+      'geofences',
+      'address',
+      'odometer',
+      'event',
+      'protocol',
+      'server time',
+      'fix time'
+    ]);
+  
+    // Check if the name should be skipped
+    console.log(name);
+    if (skipNames.has(name.toLowerCase()) ) {
+      return null;
+    }
+
+  }
+
+
   const iconMap = {
     "Device Time": <AccessTimeIcon fontSize="small" />,
     Identifier: <FingerprintIcon fontSize="small" />,
@@ -148,8 +198,13 @@ const StatusRow = ({ name, content }) => {
     Distance: <DirectionsCarIcon fontSize="small" />, // Add Distance icon
   };
 
+  
+
   return (
-    <Grid item className={classes.gridItem}>
+    <Grid item className={clsx(classes.gridItem, {
+      [classes.histortyActive]: history,
+    })}
+    >
       <div style={{ display: "flex", alignItems: "center" }}>
         {iconMap[name]} {/* Render the appropriate icon based on the name */}
         <Typography variant="body2" style={{ marginLeft: 7 }}>
@@ -159,7 +214,10 @@ const StatusRow = ({ name, content }) => {
       <Typography
         variant="body2"
         color="textSecondary"
-        style={{ paddingLeft: "28px" }} // Apply padding to shift the lower values to the right
+        className={clsx(classes.contentData, {
+          [classes.historyContent]: history,
+        })}
+         // Apply padding to shift the lower values to the right
       >
         {content}
       </Typography>
@@ -173,6 +231,7 @@ const StatusCard = ({
   onClose,
   disableActions,
   desktopPadding = 0,
+  history,
 }) => {
   const classes = useStyles({ desktopPadding });
   const navigate = useNavigate();
@@ -241,231 +300,295 @@ const StatusCard = ({
 
   return (
     <>
-      <div className={classes.root}>
-        {device && (
-          <Draggable handle={`.${classes.media}, .${classes.header}`}>
-            <Card elevation={3} className={classes.card}>
-              {deviceImage ? (
-                <CardMedia
-                  className={classes.media}
-                  image={`/api/media/${device.uniqueId}/${deviceImage}`}
-                >
-                  <IconButton
-                    size="small"
-                    onClick={onClose}
-                    onTouchStart={onClose}
-                  >
-                    <CloseIcon
-                      fontSize="small"
-                      className={classes.mediaButton}
-                    />
-                  </IconButton>
-                </CardMedia>
-              ) : (
-                <div className={classes.header}>
-                  <Typography
-                    variant="body2"
-                    style={{ color: "#FFFFFF", fontWeight: "bold" }} // Make the header text black and bold
-                  >
-                    {device.name}
-                  </Typography>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "10px",
-                      marginLeft: "380px",
-                      marginRight: "auto",
-                    }}
-                  >
-                    <IconButton
-                      size="small"
-                      onClick={() => console.log("Geofence clicked")}
-                      style={{
-                        fontWeight: "bold",
-                        color: "#FFFFFF",
-                        border: "1px solid  ",
-                        borderRadius: "4px",
-                        padding: "4px 8px",
-                        // margin: "2px",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        style={{ fontWeight: "bold" }}
-                      >
-                        Geofence
-                      </Typography>
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={() => console.log("Share clicked")}
-                      disabled={shareDisabled}
-                      style={{
-                        fontWeight: "bold",
-                        border: "1px solid white",
-                        color: "#FFFFFF",
-                        borderRadius: "4px",
-                        padding: "4px 8px",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        style={{ fontWeight: "bold" }}
-                      >
-                        Share
-                      </Typography>
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={() => console.log("Maintenance clicked")}
-                      style={{
-                        fontWeight: "bold",
-                        border: "1px solid white",
-                        color: "#FFFFFF",
-                        borderRadius: "4px",
-                        padding: "4px 8px",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        style={{ fontWeight: "bold" }}
-                      >
-                        Maintenance
-                      </Typography>
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={() => console.log("Wallet clicked")}
-                      style={{
-                        fontWeight: "bold",
-                        border: "1px solid white",
-                        color: "#FFFFFF",
-                        borderRadius: "4px",
-                        padding: "4px 8px",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        style={{ fontWeight: "bold" }}
-                      >
-                        Wallet
-                      </Typography>
-                    </IconButton>
-                    {/* <IconButton
-                      size="small"
-                      onClick={() => console.log("Toing clicked")}
-                      style={{
-                        fontWeight: "bold",
-                        border: "1px solid black",
-                        color: "#000000",
-                        borderRadius: "4px",
-                        padding: "4px 8px",
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        style={{ fontWeight: "bold" }}
-                      >
-                        Toing
-                      </Typography>
-                    </IconButton> */}
-                    <IconButton
-  size="small"
-  onClick={(e) => setAnchorEl(e.currentTarget)}
-  style={{
-    fontWeight: "bold",
-    border: "1px solid white",
-    color: "#FFFFFF",
-    borderRadius: "4px",
-    padding: "4px 8px",
-    marginBottom: "10px",
-  }}
->
-  <Typography variant="body2" style={{ fontWeight: "bold" }}>
-    More
-  </Typography>
-</IconButton>
-
-{anchorEl && (
-  <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
-    <MenuItem onClick={() => navigate(`/position/${position.id}`)}>
-      <Typography color="secondary">{t('sharedShowDetails')}</Typography>
-    </MenuItem>
-    <MenuItem onClick={handleGeofence}>
-      {t('sharedCreateGeofence')}
-    </MenuItem>
-    <MenuItem component="a" target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${position.latitude}%2C${position.longitude}`}>
-      {t('linkGoogleMaps')}
-    </MenuItem>
-    <MenuItem component="a" target="_blank" href={`http://maps.apple.com/?ll=${position.latitude},${position.longitude}`}>
-      {t('linkAppleMaps')}
-    </MenuItem>
-    <MenuItem component="a" target="_blank" href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${position.latitude}%2C${position.longitude}&heading=${position.course}`}>
-      {t('linkStreetView')}
-    </MenuItem>
-    {!shareDisabled && !user.temporary && (
-      <MenuItem onClick={() => navigate(`/settings/device/${deviceId}/share`)}>
-        {t('deviceShare')}
-      </MenuItem>
-    )}
-  </Menu>
-)}
-
-                  </div>
-                  <IconButton
-                    size="small"
-                    onClick={onClose}
-                    onTouchStart={onClose}
-                  >
-                    <CloseIcon fontSize="small" />
-                  </IconButton>
-                </div>
-              )}
-              <Divider /> {/* Divider separating the header and content */}
-              {position && (
-                <CardContent className={classes.content}>
-                  <Grid container className={classes.gridContainer}>
-                    {positionItems
-                      .split(",")
-                      .filter(
-                        (key) =>
-                          position.hasOwnProperty(key) ||
-                          position.attributes.hasOwnProperty(key)
-                      )
-                      .map((key) => (
-                        <StatusRow
-                          key={key}
-                          name={positionAttributes[key]?.name || key}
-                          content={
-                            <PositionValue
-                              position={position}
-                              property={
-                                position.hasOwnProperty(key) ? key : null
+      {history ? (
+        <>
+          <div className={classes.historyStatusCard}>
+          {positionItems
+                          .split(",")
+                          .filter(
+                            (key) =>
+                              position.hasOwnProperty(key) ||
+                              position.attributes.hasOwnProperty(key)
+                          )
+                          .map((key) => (
+                            <StatusRow
+                              key={key}
+                              name={positionAttributes[key]?.name || key}
+                              content={
+                                <PositionValue
+                                  position={position}
+                                  property={
+                                    position.hasOwnProperty(key) ? key : null
+                                  }
+                                  attribute={
+                                    position.hasOwnProperty(key) ? null : key
+                                  }
+                                />
                               }
-                              attribute={
-                                position.hasOwnProperty(key) ? null : key
+
+                              history={ history }
+                              t={t}
+                            />
+                          ))}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className={classes.root}>
+            {device && (
+              <Draggable handle={`.${classes.media}, .${classes.header}`}>
+                <Card elevation={3} className={classes.card}>
+                  {deviceImage ? (
+                    <CardMedia
+                      className={classes.media}
+                      image={`/api/media/${device.uniqueId}/${deviceImage}`}
+                    >
+                      <IconButton
+                        size="small"
+                        onClick={onClose}
+                        onTouchStart={onClose}
+                      >
+                        <CloseIcon
+                          fontSize="small"
+                          className={classes.mediaButton}
+                        />
+                      </IconButton>
+                    </CardMedia>
+                  ) : (
+                    <div className={classes.header}>
+                      <Typography
+                        variant="body2"
+                        style={{ color: "#FFFFFF", fontWeight: "bold" }} // Make the header text black and bold
+                      >
+                        {device.name}
+                      </Typography>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "10px",
+                          marginLeft: "380px",
+                          marginRight: "auto",
+                        }}
+                      >
+                        <IconButton
+                          size="small"
+                          onClick={() => console.log("Geofence clicked")}
+                          style={{
+                            fontWeight: "bold",
+                            color: "#FFFFFF",
+                            border: "1px solid  ",
+                            borderRadius: "4px",
+                            padding: "4px 8px",
+                            // margin: "2px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Geofence
+                          </Typography>
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() => console.log("Share clicked")}
+                          disabled={shareDisabled}
+                          style={{
+                            fontWeight: "bold",
+                            border: "1px solid white",
+                            color: "#FFFFFF",
+                            borderRadius: "4px",
+                            padding: "4px 8px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Share
+                          </Typography>
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() => console.log("Maintenance clicked")}
+                          style={{
+                            fontWeight: "bold",
+                            border: "1px solid white",
+                            color: "#FFFFFF",
+                            borderRadius: "4px",
+                            padding: "4px 8px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Maintenance
+                          </Typography>
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() => console.log("Wallet clicked")}
+                          style={{
+                            fontWeight: "bold",
+                            border: "1px solid white",
+                            color: "#FFFFFF",
+                            borderRadius: "4px",
+                            padding: "4px 8px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Wallet
+                          </Typography>
+                        </IconButton>
+                        {/* <IconButton
+                size="small"
+                onClick={() => console.log("Toing clicked")}
+                style={{
+                  fontWeight: "bold",
+                  border: "1px solid black",
+                  color: "#000000",
+                  borderRadius: "4px",
+                  padding: "4px 8px",
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  style={{ fontWeight: "bold" }}
+                >
+                  Toing
+                </Typography>
+              </IconButton> */}
+                        <IconButton
+                          size="small"
+                          onClick={(e) => setAnchorEl(e.currentTarget)}
+                          style={{
+                            fontWeight: "bold",
+                            border: "1px solid white",
+                            color: "#FFFFFF",
+                            borderRadius: "4px",
+                            padding: "4px 8px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            More
+                          </Typography>
+                        </IconButton>
+
+                        {anchorEl && (
+                          <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={() => setAnchorEl(null)}
+                          >
+                            <MenuItem
+                              onClick={() =>
+                                navigate(`/position/${position.id}`)
+                              }
+                            >
+                              <Typography color="secondary">
+                                {t("sharedShowDetails")}
+                              </Typography>
+                            </MenuItem>
+                            <MenuItem onClick={handleGeofence}>
+                              {t("sharedCreateGeofence")}
+                            </MenuItem>
+                            <MenuItem
+                              component="a"
+                              target="_blank"
+                              href={`https://www.google.com/maps/search/?api=1&query=${position.latitude}%2C${position.longitude}`}
+                            >
+                              {t("linkGoogleMaps")}
+                            </MenuItem>
+                            <MenuItem
+                              component="a"
+                              target="_blank"
+                              href={`http://maps.apple.com/?ll=${position.latitude},${position.longitude}`}
+                            >
+                              {t("linkAppleMaps")}
+                            </MenuItem>
+                            <MenuItem
+                              component="a"
+                              target="_blank"
+                              href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${position.latitude}%2C${position.longitude}&heading=${position.course}`}
+                            >
+                              {t("linkStreetView")}
+                            </MenuItem>
+                            {!shareDisabled && !user.temporary && (
+                              <MenuItem
+                                onClick={() =>
+                                  navigate(`/settings/device/${deviceId}/share`)
+                                }
+                              >
+                                {t("deviceShare")}
+                              </MenuItem>
+                            )}
+                          </Menu>
+                        )}
+                      </div>
+                      <IconButton
+                        size="small"
+                        onClick={onClose}
+                        onTouchStart={onClose}
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </div>
+                  )}
+                  <Divider /> {/* Divider separating the header and content */}
+                  {position && (
+                    <CardContent className={classes.content}>
+                      <Grid container className={classes.gridContainer}>
+                        {positionItems
+                          .split(",")
+                          .filter(
+                            (key) =>
+                              position.hasOwnProperty(key) ||
+                              position.attributes.hasOwnProperty(key)
+                          )
+                          .map((key) => (
+                            <StatusRow
+                              key={key}
+                              name={positionAttributes[key]?.name || key}
+                              content={
+                                <PositionValue
+                                  position={position}
+                                  property={
+                                    position.hasOwnProperty(key) ? key : null
+                                  }
+                                  attribute={
+                                    position.hasOwnProperty(key) ? null : key
+                                  }
+                                />
                               }
                             />
-                          }
-                        />
-                      ))}
-                  </Grid>
-                </CardContent>
-              )}
-              {/*   */}
-            </Card>
-          </Draggable>
-        )}
-      </div>
-      <RemoveDialog
-        open={removing}
-        onClose={() => setRemoving(false)}
-        onRemove={handleRemove}
-      />
+                          ))}
+                      </Grid>
+                    </CardContent>
+                  )}
+                  {/*   */}
+                </Card>
+              </Draggable>
+            )}
+          </div>
+          <RemoveDialog
+            open={removing}
+            onClose={() => setRemoving(false)}
+            onRemove={handleRemove}
+          />
+        </>
+      )}
     </>
   );
 };

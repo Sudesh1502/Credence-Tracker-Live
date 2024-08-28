@@ -19,9 +19,9 @@ const MapCamera = ({
         });
       }
     } else {
-      map.jumpTo({
+      map.flyTo({
         center: [longitude, latitude],
-        zoom: Math.max(map.getZoom(), 10),
+        zoom: Math.max(map.getZoom(), 20),
       });
     }
   }, [latitude, longitude, positions, coordinates]);

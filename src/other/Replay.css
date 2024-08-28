@@ -1,8 +1,13 @@
 
-.makeStyles-filter-86 {
+/* .makeStyles-filter-86 {
     gap: 16px !important;
     display: inline-flex !important;
     padding: 24px 16px 16px !important;
     flex-wrap: nowrap !important;
     width: 48% !important;
+} */
+
+.map{
+    height: 500px;
+    width: 100% !important;
 }

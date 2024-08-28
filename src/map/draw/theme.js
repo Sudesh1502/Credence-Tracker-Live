@@ -82,7 +82,7 @@ export default [
     },
     'paint': {
       'line-color': '#3bb2d0',
-      'line-width': 2
+      'line-width': 4
     }
   },
   {
@@ -99,7 +99,7 @@ export default [
     'paint': {
       'line-color': '#fbb03b',
       'line-dasharray': [0.2, 2],
-      'line-width': 2
+      'line-width': 4
     }
   },
   {

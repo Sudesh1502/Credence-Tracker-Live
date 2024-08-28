@@ -4,6 +4,7 @@ import React, {
 import {
   IconButton, Paper, Slider, Toolbar, Typography,
 } from '@mui/material';
+import map from '../map/core/MapView';
 import makeStyles from '@mui/styles/makeStyles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import TuneIcon from '@mui/icons-material/Tune';
@@ -26,8 +27,7 @@ import MapCamera from '../map/MapCamera';
 import MapGeofence from '../map/MapGeofence';
 import StatusCard from '../common/components/StatusCard';
 import { usePreference } from '../common/util/preferences';
-import MapMarkers from '../map/MapMarkers';
-// import MapStoppagePoints from '../map/MapStoppagePoints'; // Import the new component
+import "./Replay.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,6 +79,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ReplayPage = () => {
+  
+  const [history, setHistory] = useState(true);
   const t = useTranslation();
   const classes = useStyles();
   const navigate = useNavigate();
@@ -108,6 +110,7 @@ const ReplayPage = () => {
     return null;
   });
 
+
   useEffect(() => {
     if (playing && positions.length > 0) {
       timerRef.current = setInterval(() => {
@@ -127,13 +130,6 @@ const ReplayPage = () => {
     }
   }, [index, positions]);
 
-  // useEffect(() => {
-  //   if (positions.length > 0) {
-  //     const stoppages = calculateStoppagePoints(positions); // Function needs to be defined
-  //     setStoppagePoints(stoppages);
-  //   }
-  // }, [positions]);
-
   const onPointClick = useCallback((_, index) => {
     setIndex(index);
   }, [setIndex]);
@@ -148,12 +144,26 @@ const ReplayPage = () => {
     setTo(to);
     const query = new URLSearchParams({ deviceId, from, to });
     const response = await fetch(`/api/positions?${query.toString()}`);
+    
     if (response.ok) {
       setIndex(0);
       const positions = await response.json();
       setPositions(positions);
+  
       if (positions.length) {
         setExpanded(false);
+        setHistory(true); // Move this here to ensure `history` is true
+  
+        // Trigger the flyTo function now that `history` is set to true
+        // const Map = map.current.getMap();
+        
+        // Map.flyTo({
+        //   center: [positions[0].longitude, positions[0].latitude],
+        //   zoom: 20,
+        //   speed: 1.2,
+        //   curve: 1,
+        //   essential: true,
+        // });
       } else {
         throw Error(t('sharedNoData'));
       }
@@ -161,73 +171,76 @@ const ReplayPage = () => {
       throw Error(await response.text());
     }
   });
+  
 
   const handleDownload = () => {
     const query = new URLSearchParams({ deviceId: selectedDeviceId, from, to });
     window.location.assign(`/api/positions/kml?${query.toString()}`);
   };
 
-  // const calculateStoppagePoints = (positions) => {
-  //   const stoppagePoints = [];
-  //   let ignitionOffIndex = null;
-  
-  //   for (let i = 0; i < positions.length; i++) {
-  //     const current = positions[i];
-      
-  //     // Check if ignition is false
-  //     if (current.attributes.ignition === false) {
-  //       if (ignitionOffIndex === null) {
-  //         ignitionOffIndex = i;  // Mark the index where ignition first becomes false
-  //       }
-  //     } else if (ignitionOffIndex !== null) {
-  //       // If ignition turns true after being false
-  //       stoppagePoints.push(positions[ignitionOffIndex]);
-  //       ignitionOffIndex = null;  // Reset the index after marking the stoppage point
-  //     }
-  //   }
-  // console.log("stoppagePoints ", stoppagePoints)
-  //   return stoppagePoints;
-  // };
-  
-  // const createMarkers = (stoppagePoints) => {
-  //   return stoppagePoints.flatMap((item) => {
-  //     // Ensure item.events and item.positions are arrays and not undefined
-  //     if (!Array.isArray(item.events) || !Array.isArray(item.positions)) {
-  //       return []; // Return an empty array if the conditions aren't met
-  //     }
-  
-  //     return item.events
-  //       .map((event) => item.positions.find((p) => event.positionId === p.id))
-  //       .filter((position) => position != null)
-  //       .map((position) => ({
-  //         latitude: position.latitude,
-  //         longitude: position.longitude,
-  //       }));
-  //   });
-  // };
+
+  useEffect(() => {
+    if(!expanded){
+      setHistory(true);
+    } else if (expanded) {
+      setHistory(false);
+    }
+  },[expanded])
   
   
   return (
     <div className={classes.root}>
-      <MapView>
-        <MapGeofence />
-        <MapRoutePath positions={positions} />
-        <MapRoutePoints positions={positions} onClick={onPointClick} />
-        {index < positions.length && (
-          <MapPositions positions={[positions[index]]} onClick={onMarkerClick} titleField="fixTime" />
-        )}
-        {/* {stoppagePoints.length > 0 && (
-  <MapMarkers markers={createMarkers(stoppagePoints)} />
-)} */}
-      </MapView>
-      <MapCamera positions={positions} />
-      <div className={classes.sidebar}>
+
+
+
+
+
+
+      <div className="map">
+  
+  {/* =================================================================================================================== */}
+        <MapView>
+          <MapGeofence />
+          <MapRoutePath positions={positions} />
+          <MapRoutePoints positions={positions} onClick={onPointClick} />
+          {index < positions.length && (
+            <MapPositions positions={[positions[index]]} onClick={onMarkerClick} titleField="fixTime" />
+          )}
+        </MapView>
+        <MapCamera positions={positions} />
+      </div>
+
+
+
+
+
+
+
+
+
+      <div className="card">
+  {/* =================================================================================================================== */}
+      <div>
         <Paper elevation={3} square>
           <Toolbar>
             <IconButton edge="start" sx={{ mr: 2 }} onClick={() => navigate(-1)}>
-              <ArrowBackIcon />
+              <ArrowBackIcon onClick={()=>{
+                setHistory(false);
+              }} />
             </IconButton>
             <Typography variant="h6" className={classes.title}>{t('reportReplay')}</Typography>
+            {!expanded && index < positions.length && (
+        <div className={classes.statuscard}>
+        <StatusCard
+          deviceId={selectedDeviceId}
+          position={positions[index]}
+          onClose={() => setShowCard(false)}
+          disableActions
+          history={history}
+        />
+
+      </div>
+      )}
             {!expanded && (
               <>
                 <IconButton onClick={handleDownload}>
@@ -257,7 +270,11 @@ const ReplayPage = () => {
                 <IconButton onClick={() => setIndex((index) => index - 1)} disabled={playing || index <= 0}>
                   <FastRewindIcon />
                 </IconButton>
-                <IconButton onClick={() => setPlaying(!playing)} disabled={index >= positions.length - 1}>
+                <IconButton onClick={() => {
+                  setPlaying(!playing);
+                  // setHistory(true);
+                  
+                  }} disabled={index >= positions.length - 1}>
                   {playing ? <PauseIcon /> : <PlayArrowIcon /> }
                 </IconButton>
                 <IconButton onClick={() => setIndex((index) => index + 1)} disabled={playing || index >= positions.length - 1}>
@@ -271,14 +288,26 @@ const ReplayPage = () => {
           )}
         </Paper>
       </div>
-      {showCard && index < positions.length && (
+      {/* {showCard && index < positions.length && (
+        <div className={classes.statuscard}>
         <StatusCard
           deviceId={selectedDeviceId}
           position={positions[index]}
           onClose={() => setShowCard(false)}
           disableActions
+          history={history}
         />
-      )}
+
+      </div>
+      )} */}
+      </div>
+
+
+
+
+
+
+      
     </div>
   );
 };
