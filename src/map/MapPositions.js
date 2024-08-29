@@ -124,6 +124,7 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
         layout: {
           'icon-image': '{category}-{color}',
           'icon-size': iconScale,
+          'icon-rotate': ['get', 'rotation'],
           'icon-allow-overlap': true,
           'text-field': `{${titleField || 'name'}}`,
           'text-allow-overlap': true,
@@ -166,6 +167,7 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
       filter: ['has', 'point_count'],
       layout: {
         'icon-image': 'background',
+        'icon-rotate': ['get', 'rotation'],
         'icon-size': iconScale,
         'text-field': '{point_count_abbreviated}',
         'text-font': findFonts(map),
