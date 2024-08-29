@@ -2,11 +2,26 @@ import { useEffect } from 'react';
 import maplibregl from 'maplibre-gl';
 import { map } from './core/MapView';
 
-const MapCamera = ({
-  latitude, longitude, positions, coordinates,
-}) => {
+const MapCamera = ({ positions, index, latitude, longitude, coordinates, replayMode }) => {
   useEffect(() => {
-    if (coordinates || positions) {
+    if(!replayMode){
+      map.setZoom(10);
+    }
+    if (replayMode) {
+      // Follow vehicle marker in replay mode
+      if (positions.length > 0 && index < positions.length) {
+        const { latitude, longitude } = positions[index];
+        
+        map.flyTo({
+          center: [longitude, latitude],
+          zoom: Math.max(map.getZoom(), 15),
+          speed: 2,
+          curve: 1.42,
+          easing: (t) => t,
+        });
+      }
+    } else if (coordinates || positions) {
+      // Existing logic for other use cases
       if (!coordinates) {
         coordinates = positions.map((item) => [item.longitude, item.latitude]);
       }
@@ -15,16 +30,16 @@ const MapCamera = ({
         const canvas = map.getCanvas();
         map.fitBounds(bounds, {
           padding: Math.min(canvas.width, canvas.height) * 0.1,
-          duration: 0,
+          duration: 1000,
         });
       }
     } else {
       map.flyTo({
         center: [longitude, latitude],
-        zoom: Math.max(map.getZoom(), 20),
+        zoom: Math.max(map.getZoom(), 15),
       });
     }
-  }, [latitude, longitude, positions, coordinates]);
+  }, [latitude, longitude, positions, coordinates, index, replayMode]);
 
   return null;
 };

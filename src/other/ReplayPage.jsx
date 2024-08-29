@@ -79,6 +79,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ReplayPage = () => {
+
+  const [replayMode, setReplayMode] = useState(false);
   
   const [history, setHistory] = useState(true);
   const t = useTranslation();
@@ -152,18 +154,8 @@ const ReplayPage = () => {
   
       if (positions.length) {
         setExpanded(false);
-        setHistory(true); // Move this here to ensure `history` is true
-  
-        // Trigger the flyTo function now that `history` is set to true
-        // const Map = map.current.getMap();
-        
-        // Map.flyTo({
-        //   center: [positions[0].longitude, positions[0].latitude],
-        //   zoom: 20,
-        //   speed: 1.2,
-        //   curve: 1,
-        //   essential: true,
-        // });
+        setHistory(true);
+        setReplayMode(true);
       } else {
         throw Error(t('sharedNoData'));
       }
@@ -207,7 +199,7 @@ const ReplayPage = () => {
             <MapPositions positions={[positions[index]]} onClick={onMarkerClick} titleField="fixTime" />
           )}
         </MapView>
-        <MapCamera positions={positions} />
+        <MapCamera playing={playing} positions={positions} index={index} replayMode />
       </div>
 
 
@@ -226,6 +218,7 @@ const ReplayPage = () => {
             <IconButton edge="start" sx={{ mr: 2 }} onClick={() => navigate(-1)}>
               <ArrowBackIcon onClick={()=>{
                 setHistory(false);
+                setReplayMode(false);
               }} />
             </IconButton>
             <Typography variant="h6" className={classes.title}>{t('reportReplay')}</Typography>

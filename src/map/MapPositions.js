@@ -38,13 +38,27 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
         showDirection = selectedPositionId === position.id;
         break;
     }
+
+    let conditionKey;
+    if (!position.attributes.ignition && position.speed < 2) {
+      conditionKey = 'red';
+    } else if (position.attributes.ignition && position.speed >= 0 && position.speed < 2) {
+      conditionKey = 'yellow';
+    } else if (position.attributes.ignition && position.speed >= 2 && position.speed <= 50) {
+      conditionKey = 'green';
+    } else if (position.attributes.ignition && position.speed > 50) {
+      conditionKey = 'orange';
+    } else {
+      conditionKey = 'gray';
+    }
+
     return {
       id: position.id,
       deviceId: position.deviceId,
       name: device.name,
       fixTime: formatTime(position.fixTime, 'seconds', hours12),
       category: mapIconKey(device.category),
-      color: showStatus ? position.attributes.color || getStatusColor(device.status) : 'neutral',
+      color: conditionKey,
       rotation: position.course,
       direction: showDirection,
     };

@@ -19,7 +19,7 @@ const MapDefaultCamera = () => {
       setInitialized(true);
     } else if (!initialized) {
       if (defaultLatitude && defaultLongitude) {
-        map.jumpTo({
+        map.flyTo({
           center: [defaultLongitude, defaultLatitude],
           zoom: defaultZoom,
         });
@@ -30,15 +30,15 @@ const MapDefaultCamera = () => {
           const bounds = coordinates.reduce((bounds, item) => bounds.extend(item), new maplibregl.LngLatBounds(coordinates[0], coordinates[1]));
           const canvas = map.getCanvas();
           map.fitBounds(bounds, {
-            duration: 0,
+            duration: 500,
             padding: Math.min(canvas.width, canvas.height) * 0.1,
           });
           setInitialized(true);
         } else if (coordinates.length) {
           const [individual] = coordinates;
-          map.jumpTo({
+          map.flyTo({
             center: individual,
-            zoom: Math.max(map.getZoom(), 10),
+            zoom: Math.max(map.getZoom(), 15),
           });
           setInitialized(true);
         }
