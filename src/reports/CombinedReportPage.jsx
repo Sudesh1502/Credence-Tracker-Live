@@ -162,6 +162,9 @@ const CombinedReportPage = () => {
             sx={{
               borderCollapse: "collapse",
               border: "2px solid gray",
+              paddingTop: "3px",
+              paddingRight: "3px",
+              width: "100%",
             }}
           >
             <TableHead>
@@ -171,6 +174,9 @@ const CombinedReportPage = () => {
                     border: "2px solid gray",
                     background: "#d3d3d3",
                     color: "black",
+                    width: "10%",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {t("sharedDevice")}
@@ -180,6 +186,8 @@ const CombinedReportPage = () => {
                     border: "2px solid gray",
                     background: "#d3d3d3",
                     color: "black",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {t("positionFixTime")}
@@ -190,6 +198,8 @@ const CombinedReportPage = () => {
                     background: "#d3d3d3",
                     color: "black",
                     cursor: "pointer",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                   onClick={() => handleDeviceTypeClick(item)}
                 >
@@ -221,6 +231,9 @@ const CombinedReportPage = () => {
                         <TableCell
                           sx={{
                             border: "2px solid gray",
+                            paddingRight: "2px !important",
+                            paddingTop: "5px !important",
+                            paddingBottom: "5px !important",
                           }}
                         >
                           {index ? "" : devices[item.deviceId].name}
@@ -228,6 +241,9 @@ const CombinedReportPage = () => {
                         <TableCell
                           sx={{
                             border: "2px solid gray",
+                            paddingRight: "2px !important",
+                            paddingTop: "5px !important",
+                            paddingBottom: "5px !important",
                           }}
                         >
                           {formatTime(event.eventTime, "seconds", hours12)}
@@ -236,6 +252,9 @@ const CombinedReportPage = () => {
                           sx={{
                             border: "2px solid gray",
                             cursor: "pointer",
+                            paddingRight: "2px !important",
+                            paddingTop: "5px !important",
+                            paddingBottom: "5px !important",
                           }}
                           onClick={() => handleDeviceTypeClick(item)}
                         >

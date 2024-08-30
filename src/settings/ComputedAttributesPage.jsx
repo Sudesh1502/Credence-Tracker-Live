@@ -106,6 +106,9 @@ const ComputedAttributesPage = () => {
         sx={{
           borderCollapse: "collapse",
           border: "2px solid gray",
+          paddingTop: "3px",
+          paddingRight: "3px",
+          width: "100%",
         }}
         className={classes.table}
       >
@@ -116,6 +119,9 @@ const ComputedAttributesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedDescription")}
@@ -125,6 +131,9 @@ const ComputedAttributesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedAttribute")}
@@ -134,6 +143,9 @@ const ComputedAttributesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedExpression")}
@@ -143,6 +155,9 @@ const ComputedAttributesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedType")}
@@ -153,6 +168,9 @@ const ComputedAttributesPage = () => {
                   border: "2px solid gray",
                   background: "#d3d3d3",
                   color: "black",
+                  width: "10%",
+                  paddingTop: "3px !important",
+                  paddingBottom: "3px !important",
                 }}
                 className={classes.columnAction}
               >
@@ -168,6 +186,9 @@ const ComputedAttributesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
                   }}
                 >
                   {item.description}
@@ -175,6 +196,10 @@ const ComputedAttributesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {item.attribute}
@@ -182,6 +207,10 @@ const ComputedAttributesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {item.expression}
@@ -189,6 +218,10 @@ const ComputedAttributesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {item.type}
@@ -197,6 +230,10 @@ const ComputedAttributesPage = () => {
                   <TableCell
                     sx={{
                       border: "2px solid gray",
+                      width: "10px",
+                      paddingRight: "0px !important",
+                      paddingTop: "3px !important",
+                      paddingBottom: "3px !important",
                     }}
                     className={classes.columnAction}
                     padding="none"

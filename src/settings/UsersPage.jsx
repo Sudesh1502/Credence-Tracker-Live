@@ -135,6 +135,13 @@ const UsersPage = () => {
         sx={{
           borderCollapse: "collapse",
           border: "2px solid gray",
+          width: "10%",
+          paddingTop: "3px !important",
+          paddingBottom: "3px !important",
+          border: "2px solid gray",
+          paddingTop: "3px",
+          paddingRight: "3px",
+          width: "100%",
         }}
         className={classes.table}
       >
@@ -145,6 +152,9 @@ const UsersPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedName")}
@@ -154,6 +164,9 @@ const UsersPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("userEmail")}
@@ -163,6 +176,9 @@ const UsersPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("userAdmin")}
@@ -172,6 +188,9 @@ const UsersPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedDisabled")}
@@ -181,6 +200,9 @@ const UsersPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("userExpirationTime")}
@@ -190,6 +212,9 @@ const UsersPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
               className={classes.columnAction}
             >
@@ -207,6 +232,9 @@ const UsersPage = () => {
                   <TableCell
                     sx={{
                       border: "2px solid gray",
+                      paddingRight: "2px !important",
+                      paddingTop: "5px !important",
+                      paddingBottom: "5px !important",
                     }}
                   >
                     {item.name}
@@ -214,6 +242,10 @@ const UsersPage = () => {
                   <TableCell
                     sx={{
                       border: "2px solid gray",
+                      width: "10px",
+                      paddingRight: "0px !important",
+                      paddingTop: "3px !important",
+                      paddingBottom: "3px !important",
                     }}
                   >
                     {item.email}
@@ -221,6 +253,10 @@ const UsersPage = () => {
                   <TableCell
                     sx={{
                       border: "2px solid gray",
+                      width: "10px",
+                      paddingRight: "0px !important",
+                      paddingTop: "3px !important",
+                      paddingBottom: "3px !important",
                     }}
                   >
                     {formatBoolean(item.administrator, t)}
@@ -228,6 +264,10 @@ const UsersPage = () => {
                   <TableCell
                     sx={{
                       border: "2px solid gray",
+                      width: "10px",
+                      paddingRight: "0px !important",
+                      paddingTop: "3px !important",
+                      paddingBottom: "3px !important",
                     }}
                   >
                     {formatBoolean(item.disabled, t)}
@@ -235,6 +275,10 @@ const UsersPage = () => {
                   <TableCell
                     sx={{
                       border: "2px solid gray",
+                      width: "10px",
+                      paddingRight: "0px !important",
+                      paddingTop: "3px !important",
+                      paddingBottom: "3px !important",
                     }}
                   >
                     {formatTime(item.expirationTime, "date", hours12)}
@@ -242,6 +286,10 @@ const UsersPage = () => {
                   <TableCell
                     sx={{
                       border: "2px solid gray",
+                      width: "10px",
+                      paddingRight: "0px !important",
+                      paddingTop: "3px !important",
+                      paddingBottom: "3px !important",
                     }}
                     className={classes.columnAction}
                     padding="none"

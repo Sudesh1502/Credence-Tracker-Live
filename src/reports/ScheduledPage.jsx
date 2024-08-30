@@ -71,11 +71,14 @@ const ScheduledPage = () => {
       menu={<ReportsMenu />}
       breadcrumbs={["settingsTitle", "reportScheduled"]}
     >
-      <h2 style={{ paddingLeft: '20px' }}>Scheduled Reports</h2>
+      <h2 style={{ paddingLeft: "20px" }}>Scheduled Reports</h2>
       <Table
         sx={{
           borderCollapse: "collapse",
           border: "2px solid gray",
+          paddingTop: "3px",
+          paddingRight: "3px",
+          width: "100%",
         }}
       >
         <TableHead>
@@ -85,6 +88,9 @@ const ScheduledPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedType")}
@@ -94,6 +100,9 @@ const ScheduledPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedDescription")}
@@ -103,6 +112,9 @@ const ScheduledPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedCalendar")}
@@ -112,6 +124,9 @@ const ScheduledPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
               className={classes.columnAction}
             />
@@ -124,6 +139,9 @@ const ScheduledPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
                   }}
                 >
                   {formatType(item.type)}
@@ -131,6 +149,10 @@ const ScheduledPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {item.description}
@@ -138,6 +160,10 @@ const ScheduledPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {calendars[item.calendarId].name}
@@ -145,6 +171,10 @@ const ScheduledPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                   className={classes.columnAction}
                   padding="none"

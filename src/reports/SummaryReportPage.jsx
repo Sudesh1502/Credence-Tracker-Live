@@ -87,7 +87,13 @@ const SummaryReportPage = () => {
   };
 
   const handleDownload = () => {
-    handleSubmit({ deviceIds: [], groupIds: [], from: "", to: "", type: "export" });
+    handleSubmit({
+      deviceIds: [],
+      groupIds: [],
+      from: "",
+      to: "",
+      type: "export",
+    });
     handleClose();
   };
 
@@ -223,6 +229,9 @@ const SummaryReportPage = () => {
         sx={{
           borderCollapse: "collapse",
           border: "2px solid gray",
+          paddingTop: "3px",
+          paddingRight: "3px",
+          width: "100%",
         }}
       >
         <TableHead>
@@ -232,6 +241,9 @@ const SummaryReportPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedDevice")}
@@ -242,6 +254,8 @@ const SummaryReportPage = () => {
                   border: "2px solid gray",
                   background: "#d3d3d3",
                   color: "black",
+                  paddingTop: "3px !important",
+                  paddingBottom: "3px !important",
                 }}
                 key={key}
               >
@@ -257,6 +271,10 @@ const SummaryReportPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
                   }}
                 >
                   {devices[item.deviceId].name}
@@ -265,6 +283,10 @@ const SummaryReportPage = () => {
                   <TableCell
                     sx={{
                       border: "2px solid gray",
+                      width: "10px",
+                      paddingRight: "0px !important",
+                      paddingTop: "3px !important",
+                      paddingBottom: "3px !important",
                     }}
                     key={key}
                   >
@@ -290,11 +312,7 @@ const SummaryReportPage = () => {
       </Fab>
 
       {/* Settings Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         <MuiMenuItem onClick={handleDownload}>
           <GetApp sx={{ marginRight: 1 }} />
           Download

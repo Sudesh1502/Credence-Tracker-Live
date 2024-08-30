@@ -54,12 +54,15 @@ const LogsPage = () => {
       menu={<ReportsMenu />}
       breadcrumbs={["reportTitle", "statisticsTitle"]}
     >
-       <h2 style={{ paddingLeft: '20px' }}>Logs</h2>
+      <h2 style={{ paddingLeft: "20px" }}>Logs</h2>
 
       <Table
         sx={{
           borderCollapse: "collapse",
           border: "2px solid gray",
+          paddingTop: "3px",
+          paddingRight: "3px",
+          width: "100%",
         }}
       >
         <TableHead>
@@ -69,6 +72,9 @@ const LogsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
               className={classes.columnAction}
             />
@@ -77,6 +83,8 @@ const LogsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("deviceIdentifier")}
@@ -86,6 +94,8 @@ const LogsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("positionProtocol")}
@@ -95,6 +105,8 @@ const LogsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("commandData")}
@@ -107,6 +119,9 @@ const LogsPage = () => {
               <TableCell
                 sx={{
                   border: "2px solid gray",
+                  paddingRight: "2px !important",
+                  paddingTop: "5px !important",
+                  paddingBottom: "5px !important",
                 }}
                 className={classes.columnAction}
                 padding="none"
@@ -135,6 +150,9 @@ const LogsPage = () => {
               <TableCell
                 sx={{
                   border: "2px solid gray",
+                  paddingRight: "2px !important",
+                  paddingTop: "5px !important",
+                  paddingBottom: "5px !important",
                 }}
               >
                 {item.uniqueId}
@@ -142,6 +160,9 @@ const LogsPage = () => {
               <TableCell
                 sx={{
                   border: "2px solid gray",
+                  paddingRight: "2px !important",
+                  paddingTop: "5px !important",
+                  paddingBottom: "5px !important",
                 }}
               >
                 {item.protocol}
@@ -149,6 +170,9 @@ const LogsPage = () => {
               <TableCell
                 sx={{
                   border: "2px solid gray",
+                  paddingRight: "2px !important",
+                  paddingTop: "5px !important",
+                  paddingBottom: "5px !important",
                 }}
               >
                 {item.data}

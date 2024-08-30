@@ -14,7 +14,7 @@ const MapCamera = ({ positions, index, latitude, longitude, coordinates, replayM
         
         map.flyTo({
           center: [longitude, latitude],
-          zoom: Math.max(map.getZoom(), 15),
+          zoom: Math.max(map.getZoom(), 16),
           speed: 2,
           curve: 1.42,
           easing: (t) => t,

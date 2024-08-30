@@ -228,6 +228,9 @@ const RouteReportPage = () => {
                     border: "2px solid gray",
                     background: "#d3d3d3",
                     color: "black",
+                    paddingTop: "3px",
+                    paddingRight: "3px",
+                    width: "100%",
                   }}
                   className={classes.columnAction}
                 />
@@ -236,6 +239,9 @@ const RouteReportPage = () => {
                     border: "2px solid gray",
                     background: "#d3d3d3",
                     color: "black",
+                    width: "10%",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {t("sharedDevice")}
@@ -247,6 +253,9 @@ const RouteReportPage = () => {
                       border: "2px solid gray",
                       background: "#d3d3d3",
                       color: "black",
+                      width: "10%",
+                      paddingTop: "3px !important",
+                      paddingBottom: "3px !important",
                     }}
                   >
                     {positionAttributes[key]?.name || key}
@@ -278,6 +287,9 @@ const RouteReportPage = () => {
                     <TableCell
                       sx={{
                         border: "2px solid gray",
+                        paddingRight: "2px !important",
+                        paddingTop: "5px !important",
+                        paddingBottom: "5px !important",
                       }}
                     >
                       {devices[item.deviceId].name}
@@ -287,6 +299,9 @@ const RouteReportPage = () => {
                         key={key}
                         sx={{
                           border: "2px solid gray",
+                          paddingRight: "0px !important",
+                          paddingTop: "3px !important",
+                          paddingBottom: "3px !important",
                         }}
                       >
                         <PositionValue

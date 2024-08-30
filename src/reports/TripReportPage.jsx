@@ -255,16 +255,23 @@ const TripReportPage = () => {
           <Table
             sx={{
               borderCollapse: "collapse",
-              border: "2px solid gray",
+              border: "2px solid gray !important ",
+              paddingTop: "3px",
+              paddingRight: "3px",
+              width: "100%",
             }}
           >
             <TableHead>
               <TableRow>
                 <TableCell
                   sx={{
+                    borderCollapse: "collapse",
                     border: "2px solid gray",
-                    background: "#d3d3d3",
+                    width: "10%",
                     color: "black",
+                    background: "#d3d3d3",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                   className={classes.columnAction}
                 />
@@ -274,6 +281,8 @@ const TripReportPage = () => {
                       border: "2px solid gray",
                       background: "#d3d3d3",
                       color: "black",
+                      paddingTop: "3px !important",
+                      paddingBottom: "3px !important",
                     }}
                     key={key}
                   >
@@ -315,7 +324,10 @@ const TripReportPage = () => {
                       <TableCell
                         sx={{
                           border: "2px solid gray",
-                          color: "black",
+                          color: "white",
+                          paddingRight: "2px !important",
+                          paddingTop: "3px !important",
+                          paddingBottom: "3px !important",
                         }}
                         className={classes.columnAction}
                       >
@@ -329,7 +341,11 @@ const TripReportPage = () => {
                         <TableCell
                           sx={{
                             border: "2px solid gray",
-                            color: "black",
+                            color: "white",
+                            width: "10px",
+                            paddingRight: "0px !important",
+                            paddingTop: "3px !important",
+                            paddingBottom: "3px !important",
                           }}
                           key={key}
                         >

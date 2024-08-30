@@ -240,6 +240,9 @@ const StopReportPage = () => {
                     border: "2px solid gray",
                     background: "#d3d3d3",
                     color: "black",
+                    paddingTop: "3px",
+                    paddingRight: "3px",
+                    width: "100%",
                   }}
                   className={classes.columnAction}
                 />
@@ -249,6 +252,9 @@ const StopReportPage = () => {
                       border: "2px solid gray",
                       background: "#d3d3d3",
                       color: "black",
+                      width: "10%",
+                      paddingTop: "3px !important",
+                      paddingBottom: "3px !important",
                     }}
                     key={key}
                   >
@@ -264,6 +270,9 @@ const StopReportPage = () => {
                     <TableCell
                       sx={{
                         border: "2px solid gray",
+                        paddingRight: "2px !important",
+                        paddingTop: "5px !important",
+                        paddingBottom: "5px !important",
                       }}
                       className={classes.columnAction}
                       padding="none"
@@ -288,6 +297,10 @@ const StopReportPage = () => {
                       <TableCell
                         sx={{
                           border: "2px solid gray",
+                          width: "10px",
+                          paddingRight: "0px !important",
+                          paddingTop: "3px !important",
+                          paddingBottom: "3px !important",
                         }}
                         key={key}
                       >
@@ -315,11 +328,7 @@ const StopReportPage = () => {
       </Fab>
 
       {/* Settings Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem onClick={handleDownload}>
           <GetApp sx={{ marginRight: 1 }} />
           Download

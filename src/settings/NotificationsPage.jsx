@@ -121,6 +121,9 @@ const NotificationsPage = () => {
         sx={{
           borderCollapse: "collapse",
           border: "2px solid gray",
+          paddingTop: "3px",
+          paddingRight: "3px",
+          width: "100%",
         }}
         className={classes.table}
       >
@@ -131,6 +134,9 @@ const NotificationsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("notificationType")}
@@ -140,6 +146,9 @@ const NotificationsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                color: "black",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("notificationAlways")}
@@ -149,6 +158,9 @@ const NotificationsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                color: "black",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedAlarms")}
@@ -158,6 +170,9 @@ const NotificationsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                color: "black",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("notificationNotificators")}
@@ -167,6 +182,9 @@ const NotificationsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                color: "black",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
               className={classes.columnAction}
             >
@@ -181,6 +199,10 @@ const NotificationsPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    minWidth: "12rem",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
                   }}
                 >
                   {t(prefixString("event", item.type))}
@@ -188,6 +210,9 @@ const NotificationsPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
                   }}
                 >
                   {formatBoolean(item.always, t)}
@@ -195,6 +220,9 @@ const NotificationsPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
                   }}
                 >
                   {formatList("alarm", item.attributes?.alarms)}
@@ -202,6 +230,9 @@ const NotificationsPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
                   }}
                 >
                   {formatList("notificator", item.notificators)}
@@ -209,6 +240,9 @@ const NotificationsPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
                   }}
                   className={classes.columnAction}
                   padding="none"

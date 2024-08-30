@@ -67,7 +67,7 @@ const StatisticsPage = () => {
       menu={<ReportsMenu />}
       breadcrumbs={["reportTitle", "statisticsTitle"]}
     >
-      <h2 style={{ paddingLeft: '20px' }}>Statistics</h2>
+      <h2 style={{ paddingLeft: "20px" }}>Statistics</h2>
       <div className={classes.header}>
         <ReportFilter handleSubmit={handleSubmit} showOnly ignoreDevice>
           <ColumnSelect
@@ -81,6 +81,9 @@ const StatisticsPage = () => {
         sx={{
           borderCollapse: "collapse",
           border: "2px solid gray",
+          paddingTop: "3px",
+          paddingRight: "3px",
+          width: "100%",
         }}
       >
         <TableHead>
@@ -91,6 +94,9 @@ const StatisticsPage = () => {
                   border: "2px solid gray",
                   background: "#d3d3d3",
                   color: "black",
+                  width: "10%",
+                  paddingTop: "3px !important",
+                  paddingBottom: "3px !important",
                 }}
                 key={key}
               >
@@ -107,6 +113,9 @@ const StatisticsPage = () => {
                   <TableCell
                     sx={{
                       border: "2px solid gray",
+                      paddingRight: "2px !important",
+                      paddingTop: "5px !important",
+                      paddingBottom: "5px !important",
                     }}
                     key={key}
                   >

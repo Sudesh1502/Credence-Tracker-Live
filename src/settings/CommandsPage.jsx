@@ -110,6 +110,9 @@ const CommandsPage = () => {
         sx={{
           borderCollapse: "collapse",
           border: "2px solid gray",
+          paddingTop: "3px",
+          paddingRight: "3px",
+          width: "100%",
         }}
         className={classes.table}
       >
@@ -120,6 +123,9 @@ const CommandsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedDescription")}
@@ -129,6 +135,9 @@ const CommandsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedType")}
@@ -138,6 +147,9 @@ const CommandsPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("commandSendSms")}
@@ -148,6 +160,9 @@ const CommandsPage = () => {
                   border: "2px solid gray",
                   background: "#d3d3d3",
                   color: "black",
+                  width: "10%",
+                  paddingTop: "3px !important",
+                  paddingBottom: "3px !important",
                 }}
                 className={classes.columnAction}
               >
@@ -163,6 +178,9 @@ const CommandsPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
                   }}
                 >
                   {item.description}
@@ -170,6 +188,10 @@ const CommandsPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {t(prefixString("command", item.type))}
@@ -177,6 +199,10 @@ const CommandsPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {formatBoolean(item.textChannel, t)}
@@ -185,6 +211,10 @@ const CommandsPage = () => {
                   <TableCell
                     sx={{
                       border: "2px solid gray",
+                      width: "10px",
+                      paddingRight: "0px !important",
+                      paddingTop: "3px !important",
+                      paddingBottom: "3px !important",
                     }}
                     className={classes.columnAction}
                     padding="none"

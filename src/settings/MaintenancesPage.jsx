@@ -135,6 +135,9 @@ const MaintenacesPage = () => {
         sx={{
           borderCollapse: "collapse",
           border: "2px solid gray",
+          paddingTop: "3px",
+          paddingRight: "3px",
+          width: "100%",
         }}
         className={classes.table}
       >
@@ -145,6 +148,9 @@ const MaintenacesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedName")}
@@ -154,6 +160,9 @@ const MaintenacesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedType")}
@@ -163,6 +172,9 @@ const MaintenacesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("maintenanceStart")}
@@ -172,6 +184,9 @@ const MaintenacesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("maintenancePeriod")}
@@ -181,6 +196,9 @@ const MaintenacesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
               className={classes.columnAction}
             >
@@ -195,6 +213,9 @@ const MaintenacesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
                   }}
                 >
                   {item.name}
@@ -202,6 +223,9 @@ const MaintenacesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {item.type}
@@ -209,6 +233,9 @@ const MaintenacesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {convertAttribute(item.type, true, item.start)}
@@ -216,6 +243,9 @@ const MaintenacesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                 >
                   {convertAttribute(item.type, false, item.period)}
@@ -223,6 +253,9 @@ const MaintenacesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
                   }}
                   className={classes.columnAction}
                   padding="none"

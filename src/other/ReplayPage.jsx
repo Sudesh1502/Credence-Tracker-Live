@@ -4,8 +4,8 @@ import React, {
 import {
   IconButton, Paper, Slider, Toolbar, Typography,
 } from '@mui/material';
-import map from '../map/core/MapView';
-import makeStyles from '@mui/styles/makeStyles';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import TuneIcon from '@mui/icons-material/Tune';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -13,8 +13,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import FastForwardIcon from '@mui/icons-material/FastForward';
 import FastRewindIcon from '@mui/icons-material/FastRewind';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import makeStyles from '@mui/styles/makeStyles';
 import MapView from '../map/core/MapView';
 import MapRoutePath from '../map/MapRoutePath';
 import MapRoutePoints from '../map/MapRoutePoints';
@@ -79,28 +78,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ReplayPage = () => {
-
-  const [replayMode, setReplayMode] = useState(false);
-  
-  const [history, setHistory] = useState(true);
-  const t = useTranslation();
   const classes = useStyles();
   const navigate = useNavigate();
+  const t = useTranslation();
+
   const timerRef = useRef();
-
-  const hours12 = usePreference('twelveHourFormat');
-
-  const defaultDeviceId = useSelector((state) => state.devices.selectedId);
-
+  const [playing, setPlaying] = useState(false);
   const [positions, setPositions] = useState([]);
   const [index, setIndex] = useState(0);
-  const [selectedDeviceId, setSelectedDeviceId] = useState(defaultDeviceId);
-  const [showCard, setShowCard] = useState(false);
+  const [selectedDeviceId, setSelectedDeviceId] = useState(null);
   const [from, setFrom] = useState();
   const [to, setTo] = useState();
   const [expanded, setExpanded] = useState(true);
-  const [playing, setPlaying] = useState(false);
-  const [stoppagePoints, setStoppagePoints] = useState([]); // New state for stoppage points
+  const [history, setHistory] = useState(true);
+  const [showCard, setShowCard] = useState(false);
 
   const deviceName = useSelector((state) => {
     if (selectedDeviceId) {
@@ -112,46 +103,18 @@ const ReplayPage = () => {
     return null;
   });
 
-
-  useEffect(() => {
-    if (playing && positions.length > 0) {
-      timerRef.current = setInterval(() => {
-        setIndex((index) => index + 1);
-      }, 500);
-    } else {
-      clearInterval(timerRef.current);
-    }
-
-    return () => clearInterval(timerRef.current);
-  }, [playing, positions]);
-
-  useEffect(() => {
-    if (index >= positions.length - 1) {
-      clearInterval(timerRef.current);
-      setPlaying(false);
-    }
-  }, [index, positions]);
-
-  const onPointClick = useCallback((_, index) => {
-    setIndex(index);
-  }, [setIndex]);
-
-  const onMarkerClick = useCallback((positionId) => {
-    setShowCard(!!positionId);
-  }, [setShowCard]);
-
   const handleSubmit = useCatch(async ({ deviceId, from, to }) => {
     setSelectedDeviceId(deviceId);
     setFrom(from);
     setTo(to);
     const query = new URLSearchParams({ deviceId, from, to });
     const response = await fetch(`/api/positions?${query.toString()}`);
-    
+
     if (response.ok) {
       setIndex(0);
       const positions = await response.json();
       setPositions(positions);
-  
+
       if (positions.length) {
         setExpanded(false);
         setHistory(true);
@@ -163,34 +126,66 @@ const ReplayPage = () => {
       throw Error(await response.text());
     }
   });
-  
+
+  // Linear interpolation function
+  const lerp = (start, end, t) => start + (end - start) * t;
+
+  useEffect(() => {
+    if (playing && positions.length > 0) {
+      let frame = 0;
+      timerRef.current = setInterval(() => {
+        const nextIndex = index + 1;
+
+        if (nextIndex < positions.length) {
+          const currentPos = positions[index];
+          const nextPos = positions[nextIndex];
+
+          const interpolatedLat = lerp(currentPos.latitude, nextPos.latitude, frame / 10);
+          const interpolatedLng = lerp(currentPos.longitude, nextPos.longitude, frame / 10);
+
+          // Update the marker position
+          const updatedPositions = [...positions];
+          updatedPositions[index] = {
+            ...currentPos,
+            latitude: interpolatedLat,
+            longitude: interpolatedLng,
+          };
+          setPositions(updatedPositions);
+
+          frame += 1;
+
+          if (frame >= 10) {
+            setIndex(nextIndex);
+            frame = 0;
+          }
+        } else {
+          clearInterval(timerRef.current);
+          setPlaying(false);
+        }
+      }, 50); // Adjust the interval to control the speed of interpolation
+    } else {
+      clearInterval(timerRef.current);
+    }
+
+    return () => clearInterval(timerRef.current);
+  }, [playing, positions, index]);
+
+  const onPointClick = useCallback((_, index) => {
+    setIndex(index);
+  }, [setIndex]);
+
+  const onMarkerClick = useCallback((positionId) => {
+    setShowCard(!!positionId);
+  }, [setShowCard]);
 
   const handleDownload = () => {
     const query = new URLSearchParams({ deviceId: selectedDeviceId, from, to });
     window.location.assign(`/api/positions/kml?${query.toString()}`);
   };
 
-
-  useEffect(() => {
-    if(!expanded){
-      setHistory(true);
-    } else if (expanded) {
-      setHistory(false);
-    }
-  },[expanded])
-  
-  
   return (
     <div className={classes.root}>
-
-
-
-
-
-
       <div className="map">
-  
-  {/* =================================================================================================================== */}
         <MapView>
           <MapGeofence />
           <MapRoutePath positions={positions} />
@@ -202,38 +197,27 @@ const ReplayPage = () => {
         <MapCamera playing={playing} positions={positions} index={index} replayMode />
       </div>
 
-
-
-
-
-
-
-
-
       <div className="card">
-  {/* =================================================================================================================== */}
-      <div>
         <Paper elevation={3} square>
           <Toolbar>
             <IconButton edge="start" sx={{ mr: 2 }} onClick={() => navigate(-1)}>
-              <ArrowBackIcon onClick={()=>{
+              <ArrowBackIcon onClick={() => {
                 setHistory(false);
                 setReplayMode(false);
               }} />
             </IconButton>
             <Typography variant="h6" className={classes.title}>{t('reportReplay')}</Typography>
             {!expanded && index < positions.length && (
-        <div className={classes.statuscard}>
-        <StatusCard
-          deviceId={selectedDeviceId}
-          position={positions[index]}
-          onClose={() => setShowCard(false)}
-          disableActions
-          history={history}
-        />
-
-      </div>
-      )}
+              <div className={classes.statuscard}>
+                <StatusCard
+                  deviceId={selectedDeviceId}
+                  position={positions[index]}
+                  onClose={() => setShowCard(false)}
+                  disableActions
+                  history={history}
+                />
+              </div>
+            )}
             {!expanded && (
               <>
                 <IconButton onClick={handleDownload}>
@@ -263,44 +247,22 @@ const ReplayPage = () => {
                 <IconButton onClick={() => setIndex((index) => index - 1)} disabled={playing || index <= 0}>
                   <FastRewindIcon />
                 </IconButton>
-                <IconButton onClick={() => {
-                  setPlaying(!playing);
-                  // setHistory(true);
-                  
-                  }} disabled={index >= positions.length - 1}>
-                  {playing ? <PauseIcon /> : <PlayArrowIcon /> }
+                <IconButton onClick={() => setPlaying(!playing)} disabled={index >= positions.length - 1}>
+                  {playing ? <PauseIcon /> : <PlayArrowIcon />}
                 </IconButton>
                 <IconButton onClick={() => setIndex((index) => index + 1)} disabled={playing || index >= positions.length - 1}>
                   <FastForwardIcon />
                 </IconButton>
-                {formatTime(positions[index].fixTime, 'seconds', hours12)}
+                {positions.length && positions[index] && (
+                  <Typography variant="subtitle2">{formatTime(positions[index].fixTime)}</Typography>
+                )}
               </div>
             </>
           ) : (
-            <ReportFilter handleSubmit={handleSubmit} fullScreen showOnly />
+            <ReportFilter deviceId={selectedDeviceId} from={from} to={to} onSubmit={handleSubmit} />
           )}
         </Paper>
       </div>
-      {/* {showCard && index < positions.length && (
-        <div className={classes.statuscard}>
-        <StatusCard
-          deviceId={selectedDeviceId}
-          position={positions[index]}
-          onClose={() => setShowCard(false)}
-          disableActions
-          history={history}
-        />
-
-      </div>
-      )} */}
-      </div>
-
-
-
-
-
-
-      
     </div>
   );
 };

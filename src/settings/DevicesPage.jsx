@@ -131,6 +131,9 @@ const DevicesPage = () => {
         sx={{
           borderCollapse: "collapse",
           border: "2px solid gray",
+          paddingTop: "3px",
+          paddingRight: "3px",
+          width: "100%",
         }}
         className={classes.table}
       >
@@ -141,6 +144,9 @@ const DevicesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedName")}
@@ -150,6 +156,9 @@ const DevicesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("deviceIdentifier")}
@@ -159,6 +168,9 @@ const DevicesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("groupParent")}
@@ -168,6 +180,9 @@ const DevicesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("sharedPhone")}
@@ -177,6 +192,9 @@ const DevicesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("deviceModel")}
@@ -186,6 +204,9 @@ const DevicesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("deviceContact")}
@@ -195,6 +216,9 @@ const DevicesPage = () => {
                 border: "2px solid gray",
                 background: "#d3d3d3",
                 color: "black",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
             >
               {t("userExpirationTime")}
@@ -205,6 +229,9 @@ const DevicesPage = () => {
                 background: "#d3d3d3",
                 color: "black",
                 textAlign: "center",
+                width: "10%",
+                paddingTop: "3px !important",
+                paddingBottom: "3px !important",
               }}
               className={classes.columnAction}
               padding="none"
@@ -217,29 +244,89 @@ const DevicesPage = () => {
           {!loading ? (
             items.filter(filterByKeyword(searchKeyword)).map((item) => (
               <TableRow key={item.id}>
-                <TableCell sx={{ border: "2px solid gray" }}>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
+                  }}
+                >
                   {item.name}
                 </TableCell>
-                <TableCell sx={{ border: "2px solid gray" }}>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
+                  }}
+                >
                   {item.uniqueId}
                 </TableCell>
-                <TableCell sx={{ border: "2px solid gray" }}>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
+                  }}
+                >
                   {item.groupId ? groups[item.groupId]?.name : null}
                 </TableCell>
-                <TableCell sx={{ border: "2px solid gray" }}>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
+                  }}
+                >
                   {item.phone}
                 </TableCell>
-                <TableCell sx={{ border: "2px solid gray" }}>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
+                  }}
+                >
                   {item.model}
                 </TableCell>
-                <TableCell sx={{ border: "2px solid gray" }}>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
+                  }}
+                >
                   {item.contact}
                 </TableCell>
-                <TableCell sx={{ border: "2px solid gray" }}>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
+                  }}
+                >
                   {formatTime(item.expirationTime, "date", hours12)}
                 </TableCell>
                 <TableCell
-                  sx={{ border: "2px solid gray" }}
+                  sx={{
+                    border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
+                  }}
                   className={classes.columnAction}
                   padding="none"
                 >
