@@ -9,6 +9,7 @@ import { findFonts } from './core/mapUtil';
 import { useAttributePreference, usePreference } from '../common/util/preferences';
 
 const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleField }) => {
+  console.log("positions in MapPositions", positions);
   const id = useId();
   const clusters = `${id}-clusters`;
   const selected = `${id}-selected`;
