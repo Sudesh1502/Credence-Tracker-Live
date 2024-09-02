@@ -352,7 +352,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
   },
   nameAddress: {
-    width: "13rem",
+    width: "15rem",
   },
   controlNavigation: {
     display: "flex",
@@ -638,7 +638,7 @@ const DeviceRow = ({ data, index, style }) => {
             padding: "0px",
             margin: "0px",
             width: "100%",
-            marginBottom: "3px",
+            marginBottom: "6px",
             marginTop: "8px",
           }}
         />
