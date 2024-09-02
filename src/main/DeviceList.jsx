@@ -28,7 +28,7 @@ const DeviceList = ({ devices }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const listInnerEl = useRef(null);
-  console.log(DeviceRow);
+  // console.log(DeviceRow);
 
   if (listInnerEl.current) {
     listInnerEl.current.className = classes.listInner;

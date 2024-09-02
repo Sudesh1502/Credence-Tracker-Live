@@ -10,7 +10,7 @@ import { useAttributePreference, usePreference } from '../common/util/preference
 import { icon } from 'leaflet';
 
 const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleField }) => {
-  console.log("positions in MapPositions", positions);
+  // console.log("positions in MapPositions", positions);
   const id = useId();
   const clusters = `${id}-clusters`;
   const selected = `${id}-selected`;
@@ -125,7 +125,7 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
         filter: ['!has', 'point_count'],
         layout: {
           'icon-image': '{category}-{color}',
-          'icon-size': 0.1,
+          'icon-size': 0.2,
           'icon-rotate': ['get', 'rotation'],
           'icon-allow-overlap': true,
           'text-field': `{${titleField || 'name'}}`,

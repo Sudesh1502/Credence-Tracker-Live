@@ -123,9 +123,70 @@ const MainPage = () => {
     filterMap,
     positions,
     setFilteredDevices,
-    setFilteredPositions
+    setFilteredPositions,
   );
+  const [runningArray, setRunningArray] = useState([]);
+  const [stopArray, setStopArray] = useState([]);
+  const [idleArray, setIdleArray] = useState([]);
+  const [overspeedArray, setOverspeedArray] = useState([]);
+  const [inactiveArray, setInactiveArray] = useState([]);
+  const [data, setData] = useState('all');
 
+  useEffect(() => {
+    if (filteredDevices) {
+      setRunningArray(filteredDevices.filter((device) => {
+        const ignition = device?.attributes?.ignition;
+        const speed = device?.speed;
+        return ignition && speed >= 2 && speed <= 60;
+      }));
+
+      setStopArray(filteredDevices.filter((device) => {
+        const ignition = device?.attributes?.ignition;
+        const speed = device?.speed;
+        return !ignition && speed < 1;
+      }));
+
+      setIdleArray(filteredDevices.filter((device) => {
+        const ignition = device?.attributes?.ignition;
+        const speed = device?.speed;
+        return ignition && speed < 2;
+      }));
+
+      setOverspeedArray(filteredDevices.filter((device) => {
+        const ignition = device?.attributes?.ignition;
+        const speed = device?.speed;
+        return ignition && speed > 60;
+      }));
+
+      setInactiveArray(filteredDevices.filter((device) => {
+        return !device || !device.attributes || Object.keys(device).length === 0;
+      }));
+    }
+  }, [filteredDevices]);
+
+  useEffect(() => {
+    setFilteredDevices(getArrayByStatus(data));
+  }, [data, runningArray, stopArray, idleArray, overspeedArray, inactiveArray, filteredDevices]);
+
+  const getArrayByStatus = (status) => {
+    switch (status) {
+      case 'running':
+        return runningArray;
+      case 'stop':
+        return stopArray;
+      case 'idle':
+        return idleArray;
+      case 'overspeed':
+        return overspeedArray;
+      case 'inactive':
+        return inactiveArray;
+      case 'all':
+        return filteredDevices;
+      default:
+        return filteredDevices;
+    }
+  };
+  
   return (
     <div className={classes.root}>
       <div className={`${classes.sidebar} middlesidebar`}>
@@ -143,7 +204,7 @@ const MainPage = () => {
             filterMap={filterMap}
             setFilterMap={setFilterMap}
           />
-          <StatusBar positions={positions} />
+          <StatusBar setData={setData} positions={positions} />
         </Paper>
         <div className={classes.middle}>
           <Paper

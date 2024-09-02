@@ -393,30 +393,32 @@ const DeviceRow = ({ data, index, style }) => {
 
   useEffect(() => {
     const fetchAddress = async () => {
-      try {
-        const apikey = "AIzaSyDaAp1GusRbgweZ24BQcx1lz5RFcPXKL0U"
-        const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apikey}`);
-        
-        const data = response.data;
-        console.log(data);
-        
-        if (data.status === "OK" && data.results.length > 0) {
-          setAddress(data.results[0].formatted_address);
-          console.log("addressssssss====================",address);
-        } else {
-          setError("No address details available");
-        }
-      } catch (error) {
-        console.error('Error fetching address:', error.message || error);
-        setError(`Error fetching address: ${error.message || error}`);
+      const apiKey = '573ce90f753b1a696a9fbf0e3e9b2795';
+    const url = `https://apis.mapmyindia.com/advancedmaps/v1/${apiKey}/rev_geocode`;
+
+    try {
+      const response = await axios.get(url, {
+        params: {
+          lat: lat,
+          lng: lon,
+        },
+      });
+      if (response.data.results && response.data.results.length > 0) {
+        setAddress(response.data.results[0].formatted_address);
+      } else {
+        setAddress('Address not found');
       }
+    } catch (error) {
+      console.error('Error fetching address:', error);
+      setAddress('Error fetching address');
+    }
     };
-  
+
     if (lat && lon) {
       fetchAddress();
     }
-  }, [lat, lon]);
+  }, [lat, lon]); // Update dependency array to use the correct state variables
+
   const secondaryText = () => {
     let status;
     if (item.status === "online" || !item.lastUpdate) {
@@ -717,7 +719,7 @@ const DeviceRow = ({ data, index, style }) => {
                 gap: '0.6rem',
               }}
             >
-              {position.attributes.hasOwnProperty("alarm") && (
+              {/* {position.attributes.hasOwnProperty("alarm") && (
                 <Tooltip
                   title={`${t("eventAlarm")}: ${formatAlarm(
                     position.attributes.alarm,
@@ -728,7 +730,7 @@ const DeviceRow = ({ data, index, style }) => {
                     <ErrorIcon fontSize="small" className={classes.error} />
                   </IconButton>
                 </Tooltip>
-              )}
+              )} */}
               {(position.attributes.hasOwnProperty("ignition") && (
                 <Tooltip
                   sx={{
