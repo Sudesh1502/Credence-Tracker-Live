@@ -20,7 +20,9 @@ const StatusBar = ({ positions = {} }) => {
     let inactiveCount = 0;
 
     positionArray.forEach((position) => {
-      if (!position.attributes.ignition && position.speed < 1) {
+      if (!position) {  // Check if the position is missing or null
+        inactiveCount++;
+      } else if (!position.attributes.ignition && position.speed < 1) {
         stopCount++;
       } else if (position.attributes.ignition && position.speed < 2) {
         idleCount++;
@@ -33,7 +35,7 @@ const StatusBar = ({ positions = {} }) => {
       } else if (position.attributes.ignition && position.speed > 60) {
         overspeedCount++;
       } else {
-        inactiveCount++;
+        inactiveCount++;  // Fallback for any other unexpected cases
       }
     });
 

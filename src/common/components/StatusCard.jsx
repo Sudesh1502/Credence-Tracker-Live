@@ -53,7 +53,8 @@ import clsx from "clsx";
 const useStyles = makeStyles((theme) => ({
   card: {
     pointerEvents: "auto",
-    width: "69%",
+    // width: "69%",
+    width: "56.5rem",
     height: 250,
     borderRadius: 20,
     float: "right",
@@ -97,13 +98,14 @@ const useStyles = makeStyles((theme) => ({
   },
   gridContainer: {
     display: "grid",
-    gridTemplateColumns: "repeat(6, 1fr)",
-    gridTemplateRows: "repeat(2, 1fr)",
+    gridTemplateColumns: "repeat(6, 2fr)",
+    gridTemplateRows: "repeat(1, 0fr)",
     rowGap: "0px", // Remove vertical spacing between rows
-    columnGap: theme.spacing(2), // Keep the horizontal spacing
+    // columnGap: theme.spacing(2), // Keep the horizontal spacing
     alignItems: "center",
     justifyItems: "start",
     height: "100%",
+    // width:"1000px"
   },
   gridItem: {
     padding: theme.spacing(1),
@@ -242,7 +244,7 @@ const StatusCard = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useTranslation();
-
+  const [item, setItem] = useState('deviceId');
   const deviceReadonly = useDeviceReadonly();
 
   const shareDisabled = useSelector(
@@ -286,6 +288,7 @@ const StatusCard = ({
     });
     if (response.ok) {
       const item = await response.json();
+      setItem(item);
       const permissionResponse = await fetch("/api/permissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -391,6 +394,9 @@ const StatusCard = ({
                           <Typography
                             variant="body2"
                             style={{ fontWeight: "bold" }}
+                            onClick={()=>{
+                              navigate(`/settings/geofence/${device.id}`)
+                            }}
                           >
                             Geofence
                           </Typography>
@@ -412,6 +418,9 @@ const StatusCard = ({
                           <Typography
                             variant="body2"
                             style={{ fontWeight: "bold" }}
+                            onClick={() =>
+                              navigate(`/settings/device/${deviceId}/share`)
+                            }
                           >
                             Share
                           </Typography>
@@ -432,6 +441,9 @@ const StatusCard = ({
                           <Typography
                             variant="body2"
                             style={{ fontWeight: "bold" }}
+                            onClick={()=>{
+                              navigate("settings/maintenances")
+                            }}
                           >
                             Maintenance
                           </Typography>

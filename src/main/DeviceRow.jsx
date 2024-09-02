@@ -146,7 +146,7 @@
 
 // export default DeviceRow;
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import makeStyles from "@mui/styles/makeStyles";
 import { IconButton, Tooltip, ListItemButton, Typography } from "@mui/material";
@@ -235,6 +235,7 @@ import { useAdministrator } from "../common/util/permissions";
 import EngineIcon from "../resources/images/data/engine.svg?react";
 import { useAttributePreference } from "../common/util/preferences";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 dayjs.extend(relativeTime);
 
@@ -287,10 +288,8 @@ const useStyles = makeStyles((theme) => ({
   },
   address: {
     color: "#000",
-    marginBottom: "2px",
-    fontSize:"0.7rem",
-    marginTop: "4px",
-
+    marginBottom: "4px",
+    fontSize: "0.7rem",
   },
   name: {
     color: "#000 !important",
@@ -395,22 +394,29 @@ const DeviceRow = ({ data, index, style }) => {
   useEffect(() => {
     const fetchAddress = async () => {
       try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`
-        );
-        const data = await response.json();
+        const apikey = "AIzaSyDaAp1GusRbgweZ24BQcx1lz5RFcPXKL0U"
+        const response = await axios.get(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apikey}`);
+        
+        const data = response.data;
         console.log(data);
-        setAddress(
-          `${data.address.neighbourhood}, ${data.address.city}, ${data.address.state}, ${data.address.postcode}`
-        );
+        
+        if (data.status === "OK" && data.results.length > 0) {
+          setAddress(data.results[0].formatted_address);
+          console.log("addressssssss====================",address);
+        } else {
+          setError("No address details available");
+        }
       } catch (error) {
-        console.error("Error fetching address:", error);
+        console.error('Error fetching address:', error.message || error);
+        setError(`Error fetching address: ${error.message || error}`);
       }
     };
-
-    fetchAddress();
+  
+    if (lat && lon) {
+      fetchAddress();
+    }
   }, [lat, lon]);
-
   const secondaryText = () => {
     let status;
     if (item.status === "online" || !item.lastUpdate) {
@@ -597,7 +603,7 @@ const DeviceRow = ({ data, index, style }) => {
             </div>
 
             <Typography variant="body2" className={classes.address}>
-              {address || "Address not available"}
+              {address || "Loading vehicle address..."}
             </Typography>
           </div>
 
@@ -638,7 +644,7 @@ const DeviceRow = ({ data, index, style }) => {
             padding: "0px",
             margin: "0px",
             width: "100%",
-            marginBottom: "6px",
+            marginBottom: "3px",
             marginTop: "8px",
           }}
         />

@@ -7,6 +7,7 @@ import { formatTime, getStatusColor } from '../common/util/formatter';
 import { mapIconKey } from './core/preloadImages';
 import { findFonts } from './core/mapUtil';
 import { useAttributePreference, usePreference } from '../common/util/preferences';
+import { icon } from 'leaflet';
 
 const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleField }) => {
   console.log("positions in MapPositions", positions);
@@ -16,7 +17,7 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
 
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
-  const iconScale = useAttributePreference('iconScale', desktop ? 0.2 : 0.2);
+  const iconScale = useAttributePreference('iconScale', desktop ? 0.1 : 0.2);
 
   const devices = useSelector((state) => state.devices.items);
   const selectedDeviceId = useSelector((state) => state.devices.selectedId);
@@ -124,15 +125,15 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
         filter: ['!has', 'point_count'],
         layout: {
           'icon-image': '{category}-{color}',
-          'icon-size': iconScale,
+          'icon-size': 0.2,
           'icon-rotate': ['get', 'rotation'],
           'icon-allow-overlap': true,
           'text-field': `{${titleField || 'name'}}`,
           'text-allow-overlap': true,
           'text-anchor': 'bottom',
-          'text-offset': [0, -2 * iconScale],
+          'text-offset': [0, -2],
           'text-font': findFonts(map),
-          'text-size': 12,
+          'text-size': 11,
         },
         paint: {
           'text-halo-color': 'white',
@@ -150,7 +151,7 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
         ],
         layout: {
           'icon-image': 'direction',
-          'icon-size': iconScale,
+          'icon-size': 1,
           'icon-allow-overlap': true,
           'icon-rotate': ['get', 'rotation'],
           'icon-rotation-alignment': 'map',
@@ -169,7 +170,7 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
       layout: {
         'icon-image': 'background',
         'icon-rotate': ['get', 'rotation'],
-        'icon-size': iconScale,
+        'icon-size': 1,
         'text-field': '{point_count_abbreviated}',
         'text-font': findFonts(map),
         'text-size': 14,
