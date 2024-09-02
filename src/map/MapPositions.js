@@ -125,7 +125,7 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
         filter: ['!has', 'point_count'],
         layout: {
           'icon-image': '{category}-{color}',
-          'icon-size': 0.2,
+          'icon-size': 0.1,
           'icon-rotate': ['get', 'rotation'],
           'icon-allow-overlap': true,
           'text-field': `{${titleField || 'name'}}`,

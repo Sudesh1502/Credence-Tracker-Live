@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
     "&::-webkit-scrollbar": {
       display: "none" /* Chrome, Safari, and Opera */,
     },
+    
     /* For other browsers */
     scrollbarWidth: "none" /* Firefox */,
     msOverflowStyle: "none" /* Internet Explorer 10+ */,
