@@ -48,7 +48,7 @@ import PowerIcon from "@mui/icons-material/Power"; // Ignition
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar"; // Distance
 import "./PopUp.css";
 
-import clsx from 'clsx';
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -57,13 +57,13 @@ const useStyles = makeStyles((theme) => ({
     height: 250,
     borderRadius: 20,
     float: "right",
-    overflowY: 'scroll',
-    '&::-webkit-scrollbar': {
-      display: 'none', /* Chrome, Safari, and Opera */
+    overflowY: "scroll",
+    "&::-webkit-scrollbar": {
+      display: "none" /* Chrome, Safari, and Opera */,
     },
     /* For other browsers */
-    scrollbarWidth: 'none', /* Firefox */
-    msOverflowStyle: 'none', /* Internet Explorer 10+ */
+    scrollbarWidth: "none" /* Firefox */,
+    msOverflowStyle: "none" /* Internet Explorer 10+ */,
   },
   media: {
     height: theme.dimensions.popupImageHeight,
@@ -113,12 +113,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
   },
   historyStatusCard: {
-    display: 'flex',
+    display: "flex",
     gap: "2.5rem",
     marginRight: "4rem",
   },
   histortyActive: {
-    display: 'flex',
+    display: "flex",
     alignItems: "center",
   },
   contentData: {
@@ -157,33 +157,30 @@ const StatusRow = ({ name, content, history, t }) => {
 
   // Map the name to an icon component
 
-  if(history){
-    
+  if (history) {
     const skipNames = new Set([
-      'altitude',
-      'course',
-      'accuracy',
-      'valid',
-      'identifier',
-      'longitude',
-      'latitude',
-      'geofences',
-      'address',
-      'odometer',
-      'event',
-      'protocol',
-      'server time',
-      'fix time'
+      "altitude",
+      "course",
+      "accuracy",
+      "valid",
+      "identifier",
+      "longitude",
+      "latitude",
+      "geofences",
+      "address",
+      "odometer",
+      "event",
+      "protocol",
+      "server time",
+      "fix time",
     ]);
-  
+
     // Check if the name should be skipped
     console.log(name);
-    if (skipNames.has(name.toLowerCase()) ) {
+    if (skipNames.has(name.toLowerCase())) {
       return null;
     }
-
   }
-
 
   const iconMap = {
     "Device Time": <AccessTimeIcon fontSize="small" />,
@@ -206,12 +203,12 @@ const StatusRow = ({ name, content, history, t }) => {
     Distance: <DirectionsCarIcon fontSize="small" />, // Add Distance icon
   };
 
-  
-
   return (
-    <Grid item className={clsx(classes.gridItem, {
-      [classes.histortyActive]: history,
-    })}
+    <Grid
+      item
+      className={clsx(classes.gridItem, {
+        [classes.histortyActive]: history,
+      })}
     >
       <div style={{ display: "flex", alignItems: "center" }}>
         {iconMap[name]} {/* Render the appropriate icon based on the name */}
@@ -225,7 +222,7 @@ const StatusRow = ({ name, content, history, t }) => {
         className={clsx(classes.contentData, {
           [classes.historyContent]: history,
         })}
-         // Apply padding to shift the lower values to the right
+        // Apply padding to shift the lower values to the right
       >
         {content}
       </Typography>
@@ -311,44 +308,42 @@ const StatusCard = ({
       {history ? (
         <>
           <div className={classes.historyStatusCard}>
-          {positionItems
-                          .split(",")
-                          .filter(
-                            (key) =>
-                              position.hasOwnProperty(key) ||
-                              position.attributes.hasOwnProperty(key)
-                          )
-                          .map((key) => (
-                            <StatusRow
-                              key={key}
-                              name={positionAttributes[key]?.name || key}
-                              content={
-                                <PositionValue
-                                  position={position}
-                                  property={
-                                    position.hasOwnProperty(key) ? key : null
-                                  }
-                                  attribute={
-                                    position.hasOwnProperty(key) ? null : key
-                                  }
-                                />
-                              }
-
-                              history={ history }
-                              t={t}
-                            />
-                          ))}
+            {positionItems
+              .split(",")
+              .filter(
+                (key) =>
+                  position.hasOwnProperty(key) ||
+                  position.attributes.hasOwnProperty(key)
+              )
+              .map((key) => (
+                <StatusRow
+                  key={key}
+                  name={positionAttributes[key]?.name || key}
+                  content={
+                    <PositionValue
+                      position={position}
+                      property={position.hasOwnProperty(key) ? key : null}
+                      attribute={position.hasOwnProperty(key) ? null : key}
+                    />
+                  }
+                  history={history}
+                  t={t}
+                />
+              ))}
           </div>
         </>
       ) : (
         <>
-          <div className={classes.root}>
+          <div className={`${classes.root} card`}>
             {device && (
-              <Draggable handle={`.${classes.media}, .${classes.header}`}>
-                  <Card elevation={3} className={`${classes.card} responsive-card`}>
+              <Draggable handle={`.${classes.media}, .${classes.header} `}>
+                <Card
+                  elevation={3}
+                  className={`${classes.card} responsive-card `}
+                >
                   {deviceImage ? (
                     <CardMedia
-                      className={classes.media}
+                      className={`${classes.media} `}
                       image={`/api/media/${device.uniqueId}/${deviceImage}`}
                     >
                       <IconButton
@@ -371,7 +366,7 @@ const StatusCard = ({
                         {device.name}
                       </Typography>
                       <div
-                      className="responsive-header"
+                        className="responsive-header head header"
                         style={{
                           display: "flex",
                           gap: "10px",
@@ -380,6 +375,7 @@ const StatusCard = ({
                         }}
                       >
                         <IconButton
+                          className="nav-bar"
                           size="small"
                           onClick={() => console.log("Geofence clicked")}
                           style={{
@@ -400,6 +396,7 @@ const StatusCard = ({
                           </Typography>
                         </IconButton>
                         <IconButton
+                          className="nav-bar"
                           size="small"
                           onClick={() => console.log("Share clicked")}
                           disabled={shareDisabled}
@@ -420,6 +417,7 @@ const StatusCard = ({
                           </Typography>
                         </IconButton>
                         <IconButton
+                          className="nav-bar"
                           size="small"
                           onClick={() => console.log("Maintenance clicked")}
                           style={{
@@ -439,6 +437,7 @@ const StatusCard = ({
                           </Typography>
                         </IconButton>
                         <IconButton
+                          className="nav-bar"
                           size="small"
                           onClick={() => console.log("Wallet clicked")}
                           style={{
@@ -451,31 +450,16 @@ const StatusCard = ({
                           }}
                         >
                           <Typography
+                            className="nav-bar"
                             variant="body2"
                             style={{ fontWeight: "bold" }}
                           >
                             Wallet
                           </Typography>
                         </IconButton>
-                        {/* <IconButton
-                size="small"
-                onClick={() => console.log("Toing clicked")}
-                style={{
-                  fontWeight: "bold",
-                  border: "1px solid black",
-                  color: "#000000",
-                  borderRadius: "4px",
-                  padding: "4px 8px",
-                }}
-              >
-                <Typography
-                  variant="body2"
-                  style={{ fontWeight: "bold" }}
-                >
-                  Toing
-                </Typography>
-              </IconButton> */}
+
                         <IconButton
+                          className="nav-bar"
                           size="small"
                           onClick={(e) => setAnchorEl(e.currentTarget)}
                           style={{

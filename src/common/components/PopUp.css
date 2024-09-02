@@ -1,20 +1,91 @@
-
-
 /* General styles for status text */
 .status-text {
-    font-size: 1rem;
-    color: #000;
-    text-align: center;
-    margin: 10px 0;
+  font-size: 1rem;
+  color: #000;
+  text-align: center;
+  margin: 10px 0;
+}
+
+/* Screen Size 768px */
+@media (max-width: 768px) {
+  .header {
+    margin-left: 260px !important ;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
   }
-  
-  /* Media query for tablets (768px and up) */
-  @media (max-width: 1280px) {
-    .responsive-card {
-      width: 59% !important;
-    }
-    .responsive-header {
-      margin-left: 200px !important ;
-    }
+  .card {
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
   }
-  
+}
+
+/* Screen Size 820px */
+@media (max-width: 820px) {
+  .responsive-header {
+    padding-left: 280px !important ;
+  }
+  .card {
+    width: 100% !important;
+    max-width: 160% !important; /* Ensure it doesn't exceed parent width */
+    box-sizing: border-box !important; /* Include padding and borders in the width */
+  }
+}
+
+/* Screen Size 912px */
+@media (max-width: 912px) {
+  .makeStyles-card-44 {
+    width: 100% !important;
+  }
+  .header {
+    margin-left: 460px !important ;
+  }
+  .card {
+    width: 180% !important;
+  }
+}
+
+/* Screen size 1280px */
+
+@media (max-width: 1280px) {
+  .responsive-card {
+    width: 59% !important;
+  }
+  .responsive-header {
+    margin-left: 10px !important ;
+  }
+}
+
+/* Screen size 1024px */
+@media (max-width: 1024px) {
+  .responsive-card {
+    width: 59% !important;
+    padding-right: 0px;
+    min-width: 0rem;
+  }
+  .responsive-header {
+    margin-left: 20px !important ;
+    padding-right: 0px;
+  }
+  .makeStyles-header-153 {
+    padding: 4px 4px 0px 10px !important;
+  }
+  .css-46bh2p-MuiCardContent-root {
+    padding: 0;
+  }
+  .nav-bar {
+    padding: 1px 2px !important;
+    line-height: 0.5rem !important;
+    gap: 1px !important;
+  }
+  .makeStyles-gridContainer-51 {
+    grid-template-rows: repeat(1, 1fr) !important ;
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
+  .makeStyles-gridContainer-51 {
+    font-size: 0.7rem !important;
+    column-gap: 3px !important;
+  }
+  .css-1o6kmfp-MuiTypography-root {
+    font-size: 0.7rem !important  ;
+  }
+}

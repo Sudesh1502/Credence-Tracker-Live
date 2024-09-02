@@ -18,6 +18,7 @@
     "@turf/circle": "^6.5.0",
     "@turf/turf": "^6.5.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "axios": "^1.7.7",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.10",
     "events": "^3.3.0",

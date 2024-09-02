@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       marginRight: 0,
     },
+    width: "460px",
   },
 }));
 
@@ -153,7 +154,7 @@ const MainToolbar = ({
   return (
     <Toolbar
       ref={toolbarRef}
-      className={classes.toolbar}
+      className={`${classes.toolbar} nav-item`}
       value={currentSelection()}
     >
       <Grid container alignItems="center" justifyContent="space-between">

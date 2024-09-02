@@ -1,0 +1,5 @@
+@media (max-width: 820px) {
+  .nav-item {
+    width: 460px !important;
+  }
+}

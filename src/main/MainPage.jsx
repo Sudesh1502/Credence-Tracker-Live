@@ -15,6 +15,7 @@ import MainToolbar from "./MainToolbar";
 import MainMap from "./MainMap";
 import StatusBar from "./StatusBar";
 import { useAttributePreference } from "../common/util/preferences";
+import "./MainPages.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 6,
     position: "fixed",
     top: 0,
-    width: "40%", // 40% of the screen width
+    width: "40%", // 40% of the screen navbar
     backgroundColor: theme.palette.background.paper,
     height: theme.spacing(12), // Adjusted height to accommodate StatusBar
     display: "flex",
@@ -107,7 +108,7 @@ const MainPage = () => {
   const [eventsOpen, setEventsOpen] = useState(false);
 
   const onEventsClick = useCallback(() => setEventsOpen(true), [setEventsOpen]);
-  console.log("=================================positions ",positions);
+  // console.log("=================================positions ", positions);
 
   useEffect(() => {
     if (!desktop && mapOnSelect && selectedDeviceId) {
@@ -127,8 +128,8 @@ const MainPage = () => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.sidebar}>
-        <Paper square elevation={3} className={classes.header}>
+      <div className={`${classes.sidebar} middlesidebar`}>
+        <Paper square elevation={3} className={`${classes.header} navbar`}>
           <MainToolbar
             filteredDevices={filteredDevices}
             devicesOpen={devicesOpen}
@@ -142,8 +143,7 @@ const MainPage = () => {
             filterMap={filterMap}
             setFilterMap={setFilterMap}
           />
-          <StatusBar positions={positions} /> 
-          
+          <StatusBar positions={positions} />
         </Paper>
         <div className={classes.middle}>
           <Paper
@@ -155,7 +155,7 @@ const MainPage = () => {
           </Paper>
         </div>
         {desktop && (
-          <div className={`${classes.footer}`}>
+          <div className={`${classes.footer} bottom`}>
             <BottomMenu />
           </div>
         )}

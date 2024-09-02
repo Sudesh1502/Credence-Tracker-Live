@@ -1,0 +1,53 @@
+/* 
+Asus ZenBook
+@media (min-width: 821px) and (max-width: 854px) {
+  .middlesidebar {
+    width: 106% !important;
+  }
+  .navbar {
+    width: 100% !important;
+  }
+  .makeStyles-toolbar-12 {
+    width: 106% !important;
+  }
+} 
+*/
+
+/* screen size 1024px */
+@media (max-width: 1024px) {
+  .navbar {
+    width: 49% !important;
+  }
+  .middlesidebar {
+    width: 49% !important;
+  }
+  .bottom {
+    width: 49% !important;
+  }
+}
+
+/* screen size 912px */
+@media (max-width: 912px) {
+  .middlesidebar,
+  .navbar,
+  .bottom {
+    width: 62% !important;
+  }
+}
+
+/* screen size 820px */
+@media (max-width: 820px) {
+  .middlesidebar,
+  .navbar {
+    width: 60% !important;
+  }
+}
+
+/* Screen Size 768px */
+@media (max-width: 768px) {
+  .middlesidebar,
+  .navbar,
+  .bottom {
+    width: 70% !important;
+  }
+}

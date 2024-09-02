@@ -170,22 +170,21 @@ const ReplayPage = () => {
     window.location.assign(`/api/positions/kml?${query.toString()}`);
   };
 
-
   useEffect(() => {
-    if(!expanded){
-      setHistory(true);
-    } else if (expanded) {
-      setHistory(false);
-    }
-  },[expanded])
-  
-  
+
+      if(!expanded){
+
+        setHistory(true);
+
+      } else if (expanded) {
+
+        setHistory(false);
+
+      }
+  }, [expanded]);
+
   return (
     <div className={classes.root}>
-
-
-
-
 
 
       <div className="map">

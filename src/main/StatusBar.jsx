@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./StatusBar.css";
 
-const StatusBar = ({ positions = {} }) => {  // Defaulting to an empty object
+const StatusBar = ({ positions = {} }) => {
+  // Defaulting to an empty object
   const [stop, setStop] = useState(0);
   const [running, setRunning] = useState(0);
   const [overspeed, setOverspeed] = useState(0);
@@ -23,7 +24,11 @@ const StatusBar = ({ positions = {} }) => {  // Defaulting to an empty object
         stopCount++;
       } else if (position.attributes.ignition && position.speed < 2) {
         idleCount++;
-      } else if (position.attributes.ignition && position.speed >= 2 && position.speed <= 60) {
+      } else if (
+        position.attributes.ignition &&
+        position.speed >= 2 &&
+        position.speed <= 60
+      ) {
         runningCount++;
       } else if (position.attributes.ignition && position.speed > 60) {
         overspeedCount++;

@@ -287,7 +287,10 @@ const useStyles = makeStyles((theme) => ({
   },
   address: {
     color: "#000",
-    marginBottom: "4px",
+    marginBottom: "2px",
+    fontSize:"0.7rem",
+    marginTop: "4px",
+
   },
   name: {
     color: "#000 !important",

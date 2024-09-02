@@ -1,7 +1,7 @@
 .status-bar {
   display: flex;
   gap: 8px;
-  position:relative;
+  position: relative;
   padding-right: 30px;
   padding-left: 20px;
   justify-content: space-between;
@@ -52,6 +52,47 @@
   color: white;
 }
 
+/* Screen size 912px */
+@media (max-width: 912px) {
+  .status-bar {
+    width: 570px;
+    gap: 100px;
+  }
+}
+
+/* Screen size 820px */
+
+@media (max-width: 820px) {
+  .status-item {
+    font-size: 0.7rem !important;
+    padding-right: 2px;
+    padding-left: 2px;
+    gap: 1px !important;
+  }
+  .status-bar {
+    gap: 1px !important;
+    width: 100%;
+    padding-right: 2px !important ;
+    padding-left: 2px !important;
+  }
+}
+
+/* Screen size 1024px */
+
+@media (max-width: 1024px) {
+  .status-item {
+    font-size: 0.9rem !important;
+    padding-right: 2px;
+    padding-left: 2px;
+  }
+  .status-bar {
+    gap: 5px !important;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+}
+
+/* Screen size 1280px */
 @media (max-width: 1280px) {
   .status-item {
     font-size: 0.7rem;
