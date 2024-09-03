@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./StatusBar.css";
+import { useEffectAsync } from "../reactHelper";
 
 const StatusBar = ({ setData }) => {
   const [stop, setStop] = useState(0);
@@ -9,6 +10,7 @@ const StatusBar = ({ setData }) => {
   const [inactive, setInactive] = useState(0);
   const [all, setAll] = useState(0);
   const [positions, setPositions] = useState([]);
+  const [device, setDevice] = useState([]);
 
   useEffect(() => {
     const fetchPositions = async () => {
@@ -28,6 +30,15 @@ const StatusBar = ({ setData }) => {
     fetchPositions();
   }, []);
 
+  useEffectAsync(async () => {
+    const response = await fetch('/api/devices');
+    if (response.ok) {
+      setDevice(await response.json());
+    } else {
+      throw Error(await response.text());
+    }
+  }, []);
+
   useEffect(() => {
     const calculateStatus = () => {
       let stopCount = 0;
@@ -39,6 +50,8 @@ const StatusBar = ({ setData }) => {
       positions.forEach((position) => {
         const ignition = position?.attributes?.ignition;
         const speed = position?.speed || 0;
+        const lu = position.lastUpdate;
+        console.log(position);
 
         if (!position || !position.attributes || Object.keys(position).length === 0) {
           inactiveCount++;
@@ -50,8 +63,6 @@ const StatusBar = ({ setData }) => {
           runningCount++;
         } else if (ignition && speed > 60) {
           overspeedCount++;
-        } else {
-          inactiveCount++;
         }
       });
 
@@ -59,8 +70,10 @@ const StatusBar = ({ setData }) => {
       setIdle(idleCount);
       setRunning(runningCount);
       setOverspeed(overspeedCount);
-      setAll(positions.length);
-      setInactive(inactiveCount);
+      const inact = device.filter((dev)=> ( dev.status !== "online" && dev.lastUpdate === null ))
+      setInactive(inact.length);
+      const act = device.filter((dev)=> dev.status === "online")
+      setAll(device.length);
     };
 
     if (positions.length > 0) {

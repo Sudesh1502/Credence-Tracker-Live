@@ -399,13 +399,13 @@ const DeviceRow = ({ data, index, style }) => {
         );
         
         const data = response.data;
-        console.log(data);
+        // console.log(data);
         
         setAddress(
           `${data.address.neighbourhood || ''}, ${data.address.city || ''}, ${data.address.state || ''}, ${data.address.postcode || ''}`
         );
       } catch (error) {
-        console.error('Error fetching address:', error.message || error);
+        // console.error('Error fetching address:', error.message || error);
         // setError(`Error fetching address: ${error.message || error}`);
       }
     };
@@ -561,7 +561,10 @@ const DeviceRow = ({ data, index, style }) => {
     <div style={style} className={classes.card}>
       <ListItemButton
         key={item.id}
-        onClick={() => dispatch(devicesActions.selectId(item.id))}
+        onClick={() =>{ 
+          dispatch(devicesActions.selectId(item.id))
+          console.log(item);
+        }}
         disabled={!admin && item.disabled}
         sx={{
           flexDirection: "row",

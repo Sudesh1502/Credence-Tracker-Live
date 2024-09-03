@@ -193,7 +193,7 @@ const StatusRow = ({ name, content, history, t }) => {
     ]);
 
     // Check if the name should be skipped
-    console.log(name);
+    // console.log(name);
     if (skipNames.has(name.toLowerCase())) {
       return null;
     }

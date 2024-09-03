@@ -20,7 +20,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeviceList = ({ devices }) => {
+const DeviceList = ({ devices, filteredDevices }) => {
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const listInnerEl = useRef(null);
@@ -35,6 +36,7 @@ const DeviceList = ({ devices }) => {
   const [, setTime] = useState(Date.now());
 
   useEffect(() => {
+    
     const interval = setInterval(() => setTime(Date.now()), 60000);
     return () => {
       clearInterval(interval);

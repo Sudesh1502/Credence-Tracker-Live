@@ -119,7 +119,9 @@ const MainPage = () => {
   useEffectAsync(async () => {
     const response = await fetch('/api/devices');
     if (response.ok) {
-      setFilteredDevices(await response.json());
+      const devices = await response.json();
+      setFilteredDevices(devices);
+      setPass(devices); // Initialize `pass` with all devices
     } else {
       throw Error(await response.text());
     }
@@ -134,6 +136,11 @@ const MainPage = () => {
     setFilteredPositions
   );
 
+  const findDevices = (positions) => {
+    const posIds = positions.map((pos) => pos.deviceId);
+    const devs = filteredDevices.filter((dev) => posIds.includes(dev.id));
+    return devs;
+  }
   // Update device status arrays whenever filteredDevices changes
   useEffect(() => {
     if (filteredDevices.length > 0) {
@@ -144,51 +151,61 @@ const MainPage = () => {
   
       const matchedPositions = array.filter(position => deviceIds.includes(position.deviceId));
       setRunningArray(
-        matchedPositions.filter((device) => {
-          const ignition = device?.attributes.ignition;
-          const speed = device?.speed;
-          return ignition && speed >= 2 && speed <= 60;
-        })
+        findDevices(
+          matchedPositions.filter((device) => {
+            const ignition = device?.attributes.ignition;
+            const speed = device?.speed;
+            return ignition && speed >= 2 && speed <= 60;
+          })
+        )
       );
 
   
       setStopArray(
-        matchedPositions.filter((device) => {
-          const ignition = device?.attributes?.ignition;
-          const speed = device?.speed;
-          return !ignition && speed < 1;
-        })
+        findDevices(
+          matchedPositions.filter((device) => {
+            const ignition = device?.attributes?.ignition;
+            const speed = device?.speed;
+            return !ignition && speed < 1;
+          })
+        )
       );
   
       setIdleArray(
-        matchedPositions.filter((device) => {
-          const ignition = device?.attributes?.ignition;
-          const speed = device?.speed;
-          return ignition && speed < 2;
-        })
+        findDevices(
+          matchedPositions.filter((device) => {
+            const ignition = device?.attributes?.ignition;
+            const speed = device?.speed;
+            return ignition && speed < 2;
+          })
+        )
       );
   
       setOverspeedArray(
-        matchedPositions.filter((device) => {
-          const ignition = device?.attributes?.ignition;
-          const speed = device?.speed;
-          return ignition && speed > 60;
-        })
+        findDevices(
+          matchedPositions.filter((device) => {
+            const ignition = device?.attributes?.ignition;
+            const speed = device?.speed;
+            return ignition && speed > 60;
+          })
+        )
       );
   
       setInactiveArray(
-        matchedPositions.filter((device) => {
-          return !device || !device.attributes || Object.keys(device).length === 0;
-        })
+        findDevices(
+          matchedPositions.filter((device) => {
+            return device.status === "offline";
+          })
+        )
       );
     }
   }, [filteredDevices, positions]);
-
+  
   // Update filtered devices when the selected status changes
   useEffect(() => {
     const array = getArrayByStatus(data);
     setPass(array); // Update the filtered devices to display
-    console.log("Filtered devices updated: for : ",data," : ", array); // Debugging line
+    // console.log("Filtered devices updated: for : ",data," : ", array); // Debugging line
   }, [data]);
 
   const getArrayByStatus = (status) => {
