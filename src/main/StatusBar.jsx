@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./StatusBar.css";
 
-const StatusBar = ({setData}) => {
+const StatusBar = ({ setData }) => {
   const [stop, setStop] = useState(0);
   const [running, setRunning] = useState(0);
   const [overspeed, setOverspeed] = useState(0);
   const [idle, setIdle] = useState(0);
   const [inactive, setInactive] = useState(0);
   const [all, setAll] = useState(0);
-  const [positions, setPositions] = useState([]); // Initialize as an empty array
+  const [positions, setPositions] = useState([]);
 
   useEffect(() => {
     const fetchPositions = async () => {
@@ -69,29 +69,38 @@ const StatusBar = ({setData}) => {
   }, [positions]);
 
   const statuses = [
-    { count: all, label: "ALL", colorClass: "all", status: 'all' },
-    { count: running, label: "RUNNING", colorClass: "running", status: 'running' },
-    { count: stop, label: "STOPPED", colorClass: "stopped", status: 'stop' },
-    { count: overspeed, label: "OVERSPEED", colorClass: "overspeed", status: 'overspeed' },
-    { count: idle, label: "IDLE", colorClass: "idle", status: 'idle' },
-    { count: inactive, label: "INACTIVE", colorClass: "inactive", status: 'inactive' },
+    { count: all, label: "ALL", colorClass: "all", status: "all" },
+    { count: running, label: "RUNNING", colorClass: "running", status: "running" },
+    { count: stop, label: "STOPPED", colorClass: "stopped", status: "stop" },
+    { count: overspeed, label: "OVERSPEED", colorClass: "overspeed", status: "overspeed" },
+    { count: idle, label: "IDLE", colorClass: "idle", status: "idle" },
+    { count: inactive, label: "INACTIVE", colorClass: "inactive", status: "inactive" },
   ];
+
+  const handleClick = (status) => {
+    setData(status);
+  };
 
   return (
     <div className="status-bar">
-      {statuses.map((status, index) => (
+      {statuses.map((item, index) => (
         <div
           key={index}
-          className={`status-item ${status.colorClass}`}
-          onClick={() => setData(status.status)}
+          item
+          className={`status-item ${item.colorClass}`}
+          onClick={() => handleClick(item.status)} // Pass the selected status to setData
         >
-          <span className="count">{status.count}</span>
-          <span className="label">{status.label}</span>
+          <span className="count">
+            {item.count}
+          </span>
+          <span className="label">
+            {item.label}
+          </span>
         </div>
       ))}
     </div>
   );
-  
 };
+
 
 export default StatusBar;

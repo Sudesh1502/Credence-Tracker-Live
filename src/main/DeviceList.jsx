@@ -4,8 +4,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { devicesActions } from '../store';
-import { useEffectAsync } from '../reactHelper';
-import DeviceRow from './DeviceRow';
+import DeviceRow from './DeviceRow'; // Ensure this is correctly imported
 import { styled } from '@mui/material';
 
 const useStyles = makeStyles((theme) => ({
@@ -19,16 +18,15 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     margin: theme.spacing(1.5, 0),
   },
-  
 }));
-
-
 
 const DeviceList = ({ devices }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const listInnerEl = useRef(null);
-  // console.log(DeviceRow);
+
+  // Debugging log to check the devices prop
+  // console.log("DeviceList received devices:", devices);
 
   if (listInnerEl.current) {
     listInnerEl.current.className = classes.listInner;
@@ -43,15 +41,6 @@ const DeviceList = ({ devices }) => {
     };
   }, []);
 
-  useEffectAsync(async () => {
-    const response = await fetch('/api/devices');
-    if (response.ok) {
-      dispatch(devicesActions.refresh(await response.json()));
-    } else {
-      throw Error(await response.text());
-    }
-  }, []);
-
   return (
     <AutoSizer className={classes.list}>
       {({ height, width }) => (
@@ -59,12 +48,19 @@ const DeviceList = ({ devices }) => {
           width={width}
           height={height}
           itemCount={devices.length}
-          itemData={devices}
+          itemData={devices} // Still passing the array for context
           itemSize={145}
           overscanCount={10}
           innerRef={listInnerEl}
         >
-          {DeviceRow}
+          {({ index, style }) => (
+            <DeviceRow
+              key={devices[index].id}
+              data={devices[index]} // Pass each individual device object
+              index={index}
+              style={style}
+            />
+          )}
         </FixedSizeList>
       )}
     </AutoSizer>

@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
   },
   gridContainer: {
     display: "grid",
-    gridTemplateColumns: "repeat(6, 2fr)",
+    gridTemplateColumns: "repeat(4, 2fr)",
     gridTemplateRows: "repeat(1, 0fr)",
     rowGap: "0px", // Remove vertical spacing between rows
     // columnGap: theme.spacing(2), // Keep the horizontal spacing
@@ -176,6 +176,20 @@ const StatusRow = ({ name, content, history, t }) => {
       "protocol",
       "server time",
       "fix time",
+    ]);
+
+    // Check if the name should be skipped
+    console.log(name);
+    if (skipNames.has(name.toLowerCase())) {
+      return null;
+    }
+  } else {
+    const skipNames = new Set([
+      "altitude",
+      "accuracy",
+      "valid",
+      "event",
+      "protocol",
     ]);
 
     // Check if the name should be skipped

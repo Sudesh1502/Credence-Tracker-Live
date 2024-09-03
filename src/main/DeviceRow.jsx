@@ -374,7 +374,7 @@ const DeviceRow = ({ data, index, style }) => {
   const t = useTranslation();
   const admin = useAdministrator();
 
-  const item = data[index];
+  const item = data;
   const position = useSelector((state) => state.session.positions[item.id]);
 
   const devicePrimary = useAttributePreference("devicePrimary", "name");
@@ -393,31 +393,28 @@ const DeviceRow = ({ data, index, style }) => {
 
   useEffect(() => {
     const fetchAddress = async () => {
-      const apiKey = '573ce90f753b1a696a9fbf0e3e9b2795';
-    const url = `https://apis.mapmyindia.com/advancedmaps/v1/${apiKey}/rev_geocode`;
-
-    try {
-      const response = await axios.get(url, {
-        params: {
-          lat: lat,
-          lng: lon,
-        },
-      });
-      if (response.data.results && response.data.results.length > 0) {
-        setAddress(response.data.results[0].formatted_address);
-      } else {
-        setAddress('Address not found');
+      try {
+        const response = await axios.get(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`
+        );
+        
+        const data = response.data;
+        console.log(data);
+        
+        setAddress(
+          `${data.address.neighbourhood || ''}, ${data.address.city || ''}, ${data.address.state || ''}, ${data.address.postcode || ''}`
+        );
+      } catch (error) {
+        console.error('Error fetching address:', error.message || error);
+        // setError(`Error fetching address: ${error.message || error}`);
       }
-    } catch (error) {
-      console.error('Error fetching address:', error);
-      setAddress('Error fetching address');
-    }
     };
-
+  
     if (lat && lon) {
       fetchAddress();
     }
-  }, [lat, lon]); // Update dependency array to use the correct state variables
+  }, [lat, lon]);
+  
 
   const secondaryText = () => {
     let status;

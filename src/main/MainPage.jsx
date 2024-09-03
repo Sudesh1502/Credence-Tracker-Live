@@ -16,21 +16,22 @@ import MainMap from "./MainMap";
 import StatusBar from "./StatusBar";
 import { useAttributePreference } from "../common/util/preferences";
 import "./MainPages.css";
+import { useEffectAsync } from "../reactHelper";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    height: "100vh", // Full height of the viewport
+    height: "100vh",
   },
   sidebar: {
     pointerEvents: "none",
     display: "flex",
     flexDirection: "column",
-    width: "40%", // Fixed width for the sidebar
+    width: "40%",
     position: "fixed",
     left: 0,
     top: 0,
-    height: "100%", // Full height, same as the viewport height
+    height: "100%",
     zIndex: 1,
   },
   header: {
@@ -38,32 +39,31 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 6,
     position: "fixed",
     top: 0,
-    width: "40%", // 40% of the screen navbar
+    width: "40%",
     backgroundColor: theme.palette.background.paper,
-    height: theme.spacing(12), // Adjusted height to accommodate StatusBar
+    height: theme.spacing(12),
     display: "flex",
-    flexDirection: "column", // Ensure children are stacked vertically
+    flexDirection: "column",
   },
   footer: {
     pointerEvents: "auto",
     zIndex: 5,
     position: "fixed",
     bottom: 0,
-    width: "40%", // 40% of the screen width
+    width: "40%",
     backgroundColor: theme.palette.background.paper,
-    height: theme.spacing(7), // Adjust height as needed
+    height: theme.spacing(7),
   },
   middle: {
     flex: 1,
     display: "grid",
-
-    paddingTop: theme.spacing(12), // Height of the header including StatusBar
-    paddingBottom: theme.spacing(7), // Height of the footer
-    width: "100%", // Adjust width based on sidebar visibility
+    paddingTop: theme.spacing(12),
+    paddingBottom: theme.spacing(7),
+    width: "100%",
   },
   mapContainer: {
-    width: "100%", // Full width for the map
-    height: "100%", // Full height
+    width: "100%",
+    height: "100%",
   },
   contentMap: {
     pointerEvents: "auto",
@@ -73,10 +73,9 @@ const useStyles = makeStyles((theme) => ({
   contentList: {
     pointerEvents: "auto",
     zIndex: 4,
-    transition:
-      "width 0.3s ease-in-out, visibility 0.3s ease-in-out, opacity 0.3s ease-in-out", // Added transition for width, visibility, and opacity
-    opacity: (props) => (props.devicesOpen ? 1 : 0), // Handle opacity change on open/close
-    visibility: (props) => (props.devicesOpen ? "visible" : "hidden"), // Handle visibility change on open/close
+    transition: "width 0.3s ease-in-out, visibility 0.3s ease-in-out, opacity 0.3s ease-in-out",
+    opacity: (props) => (props.devicesOpen ? 1 : 0),
+    visibility: (props) => (props.devicesOpen ? "visible" : "hidden"),
   },
 }));
 
@@ -106,16 +105,25 @@ const MainPage = () => {
   const [filterMap, setFilterMap] = usePersistedState("filterMap", false);
 
   const [eventsOpen, setEventsOpen] = useState(false);
-
   const onEventsClick = useCallback(() => setEventsOpen(true), [setEventsOpen]);
-  // console.log("=================================positions ", positions);
 
-  useEffect(() => {
-    if (!desktop && mapOnSelect && selectedDeviceId) {
-      setDevicesOpen(false);
+  const [runningArray, setRunningArray] = useState([]);
+  const [stopArray, setStopArray] = useState([]);
+  const [idleArray, setIdleArray] = useState([]);
+  const [overspeedArray, setOverspeedArray] = useState([]);
+  const [inactiveArray, setInactiveArray] = useState([]);
+  const [data, setData] = useState("all");
+  const [pass, setPass] = useState(filteredDevices);
+
+   
+  useEffectAsync(async () => {
+    const response = await fetch('/api/devices');
+    if (response.ok) {
+      setFilteredDevices(await response.json());
+    } else {
+      throw Error(await response.text());
     }
-  }, [desktop, mapOnSelect, selectedDeviceId]);
-
+  }, []);
   useFilter(
     keyword,
     filter,
@@ -123,70 +131,85 @@ const MainPage = () => {
     filterMap,
     positions,
     setFilteredDevices,
-    setFilteredPositions,
+    setFilteredPositions
   );
-  const [runningArray, setRunningArray] = useState([]);
-  const [stopArray, setStopArray] = useState([]);
-  const [idleArray, setIdleArray] = useState([]);
-  const [overspeedArray, setOverspeedArray] = useState([]);
-  const [inactiveArray, setInactiveArray] = useState([]);
-  const [data, setData] = useState('all');
 
+  // Update device status arrays whenever filteredDevices changes
   useEffect(() => {
-    if (filteredDevices) {
-      setRunningArray(filteredDevices.filter((device) => {
-        const ignition = device?.attributes?.ignition;
-        const speed = device?.speed;
-        return ignition && speed >= 2 && speed <= 60;
-      }));
+    if (filteredDevices.length > 0) {
+      const deviceIds = filteredDevices.map(device => device.id);
+      let array = Object.values(positions);
+      // console.log("positions====================",array[0])
+      // console.log("filteredDevices====================",filteredDevices[0])
+  
+      const matchedPositions = array.filter(position => deviceIds.includes(position.deviceId));
+      setRunningArray(
+        matchedPositions.filter((device) => {
+          const ignition = device?.attributes.ignition;
+          const speed = device?.speed;
+          return ignition && speed >= 2 && speed <= 60;
+        })
+      );
 
-      setStopArray(filteredDevices.filter((device) => {
-        const ignition = device?.attributes?.ignition;
-        const speed = device?.speed;
-        return !ignition && speed < 1;
-      }));
-
-      setIdleArray(filteredDevices.filter((device) => {
-        const ignition = device?.attributes?.ignition;
-        const speed = device?.speed;
-        return ignition && speed < 2;
-      }));
-
-      setOverspeedArray(filteredDevices.filter((device) => {
-        const ignition = device?.attributes?.ignition;
-        const speed = device?.speed;
-        return ignition && speed > 60;
-      }));
-
-      setInactiveArray(filteredDevices.filter((device) => {
-        return !device || !device.attributes || Object.keys(device).length === 0;
-      }));
+  
+      setStopArray(
+        matchedPositions.filter((device) => {
+          const ignition = device?.attributes?.ignition;
+          const speed = device?.speed;
+          return !ignition && speed < 1;
+        })
+      );
+  
+      setIdleArray(
+        matchedPositions.filter((device) => {
+          const ignition = device?.attributes?.ignition;
+          const speed = device?.speed;
+          return ignition && speed < 2;
+        })
+      );
+  
+      setOverspeedArray(
+        matchedPositions.filter((device) => {
+          const ignition = device?.attributes?.ignition;
+          const speed = device?.speed;
+          return ignition && speed > 60;
+        })
+      );
+  
+      setInactiveArray(
+        matchedPositions.filter((device) => {
+          return !device || !device.attributes || Object.keys(device).length === 0;
+        })
+      );
     }
-  }, [filteredDevices]);
+  }, [filteredDevices, positions]);
 
+  // Update filtered devices when the selected status changes
   useEffect(() => {
-    setFilteredDevices(getArrayByStatus(data));
-  }, [data, runningArray, stopArray, idleArray, overspeedArray, inactiveArray, filteredDevices]);
+    const array = getArrayByStatus(data);
+    setPass(array); // Update the filtered devices to display
+    console.log("Filtered devices updated: for : ",data," : ", array); // Debugging line
+  }, [data]);
 
   const getArrayByStatus = (status) => {
     switch (status) {
-      case 'running':
+      case "running":
         return runningArray;
-      case 'stop':
+      case "stop":
         return stopArray;
-      case 'idle':
+      case "idle":
         return idleArray;
-      case 'overspeed':
+      case "overspeed":
         return overspeedArray;
-      case 'inactive':
+      case "inactive":
         return inactiveArray;
-      case 'all':
-        return filteredDevices;
+      case "all":
+        return filteredDevices; // return all filtered devices if 'all' is selected
       default:
         return filteredDevices;
     }
   };
-  
+
   return (
     <div className={classes.root}>
       <div className={`${classes.sidebar} middlesidebar`}>
@@ -209,10 +232,10 @@ const MainPage = () => {
         <div className={classes.middle}>
           <Paper
             square
-            className={`${classes.contentList}   `}
+            className={`${classes.contentList}`}
             style={devicesOpen ? {} : { visibility: "hidden" }}
           >
-            <DeviceList devices={filteredDevices} />
+            <DeviceList devices={pass} />
           </Paper>
         </div>
         {desktop && (
