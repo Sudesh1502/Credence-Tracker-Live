@@ -149,6 +149,7 @@ const EventReportPage = () => {
   });
 
   const formatValue = (item, key) => {
+    console.log(item[key]);
     switch (key) {
       case "eventTime":
         return formatTime(item[key], "seconds", hours12);
