@@ -114,6 +114,7 @@ const MainPage = () => {
   const [inactiveArray, setInactiveArray] = useState([]);
   const [data, setData] = useState("all");
   const [pass, setPass] = useState(filteredDevices);
+  const [inactiveIds, setInactiveIds] = useState([]);
 
    
   useEffectAsync(async () => {
@@ -191,13 +192,7 @@ const MainPage = () => {
         )
       );
   
-      setInactiveArray(
-        findDevices(
-          matchedPositions.filter((device) => {
-            return device.status === "offline";
-          })
-        )
-      );
+      setInactiveArray(inactiveIds);
     }
   }, [filteredDevices, positions]);
   
@@ -244,7 +239,7 @@ const MainPage = () => {
             filterMap={filterMap}
             setFilterMap={setFilterMap}
           />
-          <StatusBar setData={setData} positions={positions} />
+          <StatusBar setData={setData} positions={positions} setInactiveIds={setInactiveIds} />
         </Paper>
         <div className={classes.middle}>
           <Paper
