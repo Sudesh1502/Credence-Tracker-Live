@@ -38,7 +38,7 @@ export default (keyword, filter, filterSort, filterMap, positions, setFilteredDe
       default:
         break;
     }
-    // setFilteredDevices(filtered);
+    setFilteredDevices(filtered);
     setFilteredPositions(filterMap
       ? filtered.map((device) => positions[device.id]).filter(Boolean)
       : Object.values(positions));
