@@ -1,7 +1,16 @@
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
+// Extend dayjs with required plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+
+// Example conversion functions
 import {
   altitudeFromMeters,
   altitudeUnitString,
@@ -11,12 +20,10 @@ import {
   speedUnitString,
   volumeFromLiters,
   volumeUnitString,
-} from './converter';
-import { prefixString } from './stringUtils';
+} from './converter'; // Assume you have these functions in converter.js
+import { prefixString } from './stringUtils'; // Assume you have this function in stringUtils.js
 
-dayjs.extend(duration);
-dayjs.extend(relativeTime);
-
+// Format Functions
 export const formatBoolean = (value, t) => (value ? t('sharedYes') : t('sharedNo'));
 
 export const formatNumber = (value, precision = 1) => Number(value.toFixed(precision));
@@ -29,9 +36,9 @@ export const formatVoltage = (value, t) => `${value} ${t('sharedVoltAbbreviation
 
 export const formatConsumption = (value, t) => `${value} ${t('sharedLiterPerHourAbbreviation')}`;
 
-export const formatTime = (value, format, hours12) => {
+export const formatTime = (value, format, hours12, timezone = 'GMT') => {
   if (value) {
-    const d = dayjs(value + 530);
+    const d = dayjs(value).tz(timezone);
     switch (format) {
       case 'date':
         return d.format('YYYY-MM-DD');
@@ -47,6 +54,7 @@ export const formatTime = (value, format, hours12) => {
 };
 
 export const formatStatus = (value, t) => t(prefixString('deviceStatus', value));
+
 export const formatAlarm = (value, t) => (value ? t(prefixString('alarm', value)) : '');
 
 export const formatCourse = (value) => {
