@@ -391,19 +391,20 @@ const DeviceRow = ({ data, index, style }) => {
     }
   }, [position]);
 
+  const apiKey = 'AIzaSyBAUy2BW1TIpMnsgl_EsGBpi-QsBUozw6k';
   useEffect(() => {
     const fetchAddress = async () => {
       try {
         const response = await axios.get(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`
         );
         
-        const data = response.data;
-        // console.log(data);
-        
-        setAddress(
-          `${data.address.neighbourhood || ''}, ${data.address.city || ''}, ${data.address.state || ''}, ${data.address.postcode || ''}`
-        );
+        if (response.data.status === 'OK') {
+          const formattedAddress = response.data.results[0].formatted_address;
+          setAddress(formattedAddress);
+        } else {
+          console.error('Error fetching address:', response.data.status);
+        }
       } catch (error) {
         // console.error('Error fetching address:', error.message || error);
         // setError(`Error fetching address: ${error.message || error}`);
@@ -411,8 +412,9 @@ const DeviceRow = ({ data, index, style }) => {
     };
   
     if (lat && lon) {
-      fetchAddress();
+      fetchAddress(); // Fetch address when lat or lng changes
     }
+   
   }, [lat, lon]);
   
 

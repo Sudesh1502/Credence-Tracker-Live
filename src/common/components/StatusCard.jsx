@@ -554,6 +554,13 @@ const StatusCard = ({
                                 {t("deviceShare")}
                               </MenuItem>
                             )}
+                            <MenuItem
+                                onClick={() =>
+                                  navigate(`/settings/device/${deviceId}/command`)
+                                }
+                              >
+                                Set Command 
+                              </MenuItem>
                           </Menu>
                         )}
                       </div>
