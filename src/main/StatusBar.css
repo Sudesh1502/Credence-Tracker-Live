@@ -1,6 +1,6 @@
 .status-bar {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   position: relative;
   padding-right: 30px;
   padding-left: 20px;
