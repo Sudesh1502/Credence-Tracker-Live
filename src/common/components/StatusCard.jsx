@@ -190,6 +190,9 @@ const StatusRow = ({ name, content, history, t }) => {
       "valid",
       "event",
       "protocol",
+      "server time",
+      "fix time",
+      "device time",
     ]);
 
     // Check if the name should be skipped
