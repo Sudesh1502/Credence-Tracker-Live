@@ -229,6 +229,9 @@ const MainToolbar = ({
           }}
         ></ListItemButton> */}
         <ListItemButton onClick={() => handleLogout()}>
+          <ListItemText primary={user?.email} style={{ color: "white" }} />
+        </ListItemButton>
+        <ListItemButton onClick={() => handleLogout()}>
           <ListItemText primary="Logout" style={{ color: "red" }} />
         </ListItemButton>
       </Popover>
