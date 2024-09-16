@@ -103,8 +103,4 @@
   }
 }
 
-@media (min-width: 1280) {
-  .status-bar{
-    gap:4px;
-  }
-} 
+
