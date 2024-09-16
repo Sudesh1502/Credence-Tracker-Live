@@ -21,7 +21,7 @@ const MapDefaultCamera = () => {
       if (defaultLatitude && defaultLongitude) {
         map.flyTo({
           center: [defaultLongitude, defaultLatitude],
-          zoom: defaultZoom,
+          zoom: 8,
         });
         setInitialized(true);
       } else {
