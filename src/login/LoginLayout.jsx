@@ -59,10 +59,10 @@ const LoginLayout = ({ children }) => {
   return (
     <main className={classes.root}>
       <div className={classes.sidebar}>
-        <video autoPlay muted loop className={classes.video}>
-          <source src="login-video.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        {/* <video autoPlay muted loop className={classes.video}> */}
+          {/* <source src="login-video.mp4" type="video/mp4" /> */}
+          {/* Your browser does not support the video tag. */}
+        {/* </video> */}
       </div>
       <Paper className={classes.paper}>
         <div className="logo">
