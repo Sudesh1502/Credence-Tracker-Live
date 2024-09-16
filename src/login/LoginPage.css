@@ -13,17 +13,33 @@
     font-size: 1rem;
     color: #fff;
     font-weight: 600;
-    background-color: orange;
+    background-color: #EB8223;
 }
 .forgotBtn{
-    color: orange;
+    color: #EB8223;
     cursor: pointer;
-    margin-left: 200px;
+    margin-left: 180px;
+    font-size: 0.9rem;
 }
 
 .downloadBtn{
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: black;
     margin-top: 3rem !important;
-    margin-left: 100px;
+    margin-left: 120px;
 }
+
+
+
+
+@media (min-width: 1200px) and (max-width: 1280px){
+    .downloadBtn{
+        margin-left: 60px;
+        margin-top: 1rem !important;
+    }
+    .forgotBtn{
+        
+        margin-left: 130px;
+    }
+}
+  
