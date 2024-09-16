@@ -10,7 +10,7 @@
 .status-item {
   display: flex;
   align-items: center;
-  padding: 3px 5px;
+  padding: 3px 4px;
   border: 2px solid transparent;
   border-radius: 5px;
   font-weight: bold;
