@@ -391,32 +391,27 @@ const DeviceRow = ({ data, index, style }) => {
     }
   }, [position]);
 
-  const apiKey = 'AIzaSyBAUy2BW1TIpMnsgl_EsGBpi-QsBUozw6k';
+
   useEffect(() => {
     const fetchAddress = async () => {
       try {
-        const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`
-        );
-        
-        if (response.data.status === 'OK') {
-          const formattedAddress = response.data.results[0].formatted_address;
-          setAddress(formattedAddress);
-        } else {
-          console.error('Error fetching address:', response.data.status);
+        const response = await fetch(`https://apis.mapmyindia.com/advancedmaps/v1/6b4c79eda39393c891e8c4b36ea54bd9/reverse_geocode?lat=${lat}&lon=${lon}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
+        const data = await response.json();
+        const address = data.results[0]?.formatted_address;
+        setAddress(address || 'Address not found');
       } catch (error) {
-        // console.error('Error fetching address:', error.message || error);
-        // setError(`Error fetching address: ${error.message || error}`);
+        console.error('Error fetching address:', error);
+        setAddress('Error fetching address');
       }
     };
   
     if (lat && lon) {
       fetchAddress(); // Fetch address when lat or lng changes
     }
-   
   }, [lat, lon]);
-  
 
   const secondaryText = () => {
     let status;
