@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Button, TextField, Typography, Snackbar, IconButton,
+  Button, Typography, Snackbar, IconButton,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { useNavigate } from 'react-router-dom';
@@ -74,19 +74,21 @@ const ResetPasswordPage = () => {
           </Typography>
         </div>
         {!token ? (
-          <TextField
+          <input
+            className="formInput"
             required
             type="email"
-            label={t('userEmail')}
+            placeholder='Email'
             name="email"
             value={email}
             autoComplete="email"
             onChange={(event) => setEmail(event.target.value)}
           />
         ) : (
-          <TextField
+          <input
+            className="formInput"
             required
-            label={t('userPassword')}
+            placeholder='Password'
             name="password"
             value={password}
             type="password"
@@ -94,7 +96,8 @@ const ResetPasswordPage = () => {
             onChange={(event) => setPassword(event.target.value)}
           />
         )}
-        <Button
+        <button
+          className="loginBtn"
           variant="contained"
           color="secondary"
           type="submit"
@@ -103,7 +106,7 @@ const ResetPasswordPage = () => {
           fullWidth
         >
           {t('loginReset')}
-        </Button>
+        </button>
       </div>
       <Snackbar
         open={snackbarOpen}

@@ -36,6 +36,11 @@ import {
 } from "../common/components/NativeInterface";
 import LogoImage from "./LogoImage";
 import { useCatch } from "../reactHelper";
+import "./LoginPage.css"
+import { SiApple } from "react-icons/si";
+import { FaGooglePlay } from "react-icons/fa";
+
+
 
 const useStyles = makeStyles((theme) => ({
   options: {
@@ -204,21 +209,27 @@ const LoginPage = () => {
         {useMediaQuery(theme.breakpoints.down("lg")) && (
           <LogoImage color={theme.palette.primary.main} />
         )}
-        <TextField
+        <input
+          className="formInput"
           required
           error={failed}
-          label={t("userEmail")}
+          placeholder="Email"
           name="email"
           value={email}
           autoComplete="email"
           autoFocus={!email}
           onChange={(e) => setEmail(e.target.value)}
           helperText={failed && "Invalid username or password"}
+          InputLabelProps={{
+            style: { color: failed ? 'red' : 'black' }, // Custom label color
+            borderColor: failed ? 'red' : 'black',
+          }}
         />
-        <TextField
+        <input
+          className="formInput"
           required
           error={failed}
-          label={t("userPassword")}
+          placeholder="Password"
           name="password"
           value={password}
           type="password"
@@ -237,7 +248,8 @@ const LoginPage = () => {
             onChange={(e) => setCode(e.target.value)}
           />
         )}
-        <Button
+        <button
+          className="loginBtn"
           onClick={handlePasswordLogin}
           type="submit"
           variant="contained"
@@ -245,7 +257,7 @@ const LoginPage = () => {
           disabled={!email || !password || (codeEnabled && !code)}
         >
           {t("loginLogin")}
-        </Button>
+        </button>
         {openIdEnabled && (
           <Button
             onClick={() => handleOpenIdLogin()}
@@ -255,7 +267,7 @@ const LoginPage = () => {
             {t("loginOpenId")}
           </Button>
         )}
-        <div className={classes.extraContainer}>
+        {/* <div className={classes.extraContainer}>
           <Button
             className={classes.registerButton}
             onClick={() => navigate("/register")}
@@ -283,15 +295,16 @@ const LoginPage = () => {
               </Select>
             </FormControl>
           )}
-        </div>
-        {emailEnabled && (
+        </div> */}
+        {true && (
           <Link
             onClick={() => navigate("/reset-password")}
             className={classes.resetPassword}
             underline="none"
             variant="caption"
+            className="forgotBtn"
           >
-            {t("loginReset")}
+            Forgot Password?
           </Link>
         )}
       </div>
@@ -308,6 +321,14 @@ const LoginPage = () => {
           </IconButton>
         }
       />
+      <div 
+            underline="none"
+            variant="caption"
+            className="downloadBtn"
+          >
+            Download Our Apps <SiApple onClick={() => navigate("/reset-password")} /> <FaGooglePlay onClick={() => window.open("https://play.google.com/store/apps/details?id=com.credenceGPS", "_blank")} 
+        style={{ cursor: 'pointer' }}  />
+          </div>
     </LoginLayout>
   );
 };

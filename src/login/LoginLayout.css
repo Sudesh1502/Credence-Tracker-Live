@@ -1,0 +1,23 @@
+#bgVideo {
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
+    background-size: cover;
+}
+.loginLogo{
+    width: 250px;
+}
+.logo{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3rem;
+}
+.slogan{
+    font-size: 1.2rem;
+    font-family: cursive;
+    color: black;
+}
