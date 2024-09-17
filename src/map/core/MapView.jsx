@@ -9,6 +9,7 @@ import usePersistedState, { savePersistedState } from '../../common/util/usePers
 import { mapImages } from './preloadImages';
 import useMapStyles from './useMapStyles';
 
+
 const element = document.createElement('div');
 element.style.width = '100%';
 element.style.height = '100%';

@@ -18,29 +18,29 @@ const MapLiveRoutes = () => {
 
   useEffect(() => {
     if (type !== 'none') {
-      map.addSource(id, {
-        type: 'geojson',
-        data: {
-          type: 'Feature',
-          geometry: {
-            type: 'LineString',
-            coordinates: [],
-          },
-        },
-      });
-      map.addLayer({
-        source: id,
-        id,
-        type: 'line',
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-        },
-        paint: {
-          'line-color': ['get', 'color'],
-          'line-width': 4,
-        },
-      });
+      // map.addSource(id, {
+      //   type: 'geojson',
+      //   data: {
+      //     type: 'Feature',
+      //     geometry: {
+      //       type: 'LineString',
+      //       coordinates: [],
+      //     },
+      //   },
+      // });
+      // map.addLayer({
+      //   source: id,
+      //   id,
+      //   type: 'line',
+      //   layout: {
+      //     'line-join': 'round',
+      //     'line-cap': 'round',
+      //   },
+      //   paint: {
+      //     'line-color': ['get', 'color'],
+      //     'line-width': 4,
+      //   },
+      // });
 
       return () => {
         if (map.getLayer(id)) {

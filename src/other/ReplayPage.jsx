@@ -28,6 +28,7 @@ import MapGeofence from '../map/MapGeofence';
 import StatusCard from '../common/components/StatusCard';
 import { usePreference } from '../common/util/preferences';
 import "./Replay.css";
+import MapMarkers from '../map/MapMarkers';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -113,6 +114,19 @@ const ReplayPage = () => {
   });
 
 
+  // const createMarkers = () =>
+  //   positions.flatMap((item) =>
+  //     item.events
+  //       .map((event) => item.positions.find((p) => event.positionId === p.id))
+  //       .filter((position) => position != null)
+  //       .map((position) => ({
+  //         latitude: position.latitude,
+  //         longitude: position.longitude,
+  //       }))
+  //   );
+
+
+
   useEffect(() => {
     if (playing && positions.length > 0) {
       timerRef.current = setInterval(() => {
@@ -182,6 +196,25 @@ const ReplayPage = () => {
 
       }
   }, [expanded]);
+  const filterStopages = (positions) => {
+    let Stopages = [];
+    let lastCoords = null;
+  
+    positions.forEach((pos) => {
+      if (!pos.attributes.ignition) {
+        const currentCoords = { latitude: pos.latitude, longitude: pos.longitude }; // Ensure correct property names
+  
+        if (!lastCoords || lastCoords.latitude !== currentCoords.latitude || lastCoords.longitude !== currentCoords.longitude) {
+          Stopages.push(currentCoords);
+          lastCoords = currentCoords;
+        }
+      }
+    });
+  
+    return Stopages;
+  };
+  
+
 
   return (
     <div className={classes.root}>
@@ -197,6 +230,7 @@ const ReplayPage = () => {
           {index < positions.length && (
             <MapPositions positions={[positions[index]]} onClick={onMarkerClick} titleField="fixTime" />
           )}
+          {/* <MapMarkers markers={createMarkers()} /> */}
         </MapView>
         <MapCamera playing={playing} positions={positions} index={index} replayMode />
       </div>
