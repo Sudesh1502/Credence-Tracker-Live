@@ -27,6 +27,13 @@ import bikeYellow from "../../public/vehicleList/Bike/bikeYellow.svg";
 import bikeOrange from "../../public/vehicleList/Bike/bikeOrange.svg";
 import bikeGray from "../../public/vehicleList/Bike/bikeGray.svg";
 
+
+import busGreen from "../../public/vehicleList/Bus/busGreen.svg";
+import busRed from "../../public/vehicleList/Bus/busRed.svg";
+import busOrange from "../../public/vehicleList/Bus/busOrange.svg";
+import busYellow from "../../public/vehicleList/Bus/busYellow.svg";
+import busGray from "../../public/vehicleList/Bus/busGray.svg";
+
 //==============================TRUCK========================================
 import truckGreen from "../../public/vehicleList/Truck/truckGreen.svg";
 import truckRed from "../../public/vehicleList/Truck/truckRed.svg";
@@ -288,6 +295,8 @@ const DeviceRow = ({ data, index, style }) => {
     switch (category) {
       case "car":
         return "car";
+      case "bus":
+        return "bus";
       case "truck":
         return "truck";
       case "motorcycle":
@@ -356,6 +365,13 @@ const DeviceRow = ({ data, index, style }) => {
         yellow: craneYellow,
         orange: craneOrange,
         gray: craneGray,
+      },
+      bus: {
+        red: busRed,
+        green: busGreen,
+        yellow: busYellow,
+        orange: busOrange,
+        gray: busGray,
       },
     };
 
