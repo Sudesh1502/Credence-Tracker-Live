@@ -82,6 +82,9 @@ const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignore
           break;
       }
 
+      selectedFrom = selectedFrom.subtract(5, 'hour').subtract(30, 'minute');
+      selectedTo = selectedTo.subtract(5, 'hour').subtract(30, 'minute');
+
       handleSubmit({
         deviceId,
         deviceIds,
