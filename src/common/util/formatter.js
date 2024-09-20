@@ -31,7 +31,8 @@ export const formatConsumption = (value, t) => `${value} ${t('sharedLiterPerHour
 
 export const formatTime = (value, format, hours12) => {
   if (value) {
-    const d = dayjs(value);
+    const adjustedValue = dayjs(value).add(5, 'hour').add(30, 'minute');
+    const d = dayjs(adjustedValue);
     switch (format) {
       case 'date':
         return d.format('YYYY-MM-DD');
