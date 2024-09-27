@@ -42,7 +42,7 @@ const ReportsMenu = () => {
     <>
       <List>
         <MenuItem
-          title="Combined Notification"
+          title="Combine Reports"
           link="/reports/combined"
           icon={<StarIcon />}
           selected={location.pathname === "/reports/combined"}

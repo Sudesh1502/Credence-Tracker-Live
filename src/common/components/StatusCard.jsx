@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Draggable from "react-draggable";
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
     "&::-webkit-scrollbar": {
       display: "none" /* Chrome, Safari, and Opera */,
     },
-    
+
     /* For other browsers */
     scrollbarWidth: "none" /* Firefox */,
     msOverflowStyle: "none" /* Internet Explorer 10+ */,
@@ -262,8 +262,10 @@ const StatusCard = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useTranslation();
-  const [item, setItem] = useState('deviceId');
+  const [item, setItem] = useState("deviceId");
   const deviceReadonly = useDeviceReadonly();
+  const [calculatedDistance, setCalculatedDistance] = useState(0);
+  const [lastPosition, setLastPosition] = useState(null);
 
   const shareDisabled = useSelector(
     (state) => state.session.server.attributes.disableShare
@@ -324,6 +326,33 @@ const StatusCard = ({
     }
   }, [navigate, position]);
 
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in km
+  };
+  // Update total distance when position changes
+  useEffect(() => {
+    if (lastPosition) {
+      const distance = calculateDistance(
+        lastPosition.latitude,
+        lastPosition.longitude,
+        position.latitude,
+        position.longitude
+      );
+      setCalculatedDistance(calculatedDistance + distance); // Update calculated distance
+    }
+    setLastPosition(position); // Update last position to current
+  }, [position]); // Run whenever position changes
+
   return (
     <>
       {history ? (
@@ -336,21 +365,31 @@ const StatusCard = ({
                   position.hasOwnProperty(key) ||
                   position.attributes.hasOwnProperty(key)
               )
-              .map((key) => (
-                <StatusRow
-                  key={key}
-                  name={positionAttributes[key]?.name || key}
-                  content={
-                    <PositionValue
-                      position={position}
-                      property={position.hasOwnProperty(key) ? key : null}
-                      attribute={position.hasOwnProperty(key) ? null : key}
-                    />
-                  }
-                  history={history}
-                  t={t}
-                />
-              ))}
+              .map((key) =>
+                key === "distance" ? (
+                  <StatusRow
+                    key={key}
+                    name="Distance"
+                    content={calculatedDistance.toFixed(2)}
+                    history={history}
+                    t={t}
+                  />
+                ) : (
+                  <StatusRow
+                    key={key}
+                    name={positionAttributes[key]?.name || key}
+                    content={
+                      <PositionValue
+                        position={position}
+                        property={position.hasOwnProperty(key) ? key : null}
+                        attribute={position.hasOwnProperty(key) ? null : key}
+                      />
+                    }
+                    history={history}
+                    t={t}
+                  />
+                )
+              )}
           </div>
         </>
       ) : (
@@ -412,8 +451,8 @@ const StatusCard = ({
                           <Typography
                             variant="body2"
                             style={{ fontWeight: "bold" }}
-                            onClick={()=>{
-                              navigate(`/settings/geofence/${device.id}`)
+                            onClick={() => {
+                              navigate(`/settings/geofence/${device.id}`);
                             }}
                           >
                             Geofence
@@ -459,8 +498,8 @@ const StatusCard = ({
                           <Typography
                             variant="body2"
                             style={{ fontWeight: "bold" }}
-                            onClick={()=>{
-                              navigate("settings/maintenances")
+                            onClick={() => {
+                              navigate("settings/maintenances");
                             }}
                           >
                             Maintenance
@@ -558,12 +597,12 @@ const StatusCard = ({
                               </MenuItem>
                             )}
                             <MenuItem
-                                onClick={() =>
-                                  navigate(`/settings/device/${deviceId}/command`)
-                                }
-                              >
-                                Set Command 
-                              </MenuItem>
+                              onClick={() =>
+                                navigate(`/settings/device/${deviceId}/command`)
+                              }
+                            >
+                              Set Command
+                            </MenuItem>
                           </Menu>
                         )}
                       </div>

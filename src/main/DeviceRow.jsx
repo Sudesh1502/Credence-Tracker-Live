@@ -1,6 +1,6 @@
 
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import makeStyles from "@mui/styles/makeStyles";
 import { IconButton, Tooltip, ListItemButton, Typography } from "@mui/material";
@@ -254,24 +254,32 @@ const DeviceRow = ({ data, index, style }) => {
 
   
 
+  const prevLat = useRef(lat);
+  const prevLon = useRef(lon);
+
   useEffect(() => {
-    const fetchAddress = async () => {
-      if (!lat && !lon) return; // Ensure lat and lon are valid
-      try {
-        const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyAuCkbfEI0iP57SFff13Cuh7ZSQDJdMWs4`
-        );
-        
-          console.log(response);
-        
-      } catch (error) {
-        console.error("Error fetching the address:", error);
-        setAddress("Error fetching address.");
-      }
-    };
-  
-    fetchAddress(); // Fetch address when lat or lon changes
+    // Only fetch address if lat or lon has changed
+    if (lat !== prevLat.current || lon !== prevLon.current) {
+      const fetchAddress = async () => {
+        try {
+          const response = await axios.get(
+            `https://us1.locationiq.com/v1/reverse.php?key=pk.23e7282ce5839ef4196426bbd0fd0def&lat=${lat}&lon=${lon}&format=json`
+          );
+          setAddress(response.data);
+        } catch (error) {
+          console.error("Error fetching the address:", error);
+          setAddress("Error fetching address");
+        }
+      };
+
+      fetchAddress();
+
+      // Update the previous lat and lon to the new values
+      prevLat.current = lat;
+      prevLon.current = lon;
+    }
   }, [lat, lon]);
+  
   
   const secondaryText = () => {
     let status;
@@ -471,7 +479,9 @@ const DeviceRow = ({ data, index, style }) => {
             </div>
 
             <Typography variant="body2" className={classes.address}>
-              {address || "Loading vehicle address..."}
+            {address
+                      ? `${address.address?.road}, ${address.address?.village}, ${address.address?.state_district}, ${address.address?.state}, ${address.address?.country}, ${address.address?.postcode}`
+                      : 'Address of User'}
             </Typography>
           </div>
 
