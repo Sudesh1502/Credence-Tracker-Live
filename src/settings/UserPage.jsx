@@ -68,6 +68,7 @@ const UserPage = () => {
   const handleDelete = useCatch(async () => {
     if (deleteEmail === currentUser.email) {
       setDeleteFailed(false);
+      console
       const response = await fetch(`/api/users/${currentUser.id}`, { method: 'DELETE' });
       if (response.ok) {
         navigate('/login');

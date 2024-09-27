@@ -17,9 +17,9 @@ const MapSelectedDevice = () => {
 
   useEffect(() => {
     if ((selectedDeviceId !== previousDeviceId || mapFollow) && position) {
-      map.easeTo({
+      map.flyTo({
         center: [position.longitude, position.latitude],
-        zoom: Math.max(map.getZoom(), selectZoom),
+        zoom: 16,
         offset: [0, -dimensions.popupMapOffset / 2],
       });
     }

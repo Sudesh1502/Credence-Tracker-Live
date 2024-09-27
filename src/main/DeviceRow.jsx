@@ -617,6 +617,7 @@ const DeviceRow = ({ data, index, style }) => {
                       />
                     ) : (
                       <EngineIcon
+                      EngineIcon
                         width={20}
                         height={20}
                         className={classes.neutral}
