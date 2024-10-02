@@ -314,18 +314,6 @@ const ReplayPage = () => {
           )}
         </Paper>
       </div>
-      {/* {showCard && index < positions.length && (
-        <div className={classes.statuscard}>
-        <StatusCard
-          deviceId={selectedDeviceId}
-          position={positions[index]}
-          onClose={() => setShowCard(false)}
-          disableActions
-          history={history}
-        />
-
-      </div>
-      )} */}
       </div>
 
 

@@ -339,9 +339,24 @@ const UsersPage = () => {
               />
             </TableCell>
           </TableRow>
+          <TableRow>
+            <TableCell colSpan={6} align="right">
+              <FormControlLabel
+                control={
+                  <Switch
+                    value={temporary}
+                    onChange={(e) => setTemporary(e.target.checked)}
+                    size="small"
+                  />
+                }
+                label={t("userTemporary")}
+                labelPlacement="start"
+              />
+            </TableCell>
+          </TableRow>
         </TableFooter>
       </Table>
-      <CollectionFab />
+      <CollectionFab editPath="/settings/user" />
     </PageLayout>
   );
 };

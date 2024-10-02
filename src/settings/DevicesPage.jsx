@@ -394,7 +394,7 @@ const DevicesPage = () => {
           </TableRow>
         </TableFooter>
       </Table>
-      <CollectionFab handleExport={handleExport} />
+      <CollectionFab editPath="/settings/device" />
     </PageLayout>
   );
 };
