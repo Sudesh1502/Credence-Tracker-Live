@@ -12,6 +12,9 @@ import {
   IconButton,
   TextField,
   InputAdornment,
+  Pagination,
+  PaginationItem,
+  Box,
 } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 import SearchIcon from "@mui/icons-material/Search";
@@ -34,16 +37,18 @@ const DevicesPage = () => {
   const t = useTranslation();
 
   const groups = useSelector((state) => state.groups.items);
-
   const hours12 = usePreference("twelveHourFormat");
-
   const deviceReadonly = useDeviceReadonly();
 
   const [timestamp, setTimestamp] = useState(Date.now());
   const [items, setItems] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showSearch, setShowSearch] = useState(false); // State to control search bar visibility
+  const [showSearch, setShowSearch] = useState(false);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 17; // You can change the items per page value as needed
 
   useEffectAsync(async () => {
     setLoading(true);
@@ -80,6 +85,20 @@ const DevicesPage = () => {
   const handleSearchChange = (event) => {
     setSearchKeyword(event.target.value);
   };
+
+  // Pagination logic
+  const handlePageClick = (event, value) => {
+    setCurrentPage(value); // Update current page on click
+  };
+
+  const offset = (currentPage - 1) * itemsPerPage;
+  const currentItems = items
+    .filter(filterByKeyword(searchKeyword)) // Apply search filter
+    .slice(offset, offset + itemsPerPage); // Slice the items array based on the current page
+
+  const pageCount = Math.ceil(
+    items.filter(filterByKeyword(searchKeyword)).length / itemsPerPage
+  ); // Calculate total number of pages
 
   return (
     <PageLayout
@@ -242,7 +261,7 @@ const DevicesPage = () => {
         </TableHead>
         <TableBody>
           {!loading ? (
-            items.filter(filterByKeyword(searchKeyword)).map((item) => (
+            currentItems.map((item) => (
               <TableRow key={item.id}>
                 <TableCell
                   sx={{
@@ -278,8 +297,7 @@ const DevicesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
-                    width: "10px",
-                    paddingRight: "0px !important",
+                    paddingRight: "2px !important",
                     paddingTop: "3px !important",
                     paddingBottom: "3px !important",
                   }}
@@ -289,8 +307,7 @@ const DevicesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
-                    width: "10px",
-                    paddingRight: "0px !important",
+                    paddingRight: "2px !important",
                     paddingTop: "3px !important",
                     paddingBottom: "3px !important",
                   }}
@@ -300,8 +317,7 @@ const DevicesPage = () => {
                 <TableCell
                   sx={{
                     border: "2px solid gray",
-                    width: "10px",
-                    paddingRight: "0px !important",
+                    paddingRight: "2px !important",
                     paddingTop: "3px !important",
                     paddingBottom: "3px !important",
                   }}
@@ -342,10 +358,33 @@ const DevicesPage = () => {
               </TableRow>
             ))
           ) : (
-            <TableShimmer columns={7} endAction />
+            <TableRow>
+              <TableCell colSpan={8}>
+                <TableShimmer />
+              </TableCell>
+            </TableRow>
           )}
         </TableBody>
+        
         <TableFooter>
+        
+          <TableRow>
+            <TableCell colSpan={8}>
+              <Pagination
+                count={pageCount}
+                page={currentPage}
+                onChange={handlePageClick}
+                renderItem={(item) => (
+                  <PaginationItem
+                    {...item}
+                    sx={{
+                      margin: "0 5px",
+                    }}
+                  />
+                )}
+              />
+            </TableCell>
+          </TableRow>
           <TableRow>
             <TableCell colSpan={8} align="right">
               <Button onClick={handleExport} variant="text">
@@ -355,7 +394,7 @@ const DevicesPage = () => {
           </TableRow>
         </TableFooter>
       </Table>
-      <CollectionFab editPath="/settings/device" />
+      <CollectionFab handleExport={handleExport} />
     </PageLayout>
   );
 };

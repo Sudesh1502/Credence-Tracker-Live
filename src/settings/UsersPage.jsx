@@ -12,6 +12,8 @@ import {
   TextField,
   InputAdornment,
   IconButton,
+  PaginationItem,
+  Pagination,
 } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
 import LinkIcon from "@mui/icons-material/Link";
@@ -44,6 +46,9 @@ const UsersPage = () => {
   const [loading, setLoading] = useState(false);
   const [temporary, setTemporary] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 17; // You can change the items per page value as needed
 
   const handleLogin = useCatch(async (userId) => {
     const response = await fetch(`/api/session/${userId}`);
@@ -93,6 +98,17 @@ const UsersPage = () => {
     }
   };
 
+  const handlePageClick = (event, value) => {
+    setCurrentPage(value); // Update current page on click
+  };
+
+  const filteredItems = items.filter(filterByKeyword(searchKeyword)); // Apply search filter
+  const pageCount = Math.ceil(filteredItems.length / itemsPerPage); // Calculate total number of pages
+
+  // Calculate current items for the current page
+  const offset = (currentPage - 1) * itemsPerPage;
+  const currentItems = filteredItems.slice(offset, offset + itemsPerPage); // Slice the items array based on the current page
+
   return (
     <PageLayout
       menu={<SettingsMenu />}
@@ -135,13 +151,9 @@ const UsersPage = () => {
         sx={{
           borderCollapse: "collapse",
           border: "2px solid gray",
-          width: "10%",
+          width: "100%",
           paddingTop: "3px !important",
           paddingBottom: "3px !important",
-          border: "2px solid gray",
-          paddingTop: "3px",
-          paddingRight: "3px",
-          width: "100%",
         }}
         className={classes.table}
       >
@@ -224,66 +236,63 @@ const UsersPage = () => {
         </TableHead>
         <TableBody>
           {!loading ? (
-            items
-              .filter((u) => temporary || !u.temporary)
-              .filter(filterByKeyword(searchKeyword))
-              .map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell
-                    sx={{
-                      border: "2px solid gray",
-                      paddingRight: "2px !important",
-                      paddingTop: "5px !important",
-                      paddingBottom: "5px !important",
-                    }}
-                  >
-                    {item.name}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      border: "2px solid gray",
-                      width: "10px",
-                      paddingRight: "0px !important",
-                      paddingTop: "3px !important",
-                      paddingBottom: "3px !important",
-                    }}
-                  >
-                    {item.email}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      border: "2px solid gray",
-                      width: "10px",
-                      paddingRight: "0px !important",
-                      paddingTop: "3px !important",
-                      paddingBottom: "3px !important",
-                    }}
-                  >
-                    {formatBoolean(item.administrator, t)}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      border: "2px solid gray",
-                      width: "10px",
-                      paddingRight: "0px !important",
-                      paddingTop: "3px !important",
-                      paddingBottom: "3px !important",
-                    }}
-                  >
-                    {formatBoolean(item.disabled, t)}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      border: "2px solid gray",
-                      width: "10px",
-                      paddingRight: "0px !important",
-                      paddingTop: "3px !important",
-                      paddingBottom: "3px !important",
-                    }}
-                  >
-                    {formatTime(item.expirationTime, "date", hours12)}
-                  </TableCell>
-                  <TableCell
+            currentItems.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    paddingRight: "2px !important",
+                    paddingTop: "5px !important",
+                    paddingBottom: "5px !important",
+                  }}
+                >
+                  {item.name}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
+                  }}
+                >
+                  {item.email}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
+                  }}
+                >
+                  {formatBoolean(item.administrator, t)}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
+                  }}
+                >
+                  {formatBoolean(item.disabled, t)}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "2px solid gray",
+                    width: "10px",
+                    paddingRight: "0px !important",
+                    paddingTop: "3px !important",
+                    paddingBottom: "3px !important",
+                  }}
+                >
+                  {formatTime(item.expirationTime, "date", hours12)}
+                </TableCell>
+                <TableCell
                     sx={{
                       border: "2px solid gray",
                       width: "10px",
@@ -306,31 +315,33 @@ const UsersPage = () => {
                       }
                     />
                   </TableCell>
-                </TableRow>
-              ))
+              </TableRow>
+            ))
           ) : (
-            <TableShimmer columns={6} endAction />
+            <TableShimmer />
           )}
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={6} align="right">
-              <FormControlLabel
-                control={
-                  <Switch
-                    value={temporary}
-                    onChange={(e) => setTemporary(e.target.checked)}
-                    size="small"
+            <TableCell colSpan={6} align="center">
+              <Pagination
+                count={pageCount}
+                page={currentPage}
+                onChange={handlePageClick}
+                renderItem={(item) => (
+                  <PaginationItem
+                    {...item}
+                    sx={{
+                      margin: "0 2px",
+                    }}
                   />
-                }
-                label={t("userTemporary")}
-                labelPlacement="start"
+                )}
               />
             </TableCell>
           </TableRow>
         </TableFooter>
       </Table>
-      <CollectionFab editPath="/settings/user" />
+      <CollectionFab />
     </PageLayout>
   );
 };
