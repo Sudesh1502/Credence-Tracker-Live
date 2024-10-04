@@ -48,6 +48,12 @@ const ReportsMenu = () => {
           selected={location.pathname === "/reports/combined"}
         />
         <MenuItem
+          title="Day Reports"
+          link="/reports/dayreports"
+          icon={<StarIcon />}
+          selected={location.pathname === "/reports/dayreports"}
+        />
+        <MenuItem
           title="Custom Report"
           link="/reports/route"
           icon={<TimelineIcon />}

@@ -58,6 +58,7 @@ import UserConnectionsPage from './settings/UserConnectionsPage';
 import LogsPage from './reports/LogsPage';
 import SharePage from './settings/SharePage';
 import AnnouncementPage from './settings/AnnouncementPage';
+import DayReport from './reports/DayReport';
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -158,6 +159,7 @@ const Navigation = () => {
         <Route path="reports">
           <Route path="combined" element={<CombinedReportPage />} />
           <Route path="combined/:id" element={<CombinedReportPage />} />
+          <Route path="dayreports" element={<DayReport />} />
           <Route path="chart" element={<ChartReportPage />} />
           <Route path="event" element={<EventReportPage />} />
           <Route path="event/:id" element={<EventReportPage />} />
