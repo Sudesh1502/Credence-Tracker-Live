@@ -17,6 +17,10 @@ import PageLayout from "../common/components/PageLayout";
 import ReportsMenu from "./components/ReportsMenu";
 import useReportStyles from "./common/useReportStyles";
 import dayjs from "dayjs";
+import { saveAs } from 'file-saver'; // For file saving
+import * as XLSX from 'xlsx';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable'; // Assuming this import is correct
 
 const formatTime = (isoString) =>
   isoString ? dayjs(isoString).format("HH:mm:ss") : "---";
@@ -67,7 +71,7 @@ const DayReport = () => {
 
       // Group data by day
       data.forEach((item) => {
-        const date = dayjs(item.fixTime).startOf("day").format("YYYY-MM-DD");
+        const date = dayjs(item.deviceTime).format("YYYY-MM-DD");
         if (!groupedByDay[date]) {
           groupedByDay[date] = [];
         }
@@ -81,21 +85,30 @@ const DayReport = () => {
         // 1. Get the date
         const date = day;
 
-        // 2. Find the first object where ignition == true (starting from the 0th index)
-        const firstIgnitionTrueFromStart = dayData.find(
+        // 2. Filter dayData for the specific date range
+        const filteredDayData = dayData.filter((item) => {
+          const itemDate = dayjs(item.deviceTime);
+          return (
+            itemDate.isSame(dayjs(date), "day") &&
+            itemDate.isAfter(dayjs(date).startOf("day")) &&
+            itemDate.isBefore(dayjs(date).endOf("day"))
+          );
+        });
+
+        // 3. Find the first object where ignition == true (starting from the 0th index)
+        const firstIgnitionTrueFromStart = filteredDayData.find(
           (item) => item.attributes.ignition === true
         );
 
-        // 3. Find the first object where ignition == true (starting from the last index)
-        const firstIgnitionTrueFromEnd = [...dayData]
+        // 4. Find the first object where ignition == true (starting from the last index)
+        const firstIgnitionTrueFromEnd = [...filteredDayData]
           .reverse()
           .find((item) => item.attributes.ignition === true);
 
-        // 4. Calculate the sum of obj.attributes.distance from 0th index to last index
-        const totalDistance = dayData.reduce((sum, item) => {
-            console.log("This is distance = "+JSON.stringify(item)); // Log the distance of each item
-            return sum + (item.attributes.distance || 0); // Add the distance to the sum
-          }, 0);
+        // 5. Calculate the sum of obj.attributes.distance from 0th index to last index
+        const totalDistance = filteredDayData.reduce((sum, item) => {
+          return sum + (item.attributes.distance || 0); // Add the distance to the sum
+        }, 0);
 
         // Calculate duration between first and last ignition (if both exist)
         let duration = null;
@@ -105,8 +118,6 @@ const DayReport = () => {
             "minute"
           );
         }
-
-        
 
         resultArray.push({
           date: date,
@@ -125,6 +136,141 @@ const DayReport = () => {
       setLoading(false);
     }
   };
+
+  const formatDuration = (totalMinutes) => {
+    const totalSeconds = totalMinutes * 60; // Convert to seconds
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`; // Display hours and minutes
+    } else {
+      return `${minutes}m ${seconds}s`; // Display only minutes and seconds
+    }
+  };
+
+
+
+  const downloadExcel = (data) => {
+    // Map the data to the desired format
+    const formattedData = data.map((row) => ({
+      Date: row.date,
+      'First Ignition On': row.firstIgnitionTrueFromStart
+        ? dayjs(row.firstIgnitionTrueFromStart.deviceTime).format("YYYY-MM-DD HH:mm:ss")
+        : 'N/A',
+      'Last Ignition Off': row.firstIgnitionTrueFromEnd
+        ? dayjs(row.firstIgnitionTrueFromEnd.deviceTime).format("YYYY-MM-DD HH:mm:ss")
+        : 'N/A',
+      Duration: row.duration !== null ? formatDuration(row.duration) : 'N/A',
+      'Total Distance Covered(km)': Math.min(row.totalDistance / 1000, 1011).toFixed(2),
+    }));
+  
+    // Create a new worksheet
+    const ws = XLSX.utils.json_to_sheet(formattedData);
+  
+    // Define header cell style
+    const headerCellStyle = {
+      font: { bold: true, color: { rgb: 'FFFFFF' } }, // White font color and bold
+      fill: { fgColor: { rgb: '008000' } }, // Green background color
+      alignment: { horizontal: 'center' }, // Center align text
+      border: {
+        top: { style: 'thin', color: { rgb: '000000' } },
+        bottom: { style: 'thin', color: { rgb: '000000' } },
+        left: { style: 'thin', color: { rgb: '000000' } },
+        right: { style: 'thin', color: { rgb: '000000' } },
+      },
+    };
+  
+    // Apply styles to header cells
+    for (let cell in ws) {
+      if (cell[0] === '!') continue; // Skip metadata
+      if (cell[1] === '1') { // Assuming the first row is the header
+        ws[cell].s = headerCellStyle;
+      }
+    }
+  
+    // Adjust column width based on header and data
+    const columnWidths = [
+      { wch: Math.max(...formattedData.map(item => item.Date.length), 'Date'.length) + 2 }, // Add a little extra space
+      { wch: Math.max(...formattedData.map(item => item['First Ignition On'].length), 'First Ignition On'.length) + 2 },
+      { wch: Math.max(...formattedData.map(item => item['Last Ignition Off'].length), 'Last Ignition Off'.length) + 2 },
+      { wch: Math.max(...formattedData.map(item => item.Duration.length), 'Duration'.length) + 2 },
+      { wch: Math.max(...formattedData.map(item => item['Total Distance Covered(km)'].length), 'Total Distance Covered(km)'.length) + 2 },
+    ];
+  
+    // Set the column widths
+    ws['!cols'] = columnWidths;
+  
+    // Create a new workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Day Report');
+  
+    // Write the Excel file
+    XLSX.writeFile(wb, 'Day_Report.xlsx');
+  };
+
+  
+  // Function to download report as PDF
+  // Function to download report as PDF
+
+const downloadPDF = (data) => {
+    // Create a new jsPDF instance
+    const doc = new jsPDF();
+    
+    // Set title
+    doc.setFontSize(15);
+    doc.text('Day Report', 14, 12);
+    
+    // Define table headers
+    const headers = ['Date', 'Start Time', 'End Time', 'Duration', 'Total Distance'];
+    
+    // Prepare data for the table
+    const rows = data.map(row => [
+        String(row.date || 'N/A'),
+        row.firstIgnitionTrueFromStart ? dayjs(row.firstIgnitionTrueFromStart.deviceTime).format("YYYY-MM-DD HH:mm:ss") : 'N/A',
+        row.firstIgnitionTrueFromEnd ? dayjs(row.firstIgnitionTrueFromEnd.deviceTime).format("YYYY-MM-DD HH:mm:ss") : 'N/A',
+        row.duration !== null ? formatDuration(row.duration) : 'N/A',
+        Math.min(row.totalDistance / 1000, 1011).toFixed(2)
+    ]);
+
+    // Use autoTable to add a table with borders
+    autoTable(doc, {
+        head: [headers],
+        body: rows,
+        startY: 27, // Start below the title
+        columnStyles: {
+            0: { cellWidth: 30 }, // Date
+            1: { cellWidth: 38 }, // Start Time
+            2: { cellWidth: 40 }, // End Time
+            3: { cellWidth: 37 }, // Duration
+            4: { cellWidth: 34 }  // Total Distance
+        },
+        styles: {
+            fontSize: 10,
+            cellPadding: 2,
+            overflow: 'linebreak', // Handle overflow in cells
+            valign: 'middle', // Vertical alignment
+            lineWidth: 0.1, // Border line width
+            lineColor: [0, 0, 0], // Border color (black)
+            textColor: [0, 0, 0], // Border color (black)
+        },
+        headStyles: {
+            fillColor: [200, 200, 200], // Header background color
+            textColor: [0, 0, 0], // Header text color
+            fontStyle: 'bold', // Make header text bold
+        },
+        margin: { top: 10 }, // Margin around the table
+    });
+    
+    // Save the PDF
+    doc.save('Day_Report.pdf');
+};
+
+
+
+
+  
 
   return (
     <PageLayout
@@ -195,6 +341,25 @@ const DayReport = () => {
               )}
             </Button>
           </div>
+          {/* Download Buttons */}
+        <div style={{ marginTop: 20 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => downloadExcel(reportData)}
+            style={{ marginRight: 10 }}
+          >
+            Download Excel
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => downloadPDF(reportData)}
+          >
+            Download PDF
+          </Button>
+        </div>
+
 
           {/* Report Table */}
           {reportData.length > 0 ? (
@@ -219,7 +384,7 @@ const DayReport = () => {
                           <TableRow key={index}>
                             <TableCell>{row.date}</TableCell>
 
-                            {/* Display fixTime for first ignition or N/A if null */}
+                            {/* Display deviceTime for first ignition or N/A if null */}
                             <TableCell>
                               {row.firstIgnitionTrueFromStart
                                 ? dayjs(
@@ -228,7 +393,7 @@ const DayReport = () => {
                                 : "N/A"}
                             </TableCell>
 
-                            {/* Display fixTime for last ignition or N/A if null */}
+                            {/* Display deviceTime for last ignition or N/A if null */}
                             <TableCell>
                               {row.firstIgnitionTrueFromEnd
                                 ? dayjs(
@@ -239,13 +404,15 @@ const DayReport = () => {
 
                             {/* Display duration or N/A if no valid data */}
                             <TableCell>
-                              {row.duration !== null ? row.duration : "N/A"}
+                              {row.duration !== null
+                                ? formatDuration(row.duration)
+                                : "N/A"}
                             </TableCell>
 
                             {/* Display total distance */}
                             <TableCell>
-                              {(row.totalDistance/1000).toFixed(2)} km
-                            </TableCell>
+  {Math.min(row.totalDistance / 1000, 1011).toFixed(2)} km
+</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -254,9 +421,7 @@ const DayReport = () => {
                 )}
               </div>
             </Paper>
-          ) : (
-            <p>No data available for the selected date range.</p>
-          )}
+          ) : null}
         </div>
       </div>
     </PageLayout>
