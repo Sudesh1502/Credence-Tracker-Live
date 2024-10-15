@@ -445,9 +445,9 @@ const DayReport = () => {
                             <TableCell>
                               {row.firstIgnitionTrueFromStart
                                 ? dayjs(
-                                    row.firstIgnitionTrueFromStart.deviceTime
-                                  ).format("YYYY-MM-DD HH:mm:ss")
-                                : "N/A"}
+                                  row.firstIgnitionTrueFromStart.deviceTime
+                                ).format("YYYY-MM-DD hh:mm:ss A") : "N/A"
+                                }
                             </TableCell>
 
                             {/* Display deviceTime for last ignition or N/A if null */}
@@ -455,7 +455,7 @@ const DayReport = () => {
                               {row.firstIgnitionTrueFromEnd
                                 ? dayjs(
                                     row.firstIgnitionTrueFromEnd.deviceTime
-                                  ).format("YYYY-MM-DD HH:mm:ss")
+                                  ).format("YYYY-MM-DD hh:mm:ss A")
                                 : "N/A"}
                             </TableCell>
 

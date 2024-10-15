@@ -53,6 +53,7 @@ const ReportsMenu = () => {
           icon={<StarIcon />}
           selected={location.pathname === "/reports/dayreports"}
         />
+        
         <MenuItem
           title="Custom Report"
           link="/reports/route"
