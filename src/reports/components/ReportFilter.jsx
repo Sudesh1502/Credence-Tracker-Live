@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   FormControl, InputLabel, Select, MenuItem, Button, TextField, Typography,
 } from '@mui/material';
@@ -11,7 +11,9 @@ import SplitButton from '../../common/components/SplitButton';
 import SelectField from '../../common/components/SelectField';
 import { useRestriction } from '../../common/util/permissions';
 
-const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignoreDevice, multiDevice, includeGroups, vehicleId }) => {
+const ReportFilter = ({
+  children, handleSubmit, handleSchedule, showOnly, ignoreDevice, multiDevice, includeGroups, loading,
+}) => {
   const classes = useReportStyles();
   const dispatch = useDispatch();
   const t = useTranslation();
@@ -33,13 +35,7 @@ const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignore
   const [calendarId, setCalendarId] = useState();
 
   const scheduleDisabled = button === 'schedule' && (!description || !calendarId);
-  const disabled = (!ignoreDevice && !deviceId && !deviceIds.length && !groupIds.length) || scheduleDisabled;
-
-  useEffect(() => {
-    if (vehicleId) {
-      dispatch(devicesActions.selectId(vehicleId));
-    }
-  }, [vehicleId, dispatch]);
+  const disabled = (!ignoreDevice && !deviceId && !deviceIds.length && !groupIds.length) || scheduleDisabled || loading;
 
   const handleClick = (type) => {
     if (type === 'schedule') {
@@ -81,9 +77,6 @@ const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignore
           selectedTo = dayjs(to, 'YYYY-MM-DDTHH:mm');
           break;
       }
-
-      selectedFrom = selectedFrom.subtract(5, 'hour').subtract(30, 'minute');
-      selectedTo = selectedTo.subtract(5, 'hour').subtract(30, 'minute');
 
       handleSubmit({
         deviceId,
