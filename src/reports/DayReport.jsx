@@ -87,7 +87,7 @@ const DayReport = () => {
 
       // Group data by day in IST
       data?.forEach((item) => {
-        const date = dayjs(item.deviceTime)
+        const date = dayjs(item.fixTime)
           .tz("Asia/Kolkata")
           .format("YYYY-MM-DD");
         if (!groupedByDay[date]) groupedByDay[date] = [];
@@ -98,7 +98,7 @@ const DayReport = () => {
         const dayData = groupedByDay[day];
 
         const filteredDayData = dayData.filter((item) => {
-          const itemDate = dayjs(item.deviceTime).tz("Asia/Kolkata");
+          const itemDate = dayjs(item.fixTime).tz("Asia/Kolkata");
           return itemDate.isSame(dayjs(day), "day");
         });
 
@@ -117,8 +117,8 @@ const DayReport = () => {
 
         let duration = null;
         if (firstIgnitionTrueFromStart && firstIgnitionTrueFromEnd) {
-          duration = dayjs(firstIgnitionTrueFromEnd.deviceTime).diff(
-            dayjs(firstIgnitionTrueFromStart.deviceTime),
+          duration = dayjs(firstIgnitionTrueFromEnd.fixTime).diff(
+            dayjs(firstIgnitionTrueFromStart.fixTime),
             "minute"
           );
         }
@@ -150,10 +150,10 @@ const DayReport = () => {
     const formattedData = data.map((row) => ({
       Date: row.date,
       "First Ignition On": row.firstIgnitionTrueFromStart
-        ? formatToIST(row.firstIgnitionTrueFromStart.deviceTime)
+        ? formatToIST(row.firstIgnitionTrueFromStart.fixTime)
         : "N/A",
       "Last Ignition Off": row.firstIgnitionTrueFromEnd
-        ? formatToIST(row.firstIgnitionTrueFromEnd.deviceTime)
+        ? formatToIST(row.firstIgnitionTrueFromEnd.fixTime)
         : "N/A",
       Duration: row.duration !== null ? formatDuration(row.duration) : "N/A",
       "Total Distance Covered(km)": Math.min(
@@ -184,10 +184,10 @@ const DayReport = () => {
     const rows = data.map((row) => [
       String(row.date || "N/A"),
       row.firstIgnitionTrueFromStart
-        ? formatToIST(row.firstIgnitionTrueFromStart.deviceTime)
+        ? formatToIST(row.firstIgnitionTrueFromStart.fixTime)
         : "N/A",
       row.firstIgnitionTrueFromEnd
-        ? formatToIST(row.firstIgnitionTrueFromEnd.deviceTime)
+        ? formatToIST(row.firstIgnitionTrueFromEnd.fixTime)
         : "N/A",
       row.duration !== null ? formatDuration(row.duration) : "N/A",
       Math.min(row.totalDistance / 1000, 1011).toFixed(2),
@@ -343,14 +343,14 @@ const DayReport = () => {
                         <TableCell>
                           {row.firstIgnitionTrueFromStart
                             ? formatToIST(
-                                row.firstIgnitionTrueFromStart.deviceTime
+                                row.firstIgnitionTrueFromStart.fixTime
                               )
                             : "N/A"}
                         </TableCell>
                         <TableCell>
                           {row.firstIgnitionTrueFromEnd
                             ? formatToIST(
-                                row.firstIgnitionTrueFromEnd.deviceTime
+                                row.firstIgnitionTrueFromEnd.fixTime
                               )
                             : "N/A"}
                         </TableCell>
