@@ -62,7 +62,7 @@ const AnnouncementPage = () => {
             <SelectField
               value={notificator}
               onChange={(e) => setNotificator(e.target.value)}
-              endpoint="/api/notifications/notificators?announcement=true"
+              endpoint="/api/notifications/notificators"
               keyGetter={(it) => it.type}
               titleGetter={(it) => t(prefixString('notificator', it.type))}
               label={t('notificationNotificators')}

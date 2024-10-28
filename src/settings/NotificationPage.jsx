@@ -9,7 +9,6 @@ import {
   Checkbox,
   FormGroup,
   Button,
-  TextField,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation, useTranslationKeys } from '../common/components/LocalizationProvider';
@@ -94,7 +93,7 @@ const NotificationPage = () => {
               {item.notificators?.includes('command') && (
                 <SelectField
                   value={item.commandId}
-                  onChange={(e) => setItem({ ...item, commandId: Number(e.target.value) })}
+                  onChange={(event) => setItem({ ...item, commandId: Number(event.target.value) })}
                   endpoint="/api/commands"
                   titleGetter={(it) => it.description}
                   label={t('sharedSavedCommand')}
@@ -113,7 +112,7 @@ const NotificationPage = () => {
                   control={(
                     <Checkbox
                       checked={item.always}
-                      onChange={(e) => setItem({ ...item, always: e.target.checked })}
+                      onChange={(event) => setItem({ ...item, always: event.target.checked })}
                     />
                     )}
                   label={t('notificationAlways')}
@@ -128,14 +127,9 @@ const NotificationPage = () => {
               </Typography>
             </AccordionSummary>
             <AccordionDetails className={classes.details}>
-              <TextField
-                value={item.description || ''}
-                onChange={(e) => setItem({ ...item, description: e.target.value })}
-                label={t('sharedDescription')}
-              />
               <SelectField
                 value={item.calendarId}
-                onChange={(e) => setItem({ ...item, calendarId: Number(e.target.value) })}
+                onChange={(event) => setItem({ ...item, calendarId: Number(event.target.value) })}
                 endpoint="/api/calendars"
                 label={t('sharedCalendar')}
               />

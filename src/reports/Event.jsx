@@ -12,13 +12,9 @@ import {
   TableBody,
   Link,
   IconButton,
-  Box,
-  TextField,
-  InputAdornment,
 } from "@mui/material";
 import GpsFixedIcon from "@mui/icons-material/GpsFixed";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
-import Search from "@mui/icons-material/Search";
 import { useSelector } from "react-redux";
 import { formatSpeed, formatTime } from "../common/util/formatter";
 import ReportFilter from "./components/ReportFilter";
@@ -75,7 +71,6 @@ const EventReportPage = () => {
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [position, setPosition] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
 
   useEffectAsync(async () => {
     if (selectedItem) {
@@ -154,6 +149,7 @@ const EventReportPage = () => {
   });
 
   const formatValue = (item, key) => {
+    console.log(item[key]);
     switch (key) {
       case "eventTime":
         return formatTime(item[key], "seconds", hours12);
@@ -197,204 +193,139 @@ const EventReportPage = () => {
   };
 
   return (
-    <PageLayout
-      menu={<ReportsMenu />}
-      breadcrumbs={["reportTitle", "reportEvents"]}
-    >
-      <div className={classes.container}>
-        {/* Heading and Search Bar in Flex Container */}
-        <Box
+    <div className={classes.container}>
+      <h1>Alert Page</h1>
+      {selectedItem && (
+        <div className={classes.containerMap}>
+          <MapView>
+            <MapGeofence />
+            {position && (
+              <MapPositions positions={[position]} titleField="fixTime" />
+            )}
+          </MapView>
+          {position && (
+            <MapCamera
+              latitude={position.latitude}
+              longitude={position.longitude}
+            />
+          )}
+        </div>
+      )}
+      <div className={classes.containerMain}>
+        <div className={classes.header}>
+          <ReportFilter
+            handleSubmit={handleSubmit}
+            handleSchedule={handleSchedule}
+          >
+            <div className={classes.filterItem}>
+              <FormControl fullWidth>
+                <InputLabel>{t("reportEventTypes")}</InputLabel>
+                <Select
+                  label={t("reportEventTypes")}
+                  value={eventTypes}
+                  onChange={(event, child) => {
+                    let values = event.target.value;
+                    const clicked = child.props.value;
+                    if (values.includes("allEvents") && values.length > 1) {
+                      values = [clicked];
+                    }
+                    setEventTypes(values);
+                  }}
+                  multiple
+                >
+                  {allEventTypes.map(([key, string]) => (
+                    <MenuItem key={key} value={key}>
+                      {t(string)}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+            <ColumnSelect
+              columns={columns}
+              setColumns={setColumns}
+              columnsArray={columnsArray}
+            />
+          </ReportFilter>
+        </div>
+        <Table
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "20px 50px",
+            borderCollapse: "collapse",
+            border: "2px solid gray",
           }}
         >
-          <h2 style={{ margin: 0 }}>Alert</h2>
-          <TextField
-            variant="outlined"
-            size="small"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            sx={{ minWidth: "300px" }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-
-        {selectedItem && (
-          <div className={classes.containerMap}>
-            <MapView>
-              <MapGeofence />
-              {position && (
-                <MapPositions positions={[position]} titleField="fixTime" />
-              )}
-            </MapView>
-            {position && (
-              <MapCamera
-                latitude={position.latitude}
-                longitude={position.longitude}
+          <TableHead>
+            <TableRow>
+              <TableCell
+                sx={{
+                  border: "2px solid gray",
+                  background: "#d3d3d3",
+                  color: "black",
+                }}
+                className={classes.columnAction}
               />
-            )}
-          </div>
-        )}
-        <div className={classes.containerMain}>
-          <div className={classes.header}>
-            <ReportFilter
-              handleSubmit={handleSubmit}
-              handleSchedule={handleSchedule}
-            >
-              <div className={classes.filterItem}>
-                <FormControl fullWidth>
-                  <InputLabel>{t("reportEventTypes")}</InputLabel>
-                  <Select
-                    label={t("reportEventTypes")}
-                    value={eventTypes}
-                    onChange={(event, child) => {
-                      let values = event.target.value;
-                      const clicked = child.props.value;
-                      if (values.includes("allEvents") && values.length > 1) {
-                        values = [clicked];
-                      }
-                      setEventTypes(values);
-                    }}
-                    multiple
-                  >
-                    {allEventTypes.map(([key, string]) => (
-                      <MenuItem key={key} value={key}>
-                        {t(string)}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-              <ColumnSelect
-                columns={columns}
-                setColumns={setColumns}
-                columnsArray={columnsArray}
-              />
-            </ReportFilter>
-          </div>
-          <Table
-            sx={{
-              borderCollapse: "collapse",
-              border: "2px solid gray",
-              paddingTop: "3px",
-              paddingRight: "3px",
-              width: "100%",
-            }}
-          >
-            <TableHead>
-              <TableRow>
+              {columns.map((key) => (
                 <TableCell
                   sx={{
                     border: "2px solid gray",
                     background: "#d3d3d3",
                     color: "black",
-                    width: "10%",
-                    paddingTop: "3px !important",
-                    paddingBottom: "3px !important",
                   }}
-                  className={classes.columnAction}
-                />
-                {columns.map((key) => (
+                  key={key}
+                >
+                  {t(columnsMap.get(key))}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {!loading ? (
+              items.map((item) => (
+                <TableRow key={item.id}>
                   <TableCell
                     sx={{
                       border: "2px solid gray",
-                      background: "#d3d3d3",
-                      color: "black",
-                      paddingTop: "3px !important",
-                      paddingBottom: "3px !important",
                     }}
-                    key={key}
+                    className={classes.columnAction}
+                    padding="none"
                   >
-                    {t(columnsMap.get(key))}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={columns.length + 1}>
-                    <TableShimmer rows={10} />
-                  </TableCell>
-                </TableRow>
-              ) : (
-                items
-                  .filter((item) => {
-                    return columns.some((column) =>
-                      formatValue(item, column)
-                        ?.toString()
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase())
-                    );
-                  })
-                  .map((item) => (
-                    <TableRow
-                      key={item.id}
-                      onClick={() => setSelectedItem(item)}
-                      hover
-                      selected={selectedItem === item}
-                      sx={{
-                        "&:hover": {
-                          background: "lightblue",
-                          cursor: "pointer",
-                        },
-                      }}
-                    >
-                      <TableCell
-                        className={classes.columnAction}
-                        sx={{
-                          border: "2px solid gray",
-                          paddingRight: "2px !important",
-                          paddingTop: "5px !important",
-                          paddingBottom: "5px !important",
-                        }}
-                      >
+                    {(item.positionId &&
+                      (selectedItem === item ? (
                         <IconButton
                           size="small"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const position = {
-                              latitude: item.attributes.latitude,
-                              longitude: item.attributes.longitude,
-                            };
-                            setPosition(position);
-                          }}
+                          onClick={() => setSelectedItem(null)}
                         >
-                          <GpsFixedIcon />
+                          <GpsFixedIcon fontSize="small" />
                         </IconButton>
-                      </TableCell>
-                      {columns.map((key) => (
-                        <TableCell
-                          key={key}
-                          sx={{
-                            border: "2px solid gray",
-                            width: "10px",
-                            paddingRight: "0px !important",
-                            paddingTop: "3px !important",
-                            paddingBottom: "3px !important",
-                          }}
+                      ) : (
+                        <IconButton
+                          size="small"
+                          onClick={() => setSelectedItem(item)}
                         >
-                          {formatValue(item, key)}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                          <LocationSearchingIcon fontSize="small" />
+                        </IconButton>
+                      ))) ||
+                      ""}
+                  </TableCell>
+                  {columns.map((key) => (
+                    <TableCell
+                      sx={{
+                        border: "2px solid gray",
+                      }}
+                      key={key}
+                    >
+                      {formatValue(item, key)}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableShimmer columns={columns.length + 1} />
+            )}
+          </TableBody>
+        </Table>
       </div>
-    </PageLayout>
+    </div>
   );
 };
 

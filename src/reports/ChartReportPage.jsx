@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
 import {
-  FormControl, InputLabel, Select, MenuItem,
+  FormControl, InputLabel, Select, MenuItem, Box, TextField, InputAdornment,
+  Fab, Menu, MenuItem as MuiMenuItem
 } from '@mui/material';
 import {
   CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
@@ -13,11 +14,14 @@ import PageLayout from '../common/components/PageLayout';
 import ReportsMenu from './components/ReportsMenu';
 import usePositionAttributes from '../common/attributes/usePositionAttributes';
 import { useCatch } from '../reactHelper';
-import { useAttributePreference } from '../common/util/preferences';
+import { useAttributePreference, usePreference } from '../common/util/preferences';
 import {
   altitudeFromMeters, distanceFromMeters, speedFromKnots, volumeFromLiters,
 } from '../common/util/converter';
 import useReportStyles from './common/useReportStyles';
+import Search from '@mui/icons-material/Search';  // Importing the Search icon
+import Settings from '@mui/icons-material/Settings';  // Importing the Settings icon
+import GetApp from '@mui/icons-material/GetApp';  // Importing the GetApp icon
 
 const ChartReportPage = () => {
   const classes = useReportStyles();
@@ -29,11 +33,14 @@ const ChartReportPage = () => {
   const altitudeUnit = useAttributePreference('altitudeUnit');
   const speedUnit = useAttributePreference('speedUnit');
   const volumeUnit = useAttributePreference('volumeUnit');
+  const hours12 = usePreference('twelveHourFormat');
 
   const [items, setItems] = useState([]);
   const [types, setTypes] = useState(['speed']);
   const [type, setType] = useState('speed');
-  const [timeType, setTimeType] = useState('fixTime');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const [anchorEl, setAnchorEl] = useState(null); // State for the settings menu
 
   const values = items.map((it) => it[type]);
   const minValue = Math.min(...values);
@@ -53,8 +60,6 @@ const ChartReportPage = () => {
         const data = { ...position, ...position.attributes };
         const formatted = {};
         formatted.fixTime = dayjs(position.fixTime).valueOf();
-        formatted.deviceTime = dayjs(position.deviceTime).valueOf();
-        formatted.serverTime = dayjs(position.serverTime).valueOf();
         Object.keys(data).filter((key) => !['id', 'deviceId'].includes(key)).forEach((key) => {
           const value = data[key];
           if (typeof value === 'number') {
@@ -97,8 +102,50 @@ const ChartReportPage = () => {
     }
   });
 
+  const handleSettingsClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDownload = () => {
+    // Implement your download logic here
+    handleClose();
+  };
+
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportChart']}>
+      <div className={classes.header}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 30px",
+          }}
+        >
+          <h2>Custom Chart</h2>
+
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ minWidth: "300px" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+      </div>
+
       <ReportFilter handleSubmit={handleSubmit} showOnly>
         <div className={classes.filterItem}>
           <FormControl fullWidth>
@@ -115,22 +162,8 @@ const ChartReportPage = () => {
             </Select>
           </FormControl>
         </div>
-        <div className={classes.filterItem}>
-          <FormControl fullWidth>
-            <InputLabel>{t('reportTimeType')}</InputLabel>
-            <Select
-              label={t('reportTimeType')}
-              value={timeType}
-              onChange={(e) => setTimeType(e.target.value)}
-              disabled={!items.length}
-            >
-              <MenuItem value="fixTime">{t('positionFixTime')}</MenuItem>
-              <MenuItem value="deviceTime">{t('positionDeviceTime')}</MenuItem>
-              <MenuItem value="serverTime">{t('positionServerTime')}</MenuItem>
-            </Select>
-          </FormControl>
-        </div>
       </ReportFilter>
+      
       {items.length > 0 && (
         <div className={classes.chart}>
           <ResponsiveContainer>
@@ -141,9 +174,9 @@ const ChartReportPage = () => {
               }}
             >
               <XAxis
-                dataKey={timeType}
+                dataKey="fixTime"
                 type="number"
-                tickFormatter={(value) => formatTime(value, 'time')}
+                tickFormatter={(value) => formatTime(value, 'time', hours12)}
                 domain={['dataMin', 'dataMax']}
                 scale="time"
               />
@@ -155,13 +188,35 @@ const ChartReportPage = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <Tooltip
                 formatter={(value, key) => [value, positionAttributes[key]?.name || key]}
-                labelFormatter={(value) => formatTime(value, 'seconds')}
+                labelFormatter={(value) => formatTime(value, 'seconds', hours12)}
               />
               <Line type="monotone" dataKey={type} />
             </LineChart>
           </ResponsiveContainer>
         </div>
       )}
+
+      {/* Settings Button */}
+      <Fab
+        color="primary"
+        aria-label="settings"
+        sx={{ position: "fixed", bottom: 16, right: 16 }}
+        onClick={handleSettingsClick}
+      >
+        <Settings />
+      </Fab>
+
+      {/* Settings Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MuiMenuItem onClick={handleDownload}>
+          <GetApp sx={{ marginRight: 1 }} />
+          Download
+        </MuiMenuItem>
+      </Menu>
     </PageLayout>
   );
 };

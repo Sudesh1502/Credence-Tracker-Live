@@ -53,14 +53,11 @@ const MaintenancePage = () => {
       setLabels({ ...labels, start: null, period: t('sharedDays') });
     } else if (attribute && attribute.dataType) {
       switch (attribute.dataType) {
-        case 'speed':
-          setLabels({ ...labels, start: t(prefixString('shared', speedUnit)), period: t(prefixString('shared', speedUnit)) });
-          break;
         case 'distance':
           setLabels({ ...labels, start: t(prefixString('shared', distanceUnit)), period: t(prefixString('shared', distanceUnit)) });
           break;
-        case 'hours':
-          setLabels({ ...labels, start: t('sharedHours'), period: t('sharedHours') });
+        case 'speed':
+          setLabels({ ...labels, start: t(prefixString('shared', speedUnit)), period: t(prefixString('shared', speedUnit)) });
           break;
         default:
           setLabels({ ...labels, start: null, period: null });
@@ -85,8 +82,6 @@ const MaintenancePage = () => {
           return speedFromKnots(value, speedUnit);
         case 'distance':
           return distanceFromMeters(value, distanceUnit);
-        case 'hours':
-          return value / 3600000;
         default:
           return value;
       }
@@ -107,8 +102,6 @@ const MaintenancePage = () => {
           return speedToKnots(value, speedUnit);
         case 'distance':
           return distanceToMeters(value, distanceUnit);
-        case 'hours':
-          return value * 3600000;
         default:
           return value;
       }
