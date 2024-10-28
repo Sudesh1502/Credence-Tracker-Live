@@ -93,7 +93,7 @@ const DayReport = () => {
 
       // Group data by day
       data?.forEach((item) => {
-        const date = dayjs(item.deviceTime)
+        const date = dayjs(item.serverTime)
           .tz("Asia/Kolkata")
           .format("YYYY-MM-DD"); // Convert backend UTC to IST for grouping
         if (!groupedByDay[date]) {
@@ -133,8 +133,8 @@ const DayReport = () => {
 
         let duration = null;
         if (firstIgnitionTrueFromStart && firstIgnitionTrueFromEnd) {
-          duration = dayjs(firstIgnitionTrueFromEnd.deviceTime).diff(
-            dayjs(firstIgnitionTrueFromStart.deviceTime),
+          duration = dayjs(firstIgnitionTrueFromEnd.serverTime).diff(
+            dayjs(firstIgnitionTrueFromStart.serverTime),
             "minute"
           );
         }
@@ -172,12 +172,12 @@ const DayReport = () => {
     const formattedData = data.map((row) => ({
       Date: row.date,
       "First Ignition On": row.firstIgnitionTrueFromStart
-        ? dayjs(row.firstIgnitionTrueFromStart.deviceTime).format(
+        ? dayjs(row.firstIgnitionTrueFromStart.serverTime).format(
           "YYYY-MM-DD HH:mm:ss"
         )
         : "N/A",
       "Last Ignition Off": row.firstIgnitionTrueFromEnd
-        ? dayjs(row.firstIgnitionTrueFromEnd.deviceTime).format(
+        ? dayjs(row.firstIgnitionTrueFromEnd.serverTime).format(
           "YYYY-MM-DD HH:mm:ss"
         )
         : "N/A",
@@ -289,12 +289,12 @@ const DayReport = () => {
     const rows = data.map((row) => [
       String(row.date || "N/A"),
       row.firstIgnitionTrueFromStart
-        ? dayjs(row.firstIgnitionTrueFromStart.deviceTime).format(
+        ? dayjs(row.firstIgnitionTrueFromStart.serverTime).format(
           "YYYY-MM-DD HH:mm:ss"
         )
         : "N/A",
       row.firstIgnitionTrueFromEnd
-        ? dayjs(row.firstIgnitionTrueFromEnd.deviceTime).format(
+        ? dayjs(row.firstIgnitionTrueFromEnd.serverTime).format(
           "YYYY-MM-DD HH:mm:ss"
         )
         : "N/A",
@@ -454,10 +454,10 @@ const DayReport = () => {
                           <TableRow key={index}>
                             <TableCell>{row.date}</TableCell>
 
-                            {/* Display deviceTime for first ignition or N/A if null */}
+                            {/* Display serverTime for first ignition or N/A if null */}
                             <TableCell>
-                              {row.firstIgnitionTrueFromStart && row.firstIgnitionTrueFromStart.deviceTime
-                                ? dayjs(row.firstIgnitionTrueFromStart.deviceTime)
+                              {row.firstIgnitionTrueFromStart && row.firstIgnitionTrueFromStart.serverTime
+                                ? dayjs(row.firstIgnitionTrueFromStart.serverTime)
                                   .add(5, 'hour')
                                   .add(47, 'minute')
                                   .format("YYYY-MM-DD hh:mm:ss A")
@@ -465,10 +465,10 @@ const DayReport = () => {
                               }
                             </TableCell>
 
-                            {/* Display deviceTime for last ignition or N/A if null */}
+                            {/* Display serverTime for last ignition or N/A if null */}
                             <TableCell>
-                              {row.firstIgnitionTrueFromEnd && row.firstIgnitionTrueFromEnd.deviceTime
-                                ? dayjs(row.firstIgnitionTrueFromEnd.deviceTime)
+                              {row.firstIgnitionTrueFromEnd && row.firstIgnitionTrueFromEnd.serverTime
+                                ? dayjs(row.firstIgnitionTrueFromEnd.serverTime)
                                   .add(5, 'hour')
                                   .add(56, 'minute')
                                   .format("YYYY-MM-DD hh:mm:ss A")
