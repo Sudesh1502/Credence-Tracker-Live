@@ -32,7 +32,7 @@ export const formatVoltage = (value, t) => `${value.toFixed(2)} ${t('sharedVoltA
 export const formatConsumption = (value, t) => `${value.toFixed(2)} ${t('sharedLiterPerHourAbbreviation')}`;
 export const formatTime = (value, format) => {
   if (value) {
-    const b = dayjs(value).add(5, 'hour').add(30, 'minute');
+    const b = dayjs(value);
     const d = b.toDate();
     const dateConfig = { year: 'numeric', month: '2-digit', day: '2-digit' };
     const minuteConfig = { hour: '2-digit', minute: '2-digit' };
