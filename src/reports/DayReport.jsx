@@ -27,17 +27,16 @@ import autoTable from "jspdf-autotable";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const formatTimeToIST = (isoString) => {
-  return isoString
-    ? dayjs(isoString).tz("Asia/Kolkata").format("HH:mm:ss")
-    : "---";
-};
+// Helper function for time formatting
+const formatToIST = (isoString) =>
+  isoString
+    ? dayjs(isoString).tz("Asia/Kolkata").format("YYYY-MM-DD hh:mm:ss A")
+    : "N/A";
 
+// Convert user-selected time from IST to UTC for backend querying
 const convertISTToUTC = (dateString) => {
   return dayjs.tz(dateString, "Asia/Kolkata").utc().toISOString();
 };
-
-const formatToIST = (deviceTime) => dayjs(deviceTime).tz("Asia/Kolkata").format("YYYY-MM-DD hh:mm:ss A");
 
 const DayReport = () => {
   const classes = useReportStyles();
@@ -66,9 +65,13 @@ const DayReport = () => {
       return;
     }
 
-    const fromDate = dayjs(dateRange.from).startOf("day").subtract(5, "hours").subtract(30, "minutes").toISOString();
-
-    const toDate = dayjs(dateRange.to).endOf("day").subtract(5, "hours").subtract(30, "minutes").toISOString();
+    // Convert date range from IST to UTC for backend
+    const fromDate = convertISTToUTC(
+      dayjs(dateRange.from).startOf("day").toISOString()
+    );
+    const toDate = convertISTToUTC(
+      dayjs(dateRange.to).endOf("day").toISOString()
+    );
 
     setLoading(true);
     setReportData([]);
@@ -82,8 +85,11 @@ const DayReport = () => {
       const groupedByDay = {};
       const resultArray = [];
 
+      // Group data by day in IST
       data?.forEach((item) => {
-        const date = dayjs(item.deviceTime).tz("Asia/Kolkata").format("YYYY-MM-DD");
+        const date = dayjs(item.deviceTime)
+          .tz("Asia/Kolkata")
+          .format("YYYY-MM-DD");
         if (!groupedByDay[date]) groupedByDay[date] = [];
         groupedByDay[date].push(item);
       });
@@ -106,7 +112,7 @@ const DayReport = () => {
 
         const totalDistance = filteredDayData.reduce((sum, item) => {
           const distance = item.attributes.distance || 0;
-          return distance > 500 ? sum : sum + distance;
+          return distance > 100 ? sum : sum + distance;
         }, 0);
 
         let duration = null;
@@ -191,9 +197,27 @@ const DayReport = () => {
       head: [headers],
       body: rows,
       startY: 27,
-      columnStyles: { 0: { cellWidth: 30 }, 1: { cellWidth: 38 }, 2: { cellWidth: 40 }, 3: { cellWidth: 37 }, 4: { cellWidth: 34 } },
-      styles: { fontSize: 10, cellPadding: 2, overflow: "linebreak", valign: "middle", lineWidth: 0.1, lineColor: [0, 0, 0], textColor: [0, 0, 0] },
-      headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0], fontStyle: "bold" },
+      columnStyles: {
+        0: { cellWidth: 30 },
+        1: { cellWidth: 38 },
+        2: { cellWidth: 40 },
+        3: { cellWidth: 37 },
+        4: { cellWidth: 34 },
+      },
+      styles: {
+        fontSize: 10,
+        cellPadding: 2,
+        overflow: "linebreak",
+        valign: "middle",
+        lineWidth: 0.1,
+        lineColor: [0, 0, 0],
+        textColor: [0, 0, 0],
+      },
+      headStyles: {
+        fillColor: [200, 200, 200],
+        textColor: [0, 0, 0],
+        fontStyle: "bold",
+      },
       margin: { top: 10 },
     });
 
@@ -207,9 +231,19 @@ const DayReport = () => {
     >
       <div className={classes.container}>
         <div className={classes.containerMain}>
-          <h2 style={{ paddingLeft: "30px", display: "inline-block" }}>Day Report</h2>
+          <h2 style={{ paddingLeft: "30px", display: "inline-block" }}>
+            Day Report
+          </h2>
 
-          <div className={classes.header} style={{ display: "flex", flexDirection: "row", gap: "10px", margin: "20px" }}>
+          <div
+            className={classes.header}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "10px",
+              margin: "20px",
+            }}
+          >
             <TextField
               select
               label="Select Device"
@@ -230,7 +264,9 @@ const DayReport = () => {
               type="datetime-local"
               InputLabelProps={{ shrink: true }}
               value={dateRange.from}
-              onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
+              onChange={(e) =>
+                setDateRange({ ...dateRange, from: e.target.value })
+              }
               fullWidth
               margin="normal"
             />
@@ -239,7 +275,9 @@ const DayReport = () => {
               type="datetime-local"
               InputLabelProps={{ shrink: true }}
               value={dateRange.to}
-              onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
+              onChange={(e) =>
+                setDateRange({ ...dateRange, to: e.target.value })
+              }
               fullWidth
               margin="normal"
             />
@@ -282,36 +320,60 @@ const DayReport = () => {
           </div>
 
           {loading ? (
-            <div style={{ display: "flex", justifyContent: "center" }}>Loading...</div>
-          ) : (
-            reportData.length > 0 ? (
-              <Paper style={{ marginTop: 20 }}>
-                <TableContainer component={Paper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Date</TableCell>
-                        <TableCell>Vehicle Start</TableCell>
-                        <TableCell>Vehicle Stop</TableCell>
-                        <TableCell>Duration (minutes)</TableCell>
-                        <TableCell>Total Distance Covered (km)</TableCell>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              Loading...
+            </div>
+          ) : reportData.length > 0 ? (
+            <Paper style={{ marginTop: 20 }}>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Date</TableCell>
+                      <TableCell>Vehicle Start</TableCell>
+                      <TableCell>Vehicle Stop</TableCell>
+                      <TableCell>Duration (minutes)</TableCell>
+                      <TableCell>Total Distance Covered (km)</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {reportData.map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{row.date}</TableCell>
+                        <TableCell>
+                          {row.firstIgnitionTrueFromStart
+                            ? formatToIST(
+                                row.firstIgnitionTrueFromStart.deviceTime
+                              )
+                            : "N/A"}
+                        </TableCell>
+                        <TableCell>
+                          {row.firstIgnitionTrueFromEnd
+                            ? formatToIST(
+                                row.firstIgnitionTrueFromEnd.deviceTime
+                              )
+                            : "N/A"}
+                        </TableCell>
+                        <TableCell>
+                          {row.duration !== null
+                            ? formatDuration(row.duration)
+                            : "N/A"}
+                        </TableCell>
+                        <TableCell>
+                          {(row.totalDistance != null
+                            ? Math.min(row.totalDistance / 1000, 1011)
+                            : 0
+                          ).toFixed(2)}{" "}
+                          km
+                        </TableCell>
                       </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {reportData.map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{row.date}</TableCell>
-                          <TableCell>{row.firstIgnitionTrueFromStart ? formatToIST(row.firstIgnitionTrueFromStart.deviceTime) : "N/A"}</TableCell>
-                          <TableCell>{row.firstIgnitionTrueFromEnd ? formatToIST(row.firstIgnitionTrueFromEnd.deviceTime) : "N/A"}</TableCell>
-                          <TableCell>{row.duration !== null ? formatDuration(row.duration) : "N/A"}</TableCell>
-                          <TableCell>{(row.totalDistance != null ? Math.min(row.totalDistance / 1000, 1011) : 0).toFixed(2)} km</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-            ) : "No data available"
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          ) : (
+            "No data available"
           )}
         </div>
       </div>
