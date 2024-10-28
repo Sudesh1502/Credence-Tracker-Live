@@ -66,8 +66,9 @@ const DayReport = () => {
       return;
     }
 
-    const fromDate = dayjs(dateRange.from).startOf("day").toISOString();
-    const toDate = dayjs(dateRange.to).endOf("day").toISOString();
+    const fromDate = dayjs(dateRange.from).startOf("day").subtract(5, "hours").subtract(30, "minutes").toISOString();
+
+    const toDate = dayjs(dateRange.to).endOf("day").subtract(5, "hours").subtract(30, "minutes").toISOString();
 
     setLoading(true);
     setReportData([]);
