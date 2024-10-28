@@ -74,7 +74,10 @@ const DayReport = () => {
     );
     const toDate = convertISTToUTC(
       dayjs(dateRange.to).endOf("day").toISOString()
+
     );
+
+    console.log(dateRange)
 
     setLoading(true);
     setReportData([]); // Reset report data before fetching new data
@@ -89,7 +92,7 @@ const DayReport = () => {
       const resultArray = [];
 
       // Group data by day
-      data.forEach((item) => {
+      data?.forEach((item) => {
         const date = dayjs(item.deviceTime)
           .tz("Asia/Kolkata")
           .format("YYYY-MM-DD"); // Convert backend UTC to IST for grouping
@@ -145,6 +148,8 @@ const DayReport = () => {
         });
       });
 
+      console.log(resultArray)
+
       setReportData(resultArray); // Store result in state
     } catch (error) {
       console.error("Error fetching report data", error);
@@ -168,13 +173,13 @@ const DayReport = () => {
       Date: row.date,
       "First Ignition On": row.firstIgnitionTrueFromStart
         ? dayjs(row.firstIgnitionTrueFromStart.deviceTime).format(
-            "YYYY-MM-DD HH:mm:ss"
-          )
+          "YYYY-MM-DD HH:mm:ss"
+        )
         : "N/A",
       "Last Ignition Off": row.firstIgnitionTrueFromEnd
         ? dayjs(row.firstIgnitionTrueFromEnd.deviceTime).format(
-            "YYYY-MM-DD HH:mm:ss"
-          )
+          "YYYY-MM-DD HH:mm:ss"
+        )
         : "N/A",
       Duration: row.duration !== null ? formatDuration(row.duration) : "N/A",
       "Total Distance Covered(km)": Math.min(
@@ -285,13 +290,13 @@ const DayReport = () => {
       String(row.date || "N/A"),
       row.firstIgnitionTrueFromStart
         ? dayjs(row.firstIgnitionTrueFromStart.deviceTime).format(
-            "YYYY-MM-DD HH:mm:ss"
-          )
+          "YYYY-MM-DD HH:mm:ss"
+        )
         : "N/A",
       row.firstIgnitionTrueFromEnd
         ? dayjs(row.firstIgnitionTrueFromEnd.deviceTime).format(
-            "YYYY-MM-DD HH:mm:ss"
-          )
+          "YYYY-MM-DD HH:mm:ss"
+        )
         : "N/A",
       row.duration !== null ? formatDuration(row.duration) : "N/A",
       Math.min(row.totalDistance / 1000, 1011).toFixed(2),
@@ -342,96 +347,104 @@ const DayReport = () => {
           </h2>
 
           {/* Search Bar */}
-          <div className={classes.header}>
-            <TextField
-              select
-              label="Select Device"
-              value={selectedDevice}
-              onChange={(e) => setSelectedDevice(e.target.value)}
-              fullWidth
-              margin="normal"
-            >
-              {devices.map((device) => (
-                <MenuItem key={device.id} value={device.id}>
-                  {device.name}
-                </MenuItem>
-              ))}
-            </TextField>
 
-            {/* Date Range Pickers */}
-            <TextField
-              label="From Date"
-              type="date"
-              InputLabelProps={{ shrink: true }}
-              value={dateRange.from}
-              onChange={(e) =>
-                setDateRange({ ...dateRange, from: e.target.value })
-              }
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="To Date"
-              type="date"
-              InputLabelProps={{ shrink: true }}
-              value={dateRange.to}
-              onChange={(e) =>
-                setDateRange({ ...dateRange, to: e.target.value })
-              }
-              fullWidth
-              margin="normal"
-            />
+          <div>
+            <div className={classes.header} style={{ display: "flex", flexDirection: "row", gap: "10px", margin: "20px" }}>
+              <TextField
+                select
+                label="Select Device"
+                value={selectedDevice}
+                onChange={(e) => setSelectedDevice(e.target.value)}
+                fullWidth
+                margin="normal"
+              >
+                {devices.map((device) => (
+                  <MenuItem key={device.id} value={device.id}>
+                    {device.name}
+                  </MenuItem>
+                ))}
+              </TextField>
 
-            {/* Fetch Report Button */}
-            <Button
-              onClick={fetchReport}
-              variant="contained"
-              color="primary"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <CircularProgress size={20} style={{ marginRight: 8 }} />
-                  Fetching...
-                </>
-              ) : (
-                "Fetch Report"
-              )}
-            </Button>
-          </div>
-          {/* Download Buttons */}
-          <div style={{ marginTop: 20 }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => downloadExcel(reportData)}
-              style={{ marginRight: 10 }}
-            >
-              Download Excel
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => downloadPDF(reportData)}
-            >
-              Download PDF
-            </Button>
+              {/* Date Range Pickers */}
+              <TextField
+                label="From Date"
+                type="datetime-local"
+                InputLabelProps={{ shrink: true }}
+                value={dateRange.from}
+                onChange={(e) =>
+                  setDateRange({ ...dateRange, from: e.target.value })
+                }
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="To Date"
+                type="datetime-local"
+                InputLabelProps={{ shrink: true }}
+                value={dateRange.to}
+                onChange={(e) =>
+                  setDateRange({ ...dateRange, to: e.target.value })
+                }
+                fullWidth
+                margin="normal"
+              />
+
+              {/* Fetch Report Button */}
+
+              <Button
+                onClick={fetchReport}
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                fullWidth
+                style={{ marginTop: "15px" }}
+              >
+                {loading ? (
+                  <>
+                    <CircularProgress size={20} style={{ marginRight: 8 }} />
+                    Generating...
+                  </>
+                ) : (
+                  "Generate"
+                )}
+              </Button>
+
+            </div>
+            {/* Download Buttons */}
+            <div style={{ marginTop: 20 }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => downloadExcel(reportData)}
+                style={{ marginRight: 10 }}
+              >
+                Download Excel
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => downloadPDF(reportData)}
+              >
+                Download PDF
+              </Button>
+            </div>
           </div>
 
           {/* Report Table */}
-          {reportData.length > 0 ? (
-            <Paper style={{ marginTop: 20 }}>
-              <div>
-                {loading ? (
-                  <CircularProgress />
-                ) : (
+
+          {loading ? (
+            <div style={{display: "flex", justifyContent: "center"}}>Loading...</div>
+          ) : (
+            reportData.length > 0 ? (
+              <Paper style={{ marginTop: 20 }}>
+                <div>
                   <TableContainer component={Paper}>
                     <Table>
                       <TableHead>
                         <TableRow>
                           <TableCell>Date</TableCell>
-                          <TableCell>First Ignition On</TableCell>
-                          <TableCell>Last Ignition Off</TableCell>
+                          <TableCell>Vehicle Start</TableCell>
+                          <TableCell>Vehicle Stop</TableCell>
                           <TableCell>Duration (minutes)</TableCell>
                           <TableCell>Total Distance Covered (km)</TableCell>
                         </TableRow>
@@ -443,19 +456,22 @@ const DayReport = () => {
 
                             {/* Display deviceTime for first ignition or N/A if null */}
                             <TableCell>
-                              {row.firstIgnitionTrueFromStart
-                                ? dayjs(
-                                  row.firstIgnitionTrueFromStart.deviceTime
-                                ).format("YYYY-MM-DD hh:mm:ss A") : "N/A"
-                                }
+                              {row.firstIgnitionTrueFromStart && row.firstIgnitionTrueFromStart.deviceTime
+                                ? dayjs(row.firstIgnitionTrueFromStart.deviceTime)
+                                  .add(5, 'hour')
+                                  .add(47, 'minute')
+                                  .format("YYYY-MM-DD hh:mm:ss A")
+                                : "N/A"
+                              }
                             </TableCell>
 
                             {/* Display deviceTime for last ignition or N/A if null */}
                             <TableCell>
-                              {row.firstIgnitionTrueFromEnd
-                                ? dayjs(
-                                    row.firstIgnitionTrueFromEnd.deviceTime
-                                  ).format("YYYY-MM-DD hh:mm:ss A")
+                              {row.firstIgnitionTrueFromEnd && row.firstIgnitionTrueFromEnd.deviceTime
+                                ? dayjs(row.firstIgnitionTrueFromEnd.deviceTime)
+                                  .add(5, 'hour')
+                                  .add(56, 'minute')
+                                  .format("YYYY-MM-DD hh:mm:ss A")
                                 : "N/A"}
                             </TableCell>
 
@@ -468,9 +484,9 @@ const DayReport = () => {
 
                             {/* Display total distance */}
                             <TableCell>
-                              {Math.min(row.totalDistance / 1000, 1011).toFixed(
-                                2
-                              )}{" "}
+                              {(row.totalDistance != null
+                                ? Math.min(row.totalDistance / 1000, 1011)
+                                : 0).toFixed(2)}{" "}
                               km
                             </TableCell>
                           </TableRow>
@@ -478,10 +494,11 @@ const DayReport = () => {
                       </TableBody>
                     </Table>
                   </TableContainer>
-                )}
-              </div>
-            </Paper>
-          ) : null}
+                </div>
+              </Paper>
+            ) : "No data available"
+          )}
+
         </div>
       </div>
     </PageLayout>
