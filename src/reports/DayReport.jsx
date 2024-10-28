@@ -37,7 +37,7 @@ const convertISTToUTC = (dateString) => {
   return dayjs.tz(dateString, "Asia/Kolkata").utc().toISOString();
 };
 
-const formatToIST = (serverTime) => dayjs(serverTime).tz("Asia/Kolkata").format("YYYY-MM-DD hh:mm:ss A");
+const formatToIST = (deviceTime) => dayjs(deviceTime).tz("Asia/Kolkata").format("YYYY-MM-DD hh:mm:ss A");
 
 const DayReport = () => {
   const classes = useReportStyles();
@@ -82,7 +82,7 @@ const DayReport = () => {
       const resultArray = [];
 
       data?.forEach((item) => {
-        const date = dayjs(item.serverTime).tz("Asia/Kolkata").format("YYYY-MM-DD");
+        const date = dayjs(item.deviceTime).tz("Asia/Kolkata").format("YYYY-MM-DD");
         if (!groupedByDay[date]) groupedByDay[date] = [];
         groupedByDay[date].push(item);
       });
@@ -91,7 +91,7 @@ const DayReport = () => {
         const dayData = groupedByDay[day];
 
         const filteredDayData = dayData.filter((item) => {
-          const itemDate = dayjs(item.serverTime).tz("Asia/Kolkata");
+          const itemDate = dayjs(item.deviceTime).tz("Asia/Kolkata");
           return itemDate.isSame(dayjs(day), "day");
         });
 
@@ -110,8 +110,8 @@ const DayReport = () => {
 
         let duration = null;
         if (firstIgnitionTrueFromStart && firstIgnitionTrueFromEnd) {
-          duration = dayjs(firstIgnitionTrueFromEnd.serverTime).diff(
-            dayjs(firstIgnitionTrueFromStart.serverTime),
+          duration = dayjs(firstIgnitionTrueFromEnd.deviceTime).diff(
+            dayjs(firstIgnitionTrueFromStart.deviceTime),
             "minute"
           );
         }
@@ -143,10 +143,10 @@ const DayReport = () => {
     const formattedData = data.map((row) => ({
       Date: row.date,
       "First Ignition On": row.firstIgnitionTrueFromStart
-        ? formatToIST(row.firstIgnitionTrueFromStart.serverTime)
+        ? formatToIST(row.firstIgnitionTrueFromStart.deviceTime)
         : "N/A",
       "Last Ignition Off": row.firstIgnitionTrueFromEnd
-        ? formatToIST(row.firstIgnitionTrueFromEnd.serverTime)
+        ? formatToIST(row.firstIgnitionTrueFromEnd.deviceTime)
         : "N/A",
       Duration: row.duration !== null ? formatDuration(row.duration) : "N/A",
       "Total Distance Covered(km)": Math.min(
@@ -177,10 +177,10 @@ const DayReport = () => {
     const rows = data.map((row) => [
       String(row.date || "N/A"),
       row.firstIgnitionTrueFromStart
-        ? formatToIST(row.firstIgnitionTrueFromStart.serverTime)
+        ? formatToIST(row.firstIgnitionTrueFromStart.deviceTime)
         : "N/A",
       row.firstIgnitionTrueFromEnd
-        ? formatToIST(row.firstIgnitionTrueFromEnd.serverTime)
+        ? formatToIST(row.firstIgnitionTrueFromEnd.deviceTime)
         : "N/A",
       row.duration !== null ? formatDuration(row.duration) : "N/A",
       Math.min(row.totalDistance / 1000, 1011).toFixed(2),
@@ -300,8 +300,8 @@ const DayReport = () => {
                       {reportData.map((row, index) => (
                         <TableRow key={index}>
                           <TableCell>{row.date}</TableCell>
-                          <TableCell>{row.firstIgnitionTrueFromStart ? formatToIST(row.firstIgnitionTrueFromStart.serverTime) : "N/A"}</TableCell>
-                          <TableCell>{row.firstIgnitionTrueFromEnd ? formatToIST(row.firstIgnitionTrueFromEnd.serverTime) : "N/A"}</TableCell>
+                          <TableCell>{row.firstIgnitionTrueFromStart ? formatToIST(row.firstIgnitionTrueFromStart.deviceTime) : "N/A"}</TableCell>
+                          <TableCell>{row.firstIgnitionTrueFromEnd ? formatToIST(row.firstIgnitionTrueFromEnd.deviceTime) : "N/A"}</TableCell>
                           <TableCell>{row.duration !== null ? formatDuration(row.duration) : "N/A"}</TableCell>
                           <TableCell>{(row.totalDistance != null ? Math.min(row.totalDistance / 1000, 1011) : 0).toFixed(2)} km</TableCell>
                         </TableRow>
