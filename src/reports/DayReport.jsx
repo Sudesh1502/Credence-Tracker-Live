@@ -107,7 +107,7 @@ const DayReport = () => {
         const dayData = groupedByDay[day];
 
         const filteredDayData = dayData.filter((item) => {
-          const itemDate = dayjs(item.deviceTime).tz("Asia/Kolkata");
+          const itemDate = dayjs(item.serverTime).tz("Asia/Kolkata");
           return (
             itemDate.isSame(dayjs(day).startOf("day"), "day") &&
             itemDate.isAfter(dayjs(day).startOf("day")) &&
